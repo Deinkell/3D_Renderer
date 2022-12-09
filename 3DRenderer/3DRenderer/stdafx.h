@@ -13,6 +13,9 @@
 #include "Color32.h"
 #include "Vector3.h"
 #include "Quaternion.h"
+#include "Matrix44.h"
+#include "MathLib.h"
 
-using Vec3 = Vector3;
-using Qn4 = Quaternion;
+using VEC3 = Vector3;
+using QN4 = Quaternion;
+using MAT44 = Matrix44;

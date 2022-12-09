@@ -10,17 +10,16 @@ public:
 
 public:
 	FORCEINLINE constexpr Vector3() : X(0.f), Y(0.f), Z(0.f) {};
-	FORCEINLINE constexpr Vector3(float& _x, float& _y, float& _z) : X(_x), Y(_y), Z(_z) {};
-	//복사생성
-	FORCEINLINE constexpr Vector3(float&& _x, float&& _y, float&& _z)
-		: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)) {};
-	//이동생성
+	FORCEINLINE Vector3(float& _x, float& _y, float& _z) : X(_x), Y(_y), Z(_z) {};
+	FORCEINLINE Vector3(float&& _x, float&& _y, float&& _z)
+	: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)) {};
+	
 	template<typename T> requires std::is_same<Vector3, T>::value
 	FORCEINLINE Vector3(T&& _ref)
 	: X(std::forward<float>(_ref.X)), Y(std::forward<float>(_ref.Y)), Z(std::forward<float>(_ref.Z)) {};
 	//완벽전달 생성자
-	Vector3 GetVec3() { return std::move(Vector3(X, Y, Z)); };
 
+public:
 	template<typename T> requires std::is_same<Vector3, T>::value
 	FORCEINLINE T& operator=(T&& _ref) noexcept
 	{
@@ -37,6 +36,11 @@ public:
 	FORCEINLINE constexpr void operator+= (const Vector3& _ref);
 	FORCEINLINE constexpr bool operator==(const Vector3& _ref);
 	~Vector3() = default;
+
+public:
+	Vector3 GetVec3() { return std::move(Vector3(X, Y, Z)); };
+	FORCEINLINE Vector3 GetNormalVector();
+	FORCEINLINE float GetVectorLength() { return std::move((float)sqrt((X * X) + (Y * Y) + (Z * Z)));	}
 };
 
 
@@ -51,6 +55,16 @@ FORCEINLINE constexpr void Vector3::operator+= (const Vector3& _ref)
 FORCEINLINE constexpr bool Vector3::operator==(const Vector3& _ref)
 {
 	return !(X == _ref.X) ? false : !(Y == _ref.Y) ? false : !(Z == _ref.Z) ? false : true;
+}
+
+FORCEINLINE Vector3 Vector3::GetNormalVector()
+{
+	float size = (float)sqrt((X * X) + (Y * Y) + (Z * Z));
+	
+	if (size == 0)
+		return std::move(Vector3());
+
+	return std::move(Vector3((X / size), (Y / size), (Z / size)));
 }
 
 ////////////////Vec3 global operator/////////////////

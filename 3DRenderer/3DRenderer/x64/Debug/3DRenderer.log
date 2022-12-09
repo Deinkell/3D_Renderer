@@ -2,9 +2,19 @@
   3DRenderer.cpp
   Color32.cpp
   DibSection.cpp
+  Figure_Interface.cpp
   FrameWork.cpp
+  Index.cpp
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(11,6): warning C4244: '초기화 중': 'const float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(11,17): warning C4244: '초기화 중': 'const float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(11,28): warning C4244: '초기화 중': 'const float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(13,6): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(13,28): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\3DRenderer\Index.h(13,50): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   MathLib.cpp
+  Matrix44.cpp
   Quaternion.cpp
+  Sphere.cpp
   Vector3.cpp
   코드를 생성하고 있습니다...
   3DRenderer.vcxproj -> C:\Users\컴퓨터\Desktop\Code_Practice\3D_Renderer\3DRenderer\x64\Debug\3DRenderer.exe

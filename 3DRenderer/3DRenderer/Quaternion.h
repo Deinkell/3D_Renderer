@@ -7,12 +7,10 @@ public:
 	
 public:
 	FORCEINLINE constexpr Quaternion() : X(0.f), Y(0.f), Z(0.f), W(0.f) {};
+	FORCEINLINE Quaternion(float& _x, float& _y, float& _z, float& _w) : X(_x), Y(_y), Z(_z), W(_w) {};
+	FORCEINLINE Quaternion(float&& _x, float&& _y, float&& _z, float&& _w)
+	: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)), W(std::move(_w)) {};
 
-	template<typename T> requires std::is_fundamental_v<T>
-	FORCEINLINE Quaternion(T&& _x, T&& _y, T&& _z, T&& _w)
-	: X(std::forward<float>(_x)), Y(std::forward<float>(_y)), Z(std::forward<float>(_z)), W(std::forward<float>(_w))
-	{};
-	//완벽전달 생성자(매개변수로 각 변수를 받음)
 	template<typename T> requires std::is_same<Quaternion, T>::value
 	FORCEINLINE Quaternion(T&& _ref) noexcept
 	: X(std::forward<float>(_ref.X)), Y(std::forward<float>(_ref.Y)), Z(std::forward<float>(_ref.Z)), W(std::forward<float>(_ref.W))
@@ -22,6 +20,7 @@ public:
 	~Quaternion() = default;
 	//소멸자
 
+public:
 	template<typename T> requires std::is_same<Quaternion, T>::value
 	FORCEINLINE T& operator= (T&& _ref) noexcept
 	{
@@ -36,7 +35,10 @@ public:
 		return *this;
 	}
 	FORCEINLINE constexpr void operator+=(const Quaternion& _ref);
-	FORCEINLINE constexpr bool operator==(const Quaternion& _ref);		
+	FORCEINLINE constexpr bool operator==(const Quaternion& _ref);
+
+public:
+	Quaternion GetQuaternion() { return std::move(Quaternion(X, Y, Z, W)); }
 };
 
 FORCEINLINE constexpr void Quaternion::operator+=(const Quaternion& _ref)
@@ -53,14 +55,14 @@ FORCEINLINE constexpr bool Quaternion::operator==(const Quaternion& _ref)
 }
 
 ////////////////Quaternion global operator/////////////////
-FORCEINLINE constexpr Quaternion operator+(const Quaternion& _ref1, const Quaternion& _ref2)
+FORCEINLINE Quaternion operator+(const Quaternion& _ref1, const Quaternion& _ref2)
 {
-	return Quaternion((_ref1.X + _ref2.X), (_ref1.Y + _ref2.Y), (_ref1.Z + _ref2.Z), (_ref1.W + _ref2.W));
+	return std::move(Quaternion((_ref1.X + _ref2.X), (_ref1.Y + _ref2.Y), (_ref1.Z + _ref2.Z), (_ref1.W + _ref2.W)));
 }//Quaternion 연산관련 오퍼레이터, 선언과 동시에 정의(인라인 함수)
 
-FORCEINLINE constexpr Quaternion operator-(const Quaternion& _ref1, const Quaternion& _ref2)
+FORCEINLINE  Quaternion operator-(const Quaternion& _ref1, const Quaternion& _ref2)
 {
-	return Quaternion((_ref1.X - _ref2.X), (_ref1.Y - _ref2.Y), (_ref1.Z - _ref2.Z), (_ref1.W - _ref2.W));
+	return std::move(Quaternion((_ref1.X - _ref2.X), (_ref1.Y - _ref2.Y), (_ref1.Z - _ref2.Z), (_ref1.W - _ref2.W)));
 }//Quaternion 연산관련 오퍼레이터, 선언과 동시에 정의(인라인 함수)
 FORCEINLINE Quaternion operator* (const Quaternion& _ref, const float& _ratio)
 {

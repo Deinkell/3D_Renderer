@@ -22,6 +22,12 @@
     <Filter Include="Global\Math">
       <UniqueIdentifier>{a4023a5a-56b3-4b6c-8111-3e83e36cb2a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\Figure">
+      <UniqueIdentifier>{3c6c0552-2556-4955-9929-931ccbeebed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global\struct">
+      <UniqueIdentifier>{b9c020ab-d7ee-4427-ab75-efa3a770b7fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -45,17 +51,29 @@
     <ClInclude Include="MathLib.h">
       <Filter>Global\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Global\Figure</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure_Interface.h">
+      <Filter>Global\Figure</Filter>
+    </ClInclude>
     <ClInclude Include="Color32.h">
-      <Filter>Global\Math</Filter>
+      <Filter>Global\struct</Filter>
     </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>Global\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>Global\Math</Filter>
+    <ClInclude Include="Index.h">
+      <Filter>Global\struct</Filter>
     </ClInclude>
     <ClInclude Include="Matrix44.h">
-      <Filter>Global\Math</Filter>
+      <Filter>Global\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Global\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Global\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Global\struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,20 +89,32 @@
     <ClCompile Include="MathLib.cpp">
       <Filter>Global\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Color32.cpp">
-      <Filter>Global\Math</Filter>
-    </ClCompile>
     <ClCompile Include="DibSection.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>Global\Math</Filter>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Global\Figure</Filter>
     </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Global\Math</Filter>
+    <ClCompile Include="Figure_Interface.cpp">
+      <Filter>Global\Figure</Filter>
+    </ClCompile>
+    <ClCompile Include="Color32.cpp">
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Index.cpp">
+      <Filter>Global\struct</Filter>
     </ClCompile>
     <ClCompile Include="Matrix44.cpp">
-      <Filter>Global\Math</Filter>
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Global\struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
