@@ -19,6 +19,9 @@
     <Filter Include="Global">
       <UniqueIdentifier>{e8b9520f-d200-4a6f-b6ac-f52771c7a512}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\Math">
+      <UniqueIdentifier>{a4023a5a-56b3-4b6c-8111-3e83e36cb2a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -39,18 +42,24 @@
     <ClInclude Include="stdafx.h">
       <Filter>stdafx</Filter>
     </ClInclude>
-    <ClInclude Include="Global_struct.h">
-      <Filter>Global</Filter>
-    </ClInclude>
     <ClInclude Include="MathLib.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Global\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Color32.h">
+      <Filter>Global\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Global\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Global\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix44.h">
+      <Filter>Global\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="DibSection.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -59,11 +68,23 @@
     <ClCompile Include="FrameWork.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Global_struct.cpp">
-      <Filter>Global</Filter>
-    </ClCompile>
     <ClCompile Include="MathLib.cpp">
+      <Filter>Global\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Color32.cpp">
+      <Filter>Global\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="DibSection.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Global\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Global\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix44.cpp">
+      <Filter>Global\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

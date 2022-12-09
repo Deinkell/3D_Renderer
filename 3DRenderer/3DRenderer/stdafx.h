@@ -10,6 +10,9 @@
 #include <time.h>
 
 #include "DibSection.h"
-#include "Global_struct.h"
+#include "Color32.h"
+#include "Vector3.h"
+#include "Quaternion.h"
 
 using Vec3 = Vector3;
+using Qn4 = Quaternion;

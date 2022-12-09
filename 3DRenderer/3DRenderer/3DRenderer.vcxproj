@@ -106,6 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,23 +131,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3DRenderer.h" />
+    <ClInclude Include="Color32.h" />
     <ClInclude Include="DibSection.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Global_struct.h" />
     <ClInclude Include="MathLib.h" />
+    <ClInclude Include="Matrix44.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp" />
+    <ClCompile Include="Color32.cpp" />
     <ClCompile Include="DibSection.cpp" />
     <ClCompile Include="FrameWork.cpp" />
-    <ClCompile Include="Global_struct.cpp" />
     <ClCompile Include="MathLib.cpp" />
+    <ClCompile Include="Matrix44.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3DRenderer.rc" />

@@ -1,8 +1,7 @@
 #pragma once
-#include <memory>
-#include "Global_struct.h"
 
-struct Color32;
+#include <memory>
+#include "Color32.h"
 
 class DibSection
 {
