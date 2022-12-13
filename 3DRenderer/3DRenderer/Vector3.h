@@ -10,7 +10,7 @@ public:
 
 public:
 	FORCEINLINE constexpr Vector3() : X(0.f), Y(0.f), Z(0.f) {};
-	FORCEINLINE Vector3(float& _x, float& _y, float& _z) : X(_x), Y(_y), Z(_z) {};
+	FORCEINLINE Vector3(const float& _x, const float& _y, const float& _z) : X(_x), Y(_y), Z(_z) {};
 	FORCEINLINE Vector3(float&& _x, float&& _y, float&& _z)
 	: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)) {};
 	

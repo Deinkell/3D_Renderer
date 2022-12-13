@@ -13,7 +13,7 @@ public:
 	Vertex() = default;
 	FORCEINLINE Vertex(const Vector3& _Pos, const Color32& _Color)
 	: Pos(_Pos), Color(_Color) {};
-	FORCEINLINE Vertex(const Vector3&& _Pos, const Color32&& _Color)
+	FORCEINLINE Vertex(Vector3&& _Pos, Color32&& _Color)
 	: Pos(std::move(_Pos)), Color(std::move(_Color)) {};
 	~Vertex() = default;
 

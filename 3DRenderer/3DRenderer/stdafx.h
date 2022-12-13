@@ -14,8 +14,6 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "Matrix44.h"
+#include "Vertex.h"
+#include "Index.h"
 #include "MathLib.h"
-
-using VEC3 = Vector3;
-using QN4 = Quaternion;
-using MAT44 = Matrix44;

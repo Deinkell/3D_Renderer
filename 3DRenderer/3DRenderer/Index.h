@@ -7,9 +7,9 @@ public:
 
 public:
 	Index() = default;
-	FORCEINLINE constexpr Index(const float& _ref1, const float& _ref2, const float& _ref3)
+	FORCEINLINE constexpr Index(const int& _ref1, const int& _ref2, const int& _ref3)
 	: _0(_ref1), _1(_ref2), _2(_ref2) {};
-	FORCEINLINE Index(float&& _ref1, float&& _ref2, float&& _ref3)
+	FORCEINLINE Index(int&& _ref1, int&& _ref2, int&& _ref3)
 	: _0(std::move(_ref1)), _1(std::move(_ref2)), _2(std::move(_ref2)) {};
 	~Index() = default;
 

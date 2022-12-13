@@ -75,6 +75,9 @@
     <ClInclude Include="Vertex.h">
       <Filter>Global\struct</Filter>
     </ClInclude>
+    <ClInclude Include="Figure_define.h">
+      <Filter>Global\Figure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">

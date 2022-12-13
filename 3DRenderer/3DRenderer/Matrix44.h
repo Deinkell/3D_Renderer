@@ -4,13 +4,20 @@
 struct Matrix44
 {
 public:
-	float mat44[4][4] = { {0.f, 0.0f, 0.f, 0.f}, {0.f, 0.0f, 0.f, 0.f}, 
-							{0.f, 0.0f, 0.f, 0.f}, {0.f, 0.0f, 0.f, 0.f} };
+	float mat44[4][4] = { {1.f, 0.0f, 0.f, 0.f}, {0.f, 1.0f, 0.f, 0.f}, 
+							{0.f, 0.0f, 1.f, 0.f}, {0.f, 0.0f, 0.f, 1.f} };
 	
 public:
 	FORCEINLINE Matrix44() = default;
 	FORCEINLINE Matrix44(const Matrix44& _ref){ memcpy(mat44, _ref.mat44, 64); }
-	//2차원 배열의 이동연산 효율이 나올 것 같지않아 이동관련 연산은 제외
+	FORCEINLINE Matrix44(Matrix44&& _ref) noexcept
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+				mat44[i][j] += std::move(_ref.mat44[i][j]);
+		}
+	};
 	~Matrix44() = default;
 
 	FORCEINLINE Matrix44& operator=(const Matrix44& _ref);

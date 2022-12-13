@@ -4,7 +4,7 @@
 
 namespace MathLib
 {
-	FORCEINLINE void CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2)
+	void MathLib::CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2)
 	{
 		_out->mat44[0][0] = (_ref1.mat44[0][0] * _ref2.mat44[0][0]) + (_ref1.mat44[0][1] * _ref2.mat44[1][0]) + (_ref1.mat44[0][2] * _ref2.mat44[2][0]) + (_ref1.mat44[0][3] * _ref2.mat44[3][0]);
 		_out->mat44[0][1] = (_ref1.mat44[0][0] * _ref2.mat44[0][1]) + (_ref1.mat44[0][1] * _ref2.mat44[1][1]) + (_ref1.mat44[0][2] * _ref2.mat44[2][1]) + (_ref1.mat44[0][3] * _ref2.mat44[3][1]);
@@ -28,7 +28,7 @@ namespace MathLib
 
 	};
 
-	FORCEINLINE Matrix44 CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2)
+	Matrix44 MathLib::CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2)
 	{
 		Matrix44 result;
 		result.mat44[0][0] = (_ref1.mat44[0][0] * _ref2.mat44[0][0]) + (_ref1.mat44[0][1] * _ref2.mat44[1][0]) + (_ref1.mat44[0][2] * _ref2.mat44[2][0]) + (_ref1.mat44[0][3] * _ref2.mat44[3][0]);
@@ -53,7 +53,7 @@ namespace MathLib
 		return result;
 	};
 
-	FORCEINLINE void CrossProduct(Quaternion* _out, const Matrix44& _refMat, const Quaternion& _refQ)
+	void MathLib::CrossProduct(Quaternion* _out, const Matrix44& _refMat, const Quaternion& _refQ)
 	{
 		_out->X = (_refQ.X * _refMat.mat44[0][0]) + (_refQ.Y * _refMat.mat44[1][0]) + (_refQ.Z * _refMat.mat44[2][0]) + (_refQ.W * _refMat.mat44[3][0]);
 		_out->Y = (_refQ.X * _refMat.mat44[0][1]) + (_refQ.Y * _refMat.mat44[1][1]) + (_refQ.Z * _refMat.mat44[2][1]) + (_refQ.W * _refMat.mat44[3][1]);
@@ -61,7 +61,7 @@ namespace MathLib
 		_out->W = (_refQ.X * _refMat.mat44[0][3]) + (_refQ.Y * _refMat.mat44[1][3]) + (_refQ.Z * _refMat.mat44[2][3]) + (_refQ.W * _refMat.mat44[3][3]);
 	};
 
-	FORCEINLINE Quaternion CrossProduct(const Matrix44& _refMat, const Quaternion& _refQ)
+	Quaternion MathLib::CrossProduct(const Matrix44& _refMat, const Quaternion& _refQ)
 	{
 		return std::move(Quaternion(
 			((_refQ.X * _refMat.mat44[0][0]) + (_refQ.Y * _refMat.mat44[1][0]) + (_refQ.Z * _refMat.mat44[2][0]) + (_refQ.W * _refMat.mat44[3][0]))
@@ -71,27 +71,61 @@ namespace MathLib
 
 	};
 
-	FORCEINLINE void CrossProduct(Vector3* _out, const Vector3& _ref1, const Vector3& _ref2)
+	void MathLib::CrossProduct(Vector3* _out, const Vector3& _ref1, const Vector3& _ref2)
 	{
 		_out->X = (_ref1.Y * _ref2.Z) - (_ref1.Z * _ref2.Y);
 		_out->Y = (_ref1.Z * _ref2.X) - (_ref1.X * _ref2.Z);
 		_out->Z = (_ref1.X * _ref2.Y) - (_ref1.Y * _ref2.X);
 	};
 
-	FORCEINLINE Vector3 CrossProduct(const Vector3& _ref1, const Vector3& _ref2)
+	Vector3 MathLib::CrossProduct(const Vector3& _ref1, const Vector3& _ref2)
 	{
 		return std::move(Vector3(
 			((_ref1.Y * _ref2.Z) - (_ref1.Z * _ref2.Y))
 			, ((_ref1.Z * _ref2.X) - (_ref1.X * _ref2.Z))
 			, ((_ref1.X * _ref2.Y) - (_ref1.Y * _ref2.X))));
 	};
-	FORCEINLINE float DotProduct(const Vector3& _ref1, const Vector3& _ref2)
+	float MathLib::DotProduct(const Vector3& _ref1, const Vector3& _ref2)
 	{
-		return ((_ref1.X * _ref2.X) + (_ref1.Y * _ref2.Y) + (_ref1.Z * _ref2.Z));
+		return std::move(((_ref1.X * _ref2.X) + (_ref1.Y * _ref2.Y) + (_ref1.Z * _ref2.Z)));
 	};
 
-	FORCEINLINE float GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2)
+	float MathLib::GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2)
 	{
-		return acos((DotProduct(_ref1, _ref2)) / (_ref1.GetVectorLength() * _ref2.GetVectorLength()));
+		return std::move(acos((DotProduct(_ref1, _ref2)) / (_ref1.GetVectorLength() * _ref2.GetVectorLength())));
+	};
+
+	void MathLib::MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate)
+	{
+		//Z와 Y의 회전값 적용 위치 변경, Z->Y, Y->Z, UpVector가 Z축이 되도록 함
+		//yaw = z, pitch = x, roll = y;
+		float Yaw = _Rotate.Z, Pitch = _Rotate.X, Roll = _Rotate.Y;
+		float CosR = cos(Roll / 2), CosP = cos(Pitch / 2), CosY = cos(Yaw / 2);
+		float SinR = sin(Roll / 2), SinP = sin(Pitch / 2), SinY = cos(Yaw / 2);
+
+		float W = CosR * CosP * CosY + SinR * SinP * SinY;
+		float X = CosR * SinP * CosY + SinR * CosP * SinY;
+		float Y = CosR * CosP * SinY - SinR * SinP * CosY;
+		float Z = SinR * CosP * CosY - CosR * SinP * SinY;
+
+		_Out->mat44[0][0] = 1 - (2 * Y * Y) - (2 * X * X);
+		_Out->mat44[0][1] = 2 * X * Y - 2 * W * Z;
+		_Out->mat44[0][2] = 2 * X * Z + 2 * W * Y;
+		_Out->mat44[0][3] = 0;
+
+		_Out->mat44[1][0] = 2 * X * Y + 2 * W * Z;
+		_Out->mat44[1][1] = 1 - (2 * X * X) - (2 * Z * Z);
+		_Out->mat44[1][2] = 2 * Y * Z - 2 * W * X;
+		_Out->mat44[1][3] = 0;
+
+		_Out->mat44[2][0] = 2 * X * Z - 2 * W * Y;
+		_Out->mat44[2][1] = 2 * Y * Z + 2 * W * X;
+		_Out->mat44[2][2] = 1 - (2 * X * X) - (2 * Y * Y);
+		_Out->mat44[2][3] = 0;
+
+		_Out->mat44[3][0] = 0;
+		_Out->mat44[3][0] = 0;
+		_Out->mat44[3][0] = 0;
+		_Out->mat44[3][0] = 1;
 	};
 }

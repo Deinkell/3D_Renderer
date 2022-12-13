@@ -133,6 +133,7 @@
     <ClInclude Include="3DRenderer.h" />
     <ClInclude Include="Color32.h" />
     <ClInclude Include="DibSection.h" />
+    <ClInclude Include="Figure_define.h" />
     <ClInclude Include="Figure_Interface.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Index.h" />
