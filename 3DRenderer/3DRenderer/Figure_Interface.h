@@ -9,6 +9,16 @@ enum class FigureType;
 
 class Figure_Interface
 {
+protected:
+	Vector3 Position;
+	Vector3 Rotation;
+	Vector3 Scale;
+	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
+	Matrix44 FigureMat44;
+	std::shared_ptr<std::vector<Vertex>> Vertices;
+	std::shared_ptr<std::vector<Index>> Indices;
+	FigureType Figure_type;
+
 public:
 	Figure_Interface() = default;
 	FORCEINLINE Figure_Interface(const std::shared_ptr<std::vector<Vertex>> _Vertices, 
@@ -19,16 +29,6 @@ public:
 		FigureMat44(_ref.FigureMat44), Vertices(_ref.Vertices), 
 		Indices(_ref.Indices), Figure_type(_ref.Figure_type) {};
 	~Figure_Interface() = default;
-
-protected:
-	Vector3 Position;
-	Vector3 Rotation;
-	Vector3 Scale;
-	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
-	Matrix44 FigureMat44;
-	std::shared_ptr<std::vector<Vertex>> Vertices;
-	std::shared_ptr<std::vector<Index>> Indices;
-	FigureType Figure_type;
 
 public:	
 	FORCEINLINE constexpr void SetVertices(const auto _Vertices) { Vertices = _Vertices; };
@@ -51,13 +51,13 @@ public:
 	// Get함수
 public:
 	void MakeWorldMatrix();
-	void MakeViewMatrix();
+	void MakeViewMatrix(const Vector3& _Camera3DirectionAxis);
 	void MakeProjMatrix();
 
 public:
 	virtual void Init() abstract = 0;
 	virtual void Move(time_t _time) abstract = 0;
 	virtual void MakeRenderData() abstract = 0;
-	virtual void Ontick() abstract = 0;
+	virtual void Ontick(time_t _time) abstract = 0;
 };
 

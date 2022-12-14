@@ -5,6 +5,23 @@
 
 class DibSection
 {
+private:
+	HWND		hWnd_;
+	int			iWidth_;
+	int			iHeight_;
+
+	RECT		rtClient_;
+
+	HDC			hScreenDC_;
+	HDC			hMemoryDC_;
+
+	HBITMAP		hOldBitmap_;
+	HBITMAP		hDIBBitmap_;
+
+	Color32* ScreenBuffer_ = nullptr;
+
+	std::unique_ptr<BYTE*> pBits_;
+
 public:
 	DibSection() = default;
 	~DibSection();
@@ -22,22 +39,5 @@ public:
 	void InitializeDib();
 	void ClearDib(const Color32& _color = Color32(255,255,255,0));
 	void BitBltDibSection();	
-
-private:
-	HWND		hWnd_;
-	int			iWidth_;
-	int			iHeight_;
-
-	RECT		rtClient_;
-
-	HDC			hScreenDC_;
-	HDC			hMemoryDC_;
-
-	HBITMAP		hOldBitmap_;
-	HBITMAP		hDIBBitmap_;
-
-	Color32*    ScreenBuffer_ = nullptr;
-
-	std::unique_ptr<BYTE*> pBits_;
 };
 

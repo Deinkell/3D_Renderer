@@ -78,6 +78,15 @@
     <ClInclude Include="Figure_define.h">
       <Filter>Global\Figure</Filter>
     </ClInclude>
+    <ClInclude Include="LineFunction2D.h">
+      <Filter>Global\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMNG.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
@@ -118,6 +127,15 @@
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
       <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="LineFunction2D.cpp">
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectMNG.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@ void Sphere::Init()
 
 	for (int i = 0; i < 20; ++i)
 		Indices->push_back(tmpIndeces[i]);
+	//20면체 생성
 }
 
 void Sphere::Move(time_t _time)
@@ -39,9 +40,10 @@ void Sphere::Move(time_t _time)
 
 void Sphere::MakeRenderData()
 {
+	//정점의 래스터라이즈 직전까지 연산작업 
 }
 
-void Sphere::Ontick()
+void Sphere::Ontick(time_t _time)
 {
 }
 

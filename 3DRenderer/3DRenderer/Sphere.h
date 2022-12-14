@@ -13,7 +13,7 @@ public:
 	virtual void Init() override;
 	virtual void Move(time_t _time) override;	
 	virtual void MakeRenderData() override;
-	virtual void Ontick() override;
+	virtual void Ontick(time_t _time) override;
 
 public:
 	void SubDivide(); //20면체를 쪼개서 구형태로 만들기 위한 작업

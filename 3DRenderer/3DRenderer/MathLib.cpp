@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <math.h>
 #include "MathLib.h"
+#include <span>
 
 namespace MathLib
 {
@@ -127,5 +128,44 @@ namespace MathLib
 		_Out->mat44[3][0] = 0;
 		_Out->mat44[3][0] = 0;
 		_Out->mat44[3][0] = 1;
+	}
+	void MathLib::Make2DLinFunction(LineFunction2D* _2D, const Vector3& _vec1, const Vector3& _vec2)
+	{
+		float DeltaX = _vec1.X - _vec2.X, DeltaY = _vec1.Y - _vec2.Y;
+
+		if (DeltaX == 0)
+		{
+			_2D->XSlopeZero = true;
+			return;
+		}
+		else if (DeltaY == 0)
+		{
+			_2D->YSlopeZero = true;
+			return;
+		}
+
+		_2D->Slope = DeltaY / DeltaX;
+		_2D->Constant = _vec1.Y - _2D->Slope * _vec1.X;
 	};
-}
+	void MathLib::SortByYvalue(Vector3* _out, const std::span<Vector3>& _In)
+	{		
+		Vector3 tmp[3];
+		memcpy(tmp, &_In, _In.size());
+		int i = _In.size() - 1, j = 0;
+		while(i != 0)
+		{
+			if (j == i)
+			{
+				j = 0; i--;
+			}
+
+			if (tmp[j].Y > tmp[j + 1].Y)
+				SwapElement(tmp[j], tmp[j + 1]);
+
+			j++;		
+		}
+
+		for (int i = 0; i < _In.size(); i++)
+			_out[i] = tmp[i];
+	};	
+};
