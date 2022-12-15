@@ -28,6 +28,9 @@
     <Filter Include="Global\struct">
       <UniqueIdentifier>{b9c020ab-d7ee-4427-ab75-efa3a770b7fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\Thread">
+      <UniqueIdentifier>{26c6f103-3897-46b4-b7d9-675c85362862}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -87,6 +90,9 @@
     <ClInclude Include="ObjectMNG.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Global\Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
@@ -136,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="ObjectMNG.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>Global\Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

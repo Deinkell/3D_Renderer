@@ -53,6 +53,7 @@ public:
 	void MakeWorldMatrix();
 	void MakeViewMatrix(const Vector3& _Camera3DirectionAxis);
 	void MakeProjMatrix();
+	//공용으로 쓰는 매트릭스 생성함수
 
 public:
 	virtual void Init() abstract = 0;
