@@ -7,13 +7,13 @@ struct Vertex
 {
 public:
 	Vector3 Pos;
-	Color32 Color;
+	Color32 Color;	
 
 public:
 	Vertex() = default;
 	FORCEINLINE Vertex(const Vector3& _Pos, const Color32& _Color)
-	: Pos(_Pos), Color(_Color) {};
-	FORCEINLINE Vertex(Vector3&& _Pos, Color32&& _Color)
+	: Pos(_Pos), Color(_Color){};
+	FORCEINLINE Vertex(Vector3&& _Pos, Color32&& _Color, bool&& _CalcPixcel)
 	: Pos(std::move(_Pos)), Color(std::move(_Color)) {};
 	~Vertex() = default;
 

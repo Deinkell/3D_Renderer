@@ -26,7 +26,6 @@ public:
 	template<class F, class... Args>
 	std::future<typename std::invoke_result<F(Args...)>::type> EnqueueJob(F&& f, Args&&... args);
 
-
 private:
 	void WorkerThread();
 };
@@ -34,11 +33,11 @@ private:
 template<class F, class ...Args>
 FORCEINLINE std::future<typename std::invoke_result<F(Args...)>::type> ThreadPool::EnqueueJob(
 	F&& f, Args && ...args)
-{
+{ 
 	if (stop_all)
 		throw std::runtime_error("ThreadPool »ç¿ë ÁßÁöµÊ");
 	
-	using return_type = typename std::_Forced_result_type<F(Args...)>::type;
+	using return_type = typename std::invoke_result<F(Args...)>::type;
 
 	//auto job = std::make_shared<std::packaged_task<return_type()>>(
 	//	std::bind(std::forward<F>(f), std::forward<Args>(args)...));

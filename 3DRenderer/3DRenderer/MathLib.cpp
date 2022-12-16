@@ -129,28 +129,29 @@ namespace MathLib
 		_Out->mat44[3][0] = 0;
 		_Out->mat44[3][0] = 1;
 	}
-	void MathLib::Make2DLinFunction(LineFunction2D* _2D, const Vector3& _vec1, const Vector3& _vec2)
+	void MathLib::Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2)
 	{
-		float DeltaX = _vec1.X - _vec2.X, DeltaY = _vec1.Y - _vec2.Y;
+		float DeltaX(_vec1.X - _vec2.X), DeltaY( _vec1.Y - _vec2.Y);
 
 		if (DeltaX == 0)
 		{
-			_2D->XSlopeZero = true;
+			_Out->XSlopeZero = true;
 			return;
 		}
 		else if (DeltaY == 0)
 		{
-			_2D->YSlopeZero = true;
+			_Out->YSlopeZero = true;
 			return;
 		}
 
-		_2D->Slope = DeltaY / DeltaX;
-		_2D->Constant = _vec1.Y - _2D->Slope * _vec1.X;
+		_Out->Slope = DeltaY / DeltaX;
+		_Out->Constant = _vec1.Y - _Out->Slope * _vec1.X;
 	};
 	void MathLib::SortByYvalue(Vector3* _out, const std::span<Vector3>& _In)
 	{		
-		Vector3 tmp[3];
-		memcpy(tmp, &_In, _In.size());
+		auto tmp = std::make_unique<Vector3[]>(_In.size());
+		memcpy(&tmp, &_In, _In.size());
+	
 		int i = _In.size() - 1, j = 0;
 		while(i != 0)
 		{

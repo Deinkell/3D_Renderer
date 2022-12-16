@@ -31,6 +31,6 @@ namespace MathLib
 	float		GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2);
 	void		MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate);
 	//내적관련 함수들
-	void		Make2DLinFunction(LineFunction2D* _2D, const Vector3& _vec1, const Vector3& _vec2);
+	void		Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2);
 	void		SortByYvalue(Vector3* _out, const std::span<Vector3>& _In);
 };
