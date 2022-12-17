@@ -4,9 +4,9 @@
 class Sphere : public Figure_Interface
 {
 public:
-	Sphere() = default;
-	FORCEINLINE Sphere(const Sphere& _ref)
-	: Figure_Interface(_ref) {};
+	FORCEINLINE Sphere() : Figure_Interface(FigureType::Sphere_type) {};
+	FORCEINLINE Sphere(const Vector3& _pos) : Figure_Interface(_pos, FigureType::Sphere_type) {};
+	FORCEINLINE Sphere(const Sphere& _ref) 	: Figure_Interface(_ref) {};
 	~Sphere() = default;
 
 public:

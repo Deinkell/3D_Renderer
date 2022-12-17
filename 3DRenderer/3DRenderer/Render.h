@@ -8,12 +8,20 @@ enum class FigureType;
 
 class Render
 {
-private: 
-	DibSection DibSec;
+private:
+	DibSection DibSec; //Dib는 컴포넌트가 아닌 랜더의 필수 맴버변수, 관리를 따로 할곳도 필요도 없기때문
 
 private:
-	ObjectMNG* ObjectMng_Component;
-	ThreadPool* ThreadPool_Component;
+	std::shared_ptr<ObjectMNG> ObjectMng_Component;
+	std::shared_ptr<ThreadPool> ThreadPool_Component;
+
+public:
+	FORCEINLINE void SetObjectMng(std::shared_ptr<ObjectMNG>& _ref) { ObjectMng_Component = _ref; }
+	FORCEINLINE void SetThreadPool(std::shared_ptr<ThreadPool>& _ref) { ThreadPool_Component = _ref; }
+
+public:
+	Render();
+	~Render() = default;
 
 public:
 	void OnRender();

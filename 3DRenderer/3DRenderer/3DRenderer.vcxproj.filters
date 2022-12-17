@@ -87,11 +87,11 @@
     <ClInclude Include="Render.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectMNG.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadPool.h">
       <Filter>Global\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMNG.h">
+      <Filter>Global\Figure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,11 +140,11 @@
     <ClCompile Include="Render.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectMNG.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
       <Filter>Global\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectMNG.cpp">
+      <Filter>Global\Figure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

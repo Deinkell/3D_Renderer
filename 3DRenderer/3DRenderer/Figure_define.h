@@ -2,5 +2,5 @@
 
 enum class FigureType : char
 {
-	Sphere,
+	Sphere_type,
 };

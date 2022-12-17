@@ -10,9 +10,9 @@ enum class FigureType;
 class Figure_Interface
 {
 protected:
-	Vector3 Position;
-	Vector3 Rotation;
-	Vector3 Scale;
+	Vector3 Position{0.f, 0.f, 0.f};
+	Vector3 Rotation{0.f, 0.f, 0.f};
+	Vector3 Scale{1.f, 1.f, 1.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
 	Matrix44 FigureMat44;
 	std::shared_ptr<std::vector<Vertex>> Vertices;
@@ -24,6 +24,8 @@ public:
 	FORCEINLINE Figure_Interface(const std::shared_ptr<std::vector<Vertex>> _Vertices, 
 		std::shared_ptr<std::vector<Index>> _Indices, FigureType _type)
 	: Vertices(_Vertices), Indices(_Indices), Figure_type(_type){};
+	FORCEINLINE Figure_Interface(const Vector3& _Pos, const FigureType& _type) : Position(_Pos), Figure_type(Figure_type) {}
+	FORCEINLINE Figure_Interface(const FigureType& _type) : Figure_type(Figure_type) {}
 	FORCEINLINE Figure_Interface(const Figure_Interface& _ref)
 	: Position(_ref.Position), Rotation(_ref.Rotation), Scale(_ref.Scale),
 		FigureMat44(_ref.FigureMat44), Vertices(_ref.Vertices), 

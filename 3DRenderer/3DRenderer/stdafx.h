@@ -18,3 +18,5 @@
 #include "Index.h"
 #include "MathLib.h"
 #include "ThreadPool.h"
+#include "ObjectMNG.h"
+#include "Figure_define.h"

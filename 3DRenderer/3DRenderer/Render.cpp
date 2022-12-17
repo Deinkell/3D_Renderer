@@ -1,8 +1,17 @@
 #include "stdafx.h"
 #include "Render.h"
 
+Render::Render()
+{
+	DibSec.InitializeDib();
+}
+
 void Render::OnRender()
 {
+	if (ThreadPool_Component == nullptr || ObjectMng_Component == nullptr)
+		return;
+
+
 }
 
 void Render::BackSpaceCuling()
@@ -31,8 +40,10 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 
 			if (StartX < EndX)
 				MathLib::SwapElement(StartX, EndX);
-			
-			for (int j = StartX; j < EndX; j++)
+			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
+			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
+			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
+			for (int j = StartX; j <= EndX; j++)
 			{
 				//PlaneCliping 위치
 				//Zbuffer 그리기 확인위치
@@ -48,8 +59,10 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 
 			if (StartX < EndX)
 				MathLib::SwapElement(StartX, EndX);
-
-			for (int j = StartX; j < EndX; j++)
+			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
+			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
+			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
+			for (int j = StartX; j <= EndX; j++)
 			{
 				//PlaneCliping 위치
 				//Zbuffer 그리기 확인위치
