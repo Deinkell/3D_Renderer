@@ -53,7 +53,7 @@ public:
 	// Get함수
 public:
 	void MakeWorldMatrix();
-	void MakeViewMatrix(const Vector3& _Camera3DirectionAxis);
+	void MakeViewMatrix(const Matrix44& _CameraMatrix);
 	void MakeProjMatrix();
 	//공용으로 쓰는 매트릭스 생성함수
 

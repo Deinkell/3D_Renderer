@@ -31,6 +31,9 @@
     <Filter Include="Global\Thread">
       <UniqueIdentifier>{26c6f103-3897-46b4-b7d9-675c85362862}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\Camera">
+      <UniqueIdentifier>{363bb569-5def-43fe-bbfb-dafd58d55d12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -93,6 +96,9 @@
     <ClInclude Include="ObjectMNG.h">
       <Filter>Global\Figure</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Global\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
@@ -145,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="ObjectMNG.cpp">
       <Filter>Global\Figure</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Global\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

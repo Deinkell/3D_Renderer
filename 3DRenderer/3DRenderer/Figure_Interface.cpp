@@ -20,7 +20,7 @@ void Figure_Interface::MakeWorldMatrix()
 	MathLib::CrossProduct(&FigureMat44, TransMat, FigureMat44);
 }
 
-void Figure_Interface::MakeViewMatrix(const Vector3& _Camera3DirectionAxis)
+void Figure_Interface::MakeViewMatrix(const Matrix44& _CameraMatrix)
 {
 
 }

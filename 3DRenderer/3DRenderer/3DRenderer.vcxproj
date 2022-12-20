@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3DRenderer.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Color32.h" />
     <ClInclude Include="DibSection.h" />
     <ClInclude Include="Figure_define.h" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color32.cpp" />
     <ClCompile Include="DibSection.cpp" />
     <ClCompile Include="Figure_Interface.cpp" />
