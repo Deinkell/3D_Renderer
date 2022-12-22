@@ -98,9 +98,9 @@ namespace MathLib
 
 	void MathLib::MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate)
 	{
-		//Z와 Y의 회전값 적용 위치 변경, Z->Y, Y->Z, UpVector가 Z축이 되도록 함
-		//yaw = z, pitch = x, roll = y;
-		float Yaw = _Rotate.Z, Pitch = _Rotate.X, Roll = _Rotate.Y;
+		//Z와 Y의 회전값 적용 위치 변경, Z->Y, Y->Z, UpVector가 Z축이 되도록 함 : 입력값을 Y와 Z값을 변경하여 받음(내부계산식은 동일)
+		//yaw = y, pitch = x, roll = z;
+		float Yaw = _Rotate.Y, Pitch = _Rotate.X, Roll = _Rotate.Z;
 		float CosR = cos(Roll / 2), CosP = cos(Pitch / 2), CosY = cos(Yaw / 2);
 		float SinR = sin(Roll / 2), SinP = sin(Pitch / 2), SinY = cos(Yaw / 2);
 

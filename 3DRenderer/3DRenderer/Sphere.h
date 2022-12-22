@@ -1,4 +1,5 @@
 #pragma once
+#include "Figure_define.h"
 #include "Figure_Interface.h"
 
 class Sphere : public Figure_Interface

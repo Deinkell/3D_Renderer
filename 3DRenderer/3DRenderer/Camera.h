@@ -13,7 +13,7 @@ private:
 public:
 	Camera() = delete;
 	~Camera() = default;
-	FORCEINLINE constexpr Camera(const Vector3& _Pos, const Vector3& _Lookat) : Position(_Pos), LookAt(_Lookat) {};
+	FORCEINLINE explicit constexpr Camera(const Vector3& _Pos, const Vector3& _Lookat) : Position(_Pos), LookAt(_Lookat) {};
 	//반드시 Position과 LookAt을 기입하는 생성을 유도
 public:
 	void Initialize();

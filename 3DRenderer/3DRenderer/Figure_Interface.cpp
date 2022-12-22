@@ -14,8 +14,8 @@ void Figure_Interface::MakeWorldMatrix()
 
 	Matrix44 TransMat;
 	TransMat.mat44[3][0] = Position.X;
-	TransMat.mat44[3][1] = Position.Z; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함 
-	TransMat.mat44[3][2] = Position.Y; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함 
+	TransMat.mat44[3][1] = Position.Y; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함(입력값의 수정, 계산식은 동일) 
+	TransMat.mat44[3][2] = Position.Z; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함(입력값의 수정, 계산식은 동일) 
 
 	MathLib::CrossProduct(&FigureMat44, TransMat, FigureMat44);
 }

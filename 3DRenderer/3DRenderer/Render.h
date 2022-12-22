@@ -4,7 +4,7 @@
 struct Vertex;
 class ObjectMNG;
 class ThreadPool;
-enum class FigureType;
+enum class FigureType : char;
 
 class Render
 {

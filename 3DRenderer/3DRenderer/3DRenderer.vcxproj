@@ -142,6 +142,7 @@
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="Matrix44.h" />
     <ClInclude Include="ObjectMNG.h" />
+    <ClInclude Include="Proj.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Resource.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="Matrix44.cpp" />
     <ClCompile Include="ObjectMNG.cpp" />
+    <ClCompile Include="Proj.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Sphere.cpp" />
