@@ -137,11 +137,13 @@
     <ClInclude Include="Figure_define.h" />
     <ClInclude Include="Figure_Interface.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="Index.h" />
     <ClInclude Include="LineFunction2D.h" />
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="Matrix44.h" />
     <ClInclude Include="ObjectMNG.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Proj.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Render.h" />
@@ -160,11 +162,13 @@
     <ClCompile Include="DibSection.cpp" />
     <ClCompile Include="Figure_Interface.cpp" />
     <ClCompile Include="FrameWork.cpp" />
+    <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="Index.cpp" />
     <ClCompile Include="LineFunction2D.cpp" />
     <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="Matrix44.cpp" />
     <ClCompile Include="ObjectMNG.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Proj.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Render.cpp" />

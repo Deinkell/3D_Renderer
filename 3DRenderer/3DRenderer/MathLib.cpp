@@ -128,7 +128,7 @@ namespace MathLib
 		_Out->mat44[3][0] = 0;
 		_Out->mat44[3][0] = 0;
 		_Out->mat44[3][0] = 1;
-	}
+	};
 	void MathLib::Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2)
 	{
 		float DeltaX(_vec1.X - _vec2.X), DeltaY( _vec1.Y - _vec2.Y);
@@ -148,12 +148,12 @@ namespace MathLib
 		_Out->Constant = _vec1.Y - _Out->Slope * _vec1.X;
 	};
 	void MathLib::SortByYvalue(Vector3* _out, const std::span<Vector3>& _In)
-	{		
+	{
 		auto tmp = std::make_unique<Vector3[]>(_In.size());
 		memcpy(&tmp, &_In, _In.size());
-	
+
 		int i = _In.size() - 1, j = 0;
-		while(i != 0)
+		while (i != 0)
 		{
 			if (j == i)
 			{
@@ -161,12 +161,38 @@ namespace MathLib
 			}
 
 			if (tmp[j].Y > tmp[j + 1].Y)
-				SwapElement(tmp[j], tmp[j + 1]);
+				SwapElement(&tmp[j], &tmp[j + 1]);
 
-			j++;		
+			j++;
 		}
 
 		for (int i = 0; i < _In.size(); i++)
 			_out[i] = tmp[i];
-	};	
+	};
+	void MathLib::InitUnitMatrix44(Matrix44* _Out)
+	{
+		memset(_Out, 0, sizeof(Matrix44));
+		_Out->mat44[0][0] = 1.f;
+		_Out->mat44[1][1] = 1.f;
+		_Out->mat44[2][2] = 1.f;
+		_Out->mat44[3][3] = 1.f;
+	}
+	Plane MathLib::MakePlane(const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3)
+	{
+		Vector3 tmp1(_ref2.X - _ref1.X, _ref2.Y - _ref1.Y, _ref2.Z - _ref1.Z);
+		Vector3 tmp2(_ref3.X - _ref1.X, _ref3.Y - _ref1.Y, _ref3.Z - _ref1.Z);
+		tmp1 = CrossProduct(tmp1, tmp2);
+		float D = tmp1.X * _ref1.X + tmp1.Y * _ref1.Y + tmp1.Z * _ref1.Z;
+
+		return std::move(Plane(tmp1.X, tmp1.Y, tmp1.Z, D));
+	};
+	void MathLib::MakePlane(Plane* _Out, const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3)
+	{
+		Vector3 tmp1(_ref2.X - _ref1.X, _ref2.Y - _ref1.Y, _ref2.Z - _ref1.Z);
+		Vector3 tmp2(_ref3.X - _ref1.X, _ref3.Y - _ref1.Y, _ref3.Z - _ref1.Z);
+		tmp1 = CrossProduct(tmp1, tmp2);
+		float D = tmp1.X * _ref1.X + tmp1.Y * _ref1.Y + tmp1.Z * _ref1.Z;
+
+		_Out->a = tmp1.X; _Out->b = tmp1.Y; _Out->c = tmp1.Z; _Out->d = D;
+	};
 };

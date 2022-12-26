@@ -16,6 +16,7 @@
 #include "Matrix44.h"
 #include "Vertex.h"
 #include "Index.h"
+#include "Plane.h"
 #include "MathLib.h"
 #include "ThreadPool.h"
 #include "ObjectMNG.h"

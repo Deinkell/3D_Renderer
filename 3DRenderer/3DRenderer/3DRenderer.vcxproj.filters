@@ -34,7 +34,7 @@
     <Filter Include="Global\Camera">
       <UniqueIdentifier>{363bb569-5def-43fe-bbfb-dafd58d55d12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Global\Proj">
+    <Filter Include="Global\Proj&amp;Frustum">
       <UniqueIdentifier>{bedc9b1c-4094-4852-9caa-7d3fa1123bcb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -103,7 +103,13 @@
       <Filter>Global\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Proj.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumCulling.h">
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Global\struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +168,13 @@
       <Filter>Global\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Proj.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="FrustumCulling.cpp">
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Global\struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

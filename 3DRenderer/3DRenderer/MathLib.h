@@ -5,6 +5,8 @@
 #include "Vector3.h"
 #include "LineFunction2D.h"
 
+struct Plane;
+
 namespace MathLib
 {
 	template<class T> requires std::is_fundamental_v<T>
@@ -13,11 +15,11 @@ namespace MathLib
 		return X < Min ? Min : X < Max ? X : Max;
 	};
 	template<class T>
-	FORCEINLINE constexpr void SwapElement(T& _ref1, T& _ref2) noexcept
+	FORCEINLINE constexpr void SwapElement(T* _ref1, T* _ref2) noexcept
 	{
-		T tmp = _ref1;
-		_ref1 = _ref2;
-		_ref2 = tmp;
+		T tmp = *_ref1;
+		*_ref1 = *_ref2;
+		*_ref2 = tmp;
 	};
 	//최대값 최소값 사이의 값 세팅
 	void		CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2);
@@ -33,4 +35,7 @@ namespace MathLib
 	//내적관련 함수들
 	void		Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2);
 	void		SortByYvalue(Vector3* _out, const std::span<Vector3>& _In);
+	void		InitUnitMatrix44(Matrix44* _Out);
+	Plane		MakePlane(const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
+	void		MakePlane(Plane* _Out, const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
 };
