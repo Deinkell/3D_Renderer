@@ -111,6 +111,12 @@
     <ClInclude Include="Plane.h">
       <Filter>Global\struct</Filter>
     </ClInclude>
+    <ClInclude Include="PerspectiveTest.h">
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearColor.h">
+      <Filter>Global\struct</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
@@ -174,6 +180,12 @@
       <Filter>Global\Proj&amp;Frustum</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="PerspectiveTest.cpp">
+      <Filter>Global\Proj&amp;Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearColor.cpp">
       <Filter>Global\struct</Filter>
     </ClCompile>
   </ItemGroup>

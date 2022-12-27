@@ -7,11 +7,11 @@ void Sphere::Init()
 	const float Z = 0.850650808352039932f;
 	const float N = 0.0f;
 
-	Vector3 tmpVertices[12] =
+	Quaternion tmpVertices[12] =
 	{
-		Vector3(-X, N, Z), Vector3(X, N, Z), Vector3(-X, N, -Z), Vector3(X, N, -Z),
-		Vector3(N, Z, X), Vector3(N, Z, -X), Vector3(N, -Z, X), Vector3(N, -Z, -X),
-		Vector3(Z, X, N), Vector3(-Z, X, N), Vector3(Z, -X, N), Vector3(-Z, -X, N)
+		Quaternion(-X, N, Z, 0.f), Quaternion(X, N, Z, 0.f), Quaternion(-X, N, -Z, 0.f), Quaternion(X, N, -Z, 0.f),
+		Quaternion(N, Z, X, 0.f), Quaternion(N, Z, -X, 0.f), Quaternion(N, -Z, X, 0.f), Quaternion(N, -Z, -X, 0.f),
+		Quaternion(Z, X, N, 0.f), Quaternion(-Z, X, N, 0.f), Quaternion(Z, -X, N, 0.f), Quaternion(-Z, -X, N, 0.f)
 	};
 
 	for (int i = 0; i < 12; ++i)

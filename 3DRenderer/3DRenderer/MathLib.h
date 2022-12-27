@@ -14,6 +14,7 @@ namespace MathLib
 	{
 		return X < Min ? Min : X < Max ? X : Max;
 	};
+	//최대값 최소값 사이의 값 세팅
 	template<class T>
 	FORCEINLINE constexpr void SwapElement(T* _ref1, T* _ref2) noexcept
 	{
@@ -21,7 +22,12 @@ namespace MathLib
 		*_ref1 = *_ref2;
 		*_ref2 = tmp;
 	};
-	//최대값 최소값 사이의 값 세팅
+	template<class T> requires std::is_fundamental_v<T>
+	FORCEINLINE constexpr T Abs(const T A)
+	{
+		return (A >= (T)0) ? A : -A;
+	};
+	//템플릿 함수들
 	void		CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2);
 	Matrix44	CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2);
 	void		CrossProduct(Quaternion* _out, const Matrix44& _refMat, const Quaternion& _refQ);
@@ -38,4 +44,7 @@ namespace MathLib
 	void		InitUnitMatrix44(Matrix44* _Out);
 	Plane		MakePlane(const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
 	void		MakePlane(Plane* _Out, const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
+	void		MakePlaneWithMat(std::span<Plane>* _Planearr, const Matrix44& _Mat);
+	float		GetInvSqrt(const float& _ref);
+	Quaternion	GetNormal(const Quaternion& _ref);
 };

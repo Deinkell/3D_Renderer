@@ -2,19 +2,21 @@
 
 #include "Vector3.h"
 #include "Color32.h"
+#include "LinearColor.h"
 
 struct Vertex
 {
 public:
-	Vector3 Pos;
-	Color32 Color;	
+	Quaternion Pos;
+	LinearColor Color;
+	float U, V;
 
 public:
 	Vertex() = default;
-	FORCEINLINE Vertex(const Vector3& _Pos, const Color32& _Color)
-	: Pos(_Pos), Color(_Color){};
-	FORCEINLINE Vertex(Vector3&& _Pos, Color32&& _Color, bool&& _CalcPixcel)
-	: Pos(std::move(_Pos)), Color(std::move(_Color)) {};
+	FORCEINLINE Vertex(const Quaternion& _Pos, const LinearColor& _Color, const float _U, const float _V)
+	: Pos(_Pos), Color(_Color), U(_U), V(_V){};
+	FORCEINLINE Vertex(Quaternion&& _Pos, LinearColor&& _Color, const float&& _U, const float&& _V)
+	: Pos(std::move(_Pos)), Color(std::move(_Color)), U(std::move(_U)), V(std::move(_V)) {};
 	~Vertex() = default;
 
 public:
@@ -29,9 +31,26 @@ public:
 
 		return *this;
 	}
+	
 
 public:
-	FORCEINLINE Vector3 GetNormalVec() { return std::move(Pos.GetNormalVector()); }
-	FORCEINLINE UINT32 GetColorValue() { return std::move(Color.GetColorRef()); }
+	FORCEINLINE Quaternion GetNormalVec() { return std::move(Pos.GetNormal()); }
 };
 
+
+////////////////Vertex global operator/////////////////
+
+FORCEINLINE constexpr Vertex operator*(const Vertex& _ref, const float& _ratio)
+{
+	return std::move(Vertex(_ref.Pos * _ratio, _ref.Color * _ratio, _ref.U * _ratio, _ref.V * _ratio));
+}
+
+FORCEINLINE constexpr Vertex operator*(const float& _ratio, const Vertex& _ref)
+{
+	return std::move(Vertex(_ref.Pos * _ratio, _ref.Color * _ratio, _ref.U * _ratio, _ref.V * _ratio));
+}
+
+FORCEINLINE constexpr Vertex operator+(const Vertex& _ref1, const Vertex& _ref2)
+{
+	return std::move(Vertex(_ref1.Pos + _ref2.Pos, _ref1.Color + _ref2.Color, _ref1.U + _ref2.U, _ref1.V + _ref2.V));
+}

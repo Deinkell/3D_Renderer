@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <math.h>
-#include "MathLib.h"
 #include <span>
 
 namespace MathLib
@@ -28,7 +27,6 @@ namespace MathLib
 		_out->mat44[3][3] = (_ref1.mat44[3][0] * _ref2.mat44[0][3]) + (_ref1.mat44[3][1] * _ref2.mat44[1][3]) + (_ref1.mat44[3][2] * _ref2.mat44[2][3]) + (_ref1.mat44[3][3] * _ref2.mat44[3][3]);
 
 	};
-
 	Matrix44 MathLib::CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2)
 	{
 		Matrix44 result;
@@ -53,7 +51,6 @@ namespace MathLib
 		result.mat44[3][3] = (_ref1.mat44[3][0] * _ref2.mat44[0][3]) + (_ref1.mat44[3][1] * _ref2.mat44[1][3]) + (_ref1.mat44[3][2] * _ref2.mat44[2][3]) + (_ref1.mat44[3][3] * _ref2.mat44[3][3]);
 		return result;
 	};
-
 	void MathLib::CrossProduct(Quaternion* _out, const Matrix44& _refMat, const Quaternion& _refQ)
 	{
 		_out->X = (_refQ.X * _refMat.mat44[0][0]) + (_refQ.Y * _refMat.mat44[1][0]) + (_refQ.Z * _refMat.mat44[2][0]) + (_refQ.W * _refMat.mat44[3][0]);
@@ -61,7 +58,6 @@ namespace MathLib
 		_out->Z = (_refQ.X * _refMat.mat44[0][2]) + (_refQ.Y * _refMat.mat44[1][2]) + (_refQ.Z * _refMat.mat44[2][2]) + (_refQ.W * _refMat.mat44[3][2]);
 		_out->W = (_refQ.X * _refMat.mat44[0][3]) + (_refQ.Y * _refMat.mat44[1][3]) + (_refQ.Z * _refMat.mat44[2][3]) + (_refQ.W * _refMat.mat44[3][3]);
 	};
-
 	Quaternion MathLib::CrossProduct(const Matrix44& _refMat, const Quaternion& _refQ)
 	{
 		return std::move(Quaternion(
@@ -71,14 +67,12 @@ namespace MathLib
 			, ((_refQ.X * _refMat.mat44[0][3]) + (_refQ.Y * _refMat.mat44[1][3]) + (_refQ.Z * _refMat.mat44[2][3]) + (_refQ.W * _refMat.mat44[3][3]))));
 
 	};
-
 	void MathLib::CrossProduct(Vector3* _out, const Vector3& _ref1, const Vector3& _ref2)
 	{
 		_out->X = (_ref1.Y * _ref2.Z) - (_ref1.Z * _ref2.Y);
 		_out->Y = (_ref1.Z * _ref2.X) - (_ref1.X * _ref2.Z);
 		_out->Z = (_ref1.X * _ref2.Y) - (_ref1.Y * _ref2.X);
 	};
-
 	Vector3 MathLib::CrossProduct(const Vector3& _ref1, const Vector3& _ref2)
 	{
 		return std::move(Vector3(
@@ -90,12 +84,10 @@ namespace MathLib
 	{
 		return std::move(((_ref1.X * _ref2.X) + (_ref1.Y * _ref2.Y) + (_ref1.Z * _ref2.Z)));
 	};
-
 	float MathLib::GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2)
 	{
 		return std::move(acos((DotProduct(_ref1, _ref2)) / (_ref1.GetVectorLength() * _ref2.GetVectorLength())));
 	};
-
 	void MathLib::MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate)
 	{
 		//Z와 Y의 회전값 적용 위치 변경, Z->Y, Y->Z, UpVector가 Z축이 되도록 함 : 입력값을 Y와 Z값을 변경하여 받음(내부계산식은 동일)
@@ -176,7 +168,7 @@ namespace MathLib
 		_Out->mat44[1][1] = 1.f;
 		_Out->mat44[2][2] = 1.f;
 		_Out->mat44[3][3] = 1.f;
-	}
+	};
 	Plane MathLib::MakePlane(const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3)
 	{
 		Vector3 tmp1(_ref2.X - _ref1.X, _ref2.Y - _ref1.Y, _ref2.Z - _ref1.Z);
@@ -195,4 +187,71 @@ namespace MathLib
 
 		_Out->a = tmp1.X; _Out->b = tmp1.Y; _Out->c = tmp1.Z; _Out->d = D;
 	};
+	void MathLib::MakePlaneWithMat(std::span<Plane>* _Planearr, const Matrix44& _Mat)
+	{
+		if (_Planearr == nullptr || _Planearr->size() != 6)
+			return;
+
+		int i(0);
+		for (auto iter = _Planearr->begin(); iter != _Planearr->end(); i++)
+		{
+			//+x,-x,+y,-y,+z,-z 순으로 생성
+			iter->a = -(_Mat.mat44[0][3] + _Mat.mat44[0][i]);
+			iter->b = -(_Mat.mat44[1][3] + _Mat.mat44[1][i]);
+			iter->c = -(_Mat.mat44[2][3] + _Mat.mat44[2][i]);
+			iter->d = -(_Mat.mat44[3][3] + _Mat.mat44[3][i]);
+			iter++;
+
+			iter->a = -(_Mat.mat44[0][3] - _Mat.mat44[0][i]);
+			iter->b = -(_Mat.mat44[1][3] - _Mat.mat44[1][i]);
+			iter->c = -(_Mat.mat44[2][3] - _Mat.mat44[2][i]);
+			iter->d = -(_Mat.mat44[3][3] - _Mat.mat44[3][i]);
+			iter++;
+		}
+	};
+	float MathLib::GetInvSqrt(const float& _ref)
+	{
+		// Performs two passes of Newton-Raphson iteration on the hardware estimate
+		//    v^-0.5 = x
+		// => x^2 = v^-1
+		// => 1/(x^2) = v
+		// => F(x) = x^-2 - v
+		//    F'(x) = -2x^-3
+
+		//    x1 = x0 - F(x0)/F'(x0)
+		// => x1 = x0 + 0.5 * (x0^-2 - Vec) * x0^3
+		// => x1 = x0 + 0.5 * (x0 - Vec * x0^3)
+		// => x1 = x0 + x0 * (0.5 - 0.5 * Vec * x0^2)
+		//
+		// This final form has one more operation than the legacy factorization (X1 = 0.5*X0*(3-(Y*X0)*X0)
+		// but retains better accuracy (namely InvSqrt(1) = 1 exactly).
+
+		const __m128 fOneHalf = _mm_set_ss(0.5f);
+		__m128 Y0, X0, X1, X2, FOver2;
+		float temp;
+
+		Y0 = _mm_set_ss(_ref);
+		X0 = _mm_rsqrt_ss(Y0);	// 1/sqrt estimate (12 bits)
+		FOver2 = _mm_mul_ss(Y0, fOneHalf);
+
+		// 1st Newton-Raphson iteration
+		X1 = _mm_mul_ss(X0, X0);
+		X1 = _mm_sub_ss(fOneHalf, _mm_mul_ss(FOver2, X1));
+		X1 = _mm_add_ss(X0, _mm_mul_ss(X0, X1));
+
+		// 2nd Newton-Raphson iteration
+		X2 = _mm_mul_ss(X1, X1);
+		X2 = _mm_sub_ss(fOneHalf, _mm_mul_ss(FOver2, X2));
+		X2 = _mm_add_ss(X1, _mm_mul_ss(X1, X2));
+
+		_mm_store_ss(&temp, X2);
+		return temp;
+	};//고속 역제곱근 공식 => 1/루트(x)의 값을 넘겨줌
+	Quaternion MathLib::GetNormal(const Quaternion& _ref)
+	{
+		float SrqSz = _ref.X * _ref.X + _ref.Y * _ref.Y + _ref.Z * _ref.Z;
+		SrqSz = GetInvSqrt(SrqSz);
+		
+		return std::move(Quaternion(_ref.X / SrqSz, _ref.Y / SrqSz, _ref.Z / SrqSz, _ref.W / SrqSz));
+	}; 	
 };

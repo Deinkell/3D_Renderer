@@ -139,10 +139,12 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="Index.h" />
+    <ClInclude Include="LinearColor.h" />
     <ClInclude Include="LineFunction2D.h" />
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="Matrix44.h" />
     <ClInclude Include="ObjectMNG.h" />
+    <ClInclude Include="PerspectiveTest.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Proj.h" />
     <ClInclude Include="Quaternion.h" />
@@ -164,10 +166,12 @@
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="Index.cpp" />
+    <ClCompile Include="LinearColor.cpp" />
     <ClCompile Include="LineFunction2D.cpp" />
     <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="Matrix44.cpp" />
     <ClCompile Include="ObjectMNG.cpp" />
+    <ClCompile Include="PerspectiveTest.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Proj.cpp" />
     <ClCompile Include="Quaternion.cpp" />

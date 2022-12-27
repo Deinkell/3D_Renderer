@@ -1,4 +1,5 @@
 #pragma once
+#include "MathLib.h"
 
 struct Quaternion
 {
@@ -7,16 +8,15 @@ public:
 	
 public:
 	FORCEINLINE constexpr Quaternion() : X(0.f), Y(0.f), Z(0.f), W(0.f) {};
-	FORCEINLINE Quaternion(float& _x, float& _y, float& _z, float& _w) : X(_x), Y(_y), Z(_z), W(_w) {};
+	FORCEINLINE Quaternion(const float& _x, const float& _y, const float& _z, const float& _w) 
+	: X(_x), Y(_y), Z(_z), W(_w) {};
 	FORCEINLINE Quaternion(float&& _x, float&& _y, float&& _z, float&& _w)
 	: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)), W(std::move(_w)) {};
-
 	template<typename T> requires std::is_same<Quaternion, T>::value
 	FORCEINLINE Quaternion(T&& _ref) noexcept
 	: X(std::forward<float>(_ref.X)), Y(std::forward<float>(_ref.Y)), Z(std::forward<float>(_ref.Z)), W(std::forward<float>(_ref.W))
 	{};
 	//완벽전달 복사생성자(복사생성, 이동복사생성)
-
 	~Quaternion() = default;
 	//소멸자
 
@@ -38,7 +38,8 @@ public:
 	FORCEINLINE constexpr bool operator==(const Quaternion& _ref);
 
 public:
-	Quaternion GetQuaternion() { return std::move(Quaternion(X, Y, Z, W)); }
+	FORCEINLINE Quaternion GetQuaternion() { return std::move(Quaternion(X, Y, Z, W)); };
+	Quaternion GetNormal(); 
 };
 
 FORCEINLINE constexpr void Quaternion::operator+=(const Quaternion& _ref)

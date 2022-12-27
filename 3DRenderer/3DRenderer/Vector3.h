@@ -40,7 +40,8 @@ public:
 public:
 	Vector3 GetVec3() { return std::move(Vector3(X, Y, Z)); };
 	FORCEINLINE Vector3 GetNormalVector();
-	FORCEINLINE float GetVectorLength() { return std::move((float)sqrt((X * X) + (Y * Y) + (Z * Z)));	}
+	FORCEINLINE float GetVectorLength() { return std::move((float)sqrt((X * X) + (Y * Y) + (Z * Z)));}
+	FORCEINLINE float GetVectorSquredSize() { return std::move(X * X + Y * Y + Z * Z); }
 };
 
 

@@ -9,6 +9,7 @@
 #include <tchar.h>
 #include <time.h>
 
+//커스텀 파일
 #include "DibSection.h"
 #include "Color32.h"
 #include "Vector3.h"
@@ -17,6 +18,7 @@
 #include "Vertex.h"
 #include "Index.h"
 #include "Plane.h"
+#include "LinearColor.h"
 #include "MathLib.h"
 #include "ThreadPool.h"
 #include "ObjectMNG.h"

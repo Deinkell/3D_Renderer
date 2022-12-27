@@ -51,12 +51,12 @@ public:
 FORCEINLINE constexpr bool Color32::operator==(const Color32& InC) const
 {
 	return GetColorRef() == InC.GetColorRef();
-}
+};
 
 FORCEINLINE constexpr bool Color32::operator!=(const Color32& InC) const
 {
 	return GetColorRef() != InC.GetColorRef();
-}
+};
 
 FORCEINLINE constexpr void Color32::operator+=(const Color32& InC)
 {
@@ -64,4 +64,16 @@ FORCEINLINE constexpr void Color32::operator+=(const Color32& InC)
 	G = (BYTE)MathLib::Clamp((BYTE)G + (BYTE)InC.G, 0, 255);
 	B = (BYTE)MathLib::Clamp((BYTE)B + (BYTE)InC.B, 0, 255);
 	A = (BYTE)MathLib::Clamp((BYTE)A + (BYTE)InC.A, 0, 255);
-}
+};
+
+////////////////Color32 global operator/////////////////
+FORCEINLINE Color32 operator* (const Color32& _ref, const float& _ratio)
+{
+	return std::move(Color32(_ref.R * _ratio, _ref.G * _ratio, _ref.B * _ratio, _ref.A * _ratio));
+};
+
+FORCEINLINE Color32 operator* (const float& _ratio, const Color32& _ref)
+{
+	return std::move(Color32(_ref.R * _ratio, _ref.G * _ratio, _ref.B * _ratio, _ref.A * _ratio));
+};
+
