@@ -22,4 +22,5 @@
 #include "MathLib.h"
 #include "ThreadPool.h"
 #include "ObjectMNG.h"
+#include "PerspectiveTest.h"
 #include "Figure_define.h"

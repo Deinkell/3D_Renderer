@@ -10,6 +10,7 @@ class Render
 {
 private:
 	DibSection DibSec; //Dib는 컴포넌트가 아닌 랜더의 필수 맴버변수, 관리를 따로 할곳도 필요도 없기때문
+									//atomic 사용에 대한 테스트 결과 반영 필요
 
 private:
 	std::shared_ptr<ObjectMNG> ObjectMng_Component;

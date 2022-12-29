@@ -24,8 +24,26 @@ void Render::PlaneCulling()
 
 void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, DibSection& _DibSec)
 {
-	Vector3 Vertices[3]{ Vector3(_p1.Pos.X, _p1.Pos.Y, _p1.Pos.Z), 
-						Vector3(_p2.Pos.X, _p2.Pos.Y, _p2.Pos.Z), Vector3(_p3.Pos.X, _p3.Pos.Y, _p3.Pos.Z) };
+	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
+	std::vector<PerspectiveTest> testPlanes = {
+		{TestFuncW0, EdgeFuncW0},
+		{TestFuncNY, EdgeFuncNY},
+		{TestFuncPY, EdgeFuncPY},
+		{TestFuncNX, EdgeFuncNX},
+		{TestFuncPX, EdgeFuncPX},
+		{TestFuncFar, EdgeFuncFar},
+		{TestFuncNear, EdgeFuncNear}
+	};
+
+	for (auto& p : testPlanes)
+		p.ClipTriangles(tmpVertices); //삼각형 클리핑(ndc 공간에서 삼각형 보정진행)
+
+	if (tmpVertices.size() == 0)
+		return;
+
+	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
+						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
+						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
 	MathLib::SortByYvalue(Vertices, Vertices);
 	LineFunction2D LineFunc[3];
 	MathLib::Make2DLinFunction(&LineFunc[0], Vertices[0], Vertices[2]);
@@ -46,7 +64,6 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j <= EndX; j++)
 			{
-				//PlaneCliping 위치
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 		
@@ -65,7 +82,6 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j <= EndX; j++)
 			{
-				//PlaneCliping 위치
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 

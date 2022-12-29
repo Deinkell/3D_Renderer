@@ -17,17 +17,20 @@ public:
 	: Pos(_Pos), Color(_Color), U(_U), V(_V){};
 	FORCEINLINE Vertex(Quaternion&& _Pos, LinearColor&& _Color, const float&& _U, const float&& _V)
 	: Pos(std::move(_Pos)), Color(std::move(_Color)), U(std::move(_U)), V(std::move(_V)) {};
+	FORCEINLINE constexpr Vertex(const Vertex& _ref) : Pos(_ref.Pos), Color(_ref.Color), U(_ref.U), V(_ref.V){};
 	~Vertex() = default;
 
 public:
 	template<typename T> requires std::is_same_v<Vertex, T>
-	FORCEINLINE Vertex operator=(T&& _ref)
+	FORCEINLINE Vertex operator=(T&& _ref) noexcept
 	{
 		if (this == &_ref)
 			return *this;
 
-		Pos = std::forward<Vector3>(_ref.Pos);
-		Color = std::forward<Color32>(_ref.Color);
+		Pos = std::forward<Quaternion>((Quaternion)_ref.Pos);
+		Color = std::forward<LinearColor>((LinearColor)_ref.Color);
+		U = std::forward<float>(_ref.U);
+		V = std::forward<float>(_ref.V);
 
 		return *this;
 	}
