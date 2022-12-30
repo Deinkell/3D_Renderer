@@ -2,7 +2,7 @@
 #include "ThreadPool.h"
 
 ThreadPool::ThreadPool(size_t _num_threads)
-: num_threads(num_threads), stop_all(false)
+: num_threads(_num_threads), stop_all(false)
 {
 	worker_threads.reserve(num_threads);
 	for (size_t i = 0; i < num_threads; i++)

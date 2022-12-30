@@ -23,32 +23,51 @@ public:
 	~ThreadPool();
 
 public:
+	//template<class F, class... Args>
+	//std::future<std::invoke_result_t<F, Args...>> EnqueueJob(F&& f, Args&&... args);
 	template<class F, class... Args>
-	std::future<typename std::invoke_result<F(Args...)>::type> EnqueueJob(F&& f, Args&&... args);
+	FORCEINLINE void EnqueueJob(F&& f, Args&&... args);
 
 private:
 	void WorkerThread();
 };
 
-template<class F, class ...Args>
-FORCEINLINE std::future<typename std::invoke_result<F(Args...)>::type> ThreadPool::EnqueueJob(
-	F&& f, Args && ...args)
-{ 
+template<class F, class... Args>
+FORCEINLINE void ThreadPool::EnqueueJob(F&& f, Args&&... args)
+{
+	if (stop_all)
+		throw std::runtime_error("ThreadPool 사용 중지됨");
+
+	auto job = std::bind(std::forward<F>(f), std::forward<Args>(args)...);		
+	{
+		std::lock_guard<std::mutex> lock(m_job_q);
+		jobs.push([job]() {job(); });
+	}
+	cv_job_q.notify_one();
+};
+
+/* future 객체 작성 오류버전, 수정필요(리턴값 획득가능한 함수버전)
+template<class F, class... Args>
+FORCEINLINE std::future<std::invoke_result_t<F, Args...>> ThreadPool::EnqueueJob(
+	F&& f, Args&&... args)
+{ 	
 	if (stop_all)
 		throw std::runtime_error("ThreadPool 사용 중지됨");
 	
-	using return_type = typename std::invoke_result<F(Args...)>::type;
+	using return_type = std::invoke_result<F, Args...>::type;	
+	
+	auto job = std::make_shared<std::packaged_task<return_type()>>(
+	std::bind(std::forward<F>(f), std::forward<Args>(args)...));
 
 	//auto job = std::make_shared<std::packaged_task<return_type()>>(
-	//	std::bind(std::forward<F>(f), std::forward<Args>(args)...));
-
-	auto job = std::make_shared<std::packaged_task<return_type()>>([args...]() {f(std::forward<Args>(args)...); });
-
+	//	[&args...]() { f(std::forward<Args>(args)...); });
+	
 	std::future<return_type> job_result_future = job->get_future();
 	{
 		std::lock_guard<std::mutex> lock(m_job_q);
 		jobs.push([job]() {(*job)(); });
 	}
 	cv_job_q.notify_one();
-	return job_result_future;	
+	return job_result_future;			
 }
+*/

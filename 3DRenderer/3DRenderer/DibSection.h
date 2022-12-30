@@ -33,6 +33,8 @@ public:
 	{
 		return _iy * rtClient_.right + _ix;
 	}
+	FORCEINLINE int GetClientX() { return rtClient_.right; }
+	FORCEINLINE int GetClientY() { return rtClient_.bottom; }
 	void DotPixel(const int& _ix, const int& _iy, const Color32& _Cl);
 
 public:	

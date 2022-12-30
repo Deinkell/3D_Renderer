@@ -16,9 +16,10 @@ public:
 public:
 	FORCEINLINE constexpr size_t GetObjectVectorSize() { return ObjectVectors.size(); }
 	FORCEINLINE constexpr FigureType GetObjectType(int& _idx) { return ObjectVectors[_idx]->GetFigureType(); }
-	FORCEINLINE std::shared_ptr<Figure_Interface> GetObject(int& _idx) { return ObjectVectors[_idx]; }
+	FORCEINLINE std::shared_ptr<Figure_Interface> GetObject(const int& _idx) { return ObjectVectors[_idx]; }
 
 public:
-	void CreateObject(FigureType& _type, Vector3 _Pos = Vector3());
+	void CreateObject(const FigureType& _type, const Vector3 _Pos = Vector3());
+	void Update(float _elapsedTime);
 };
 

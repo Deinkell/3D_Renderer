@@ -4,15 +4,38 @@
 
 void FrameWork::Initialize()
 {
-	Dib.InitializeDib();
-}
+	Unit_Render = std::make_shared<Render>();
+	Obj_Manager = std::make_shared<ObjectMNG>();
+	Unit_hreadPool = std::make_shared<ThreadPool>(4);
+
+	Unit_Render->SetObjectMng(Obj_Manager);
+	Unit_Render->SetThreadPool(Unit_hreadPool);
+	Obj_Manager->CreateObject(FigureType::Sphere_type);
+};
 
 void FrameWork::Ontick()
 {
-	static Color32 Cor(255,255,0,0);
+	QueryPerformanceFrequency(&timer);
+	QueryPerformanceCounter(&start);	
+	DeltaTime = (start.QuadPart - end.QuadPart) / (float)timer.QuadPart;
 
-	for (int i = 0; i < 100; i++)
-		Dib.DotPixel(200 + i, 200 + i, test());	
+	if (DeltaTime <= 0)
+		DeltaTime = 0;
 
-	Dib.BitBltDibSection();
-}
+	Update(DeltaTime);
+	OnRender(DeltaTime);
+
+	QueryPerformanceCounter(&end);
+};
+
+void FrameWork::Update(float _elapsedtime)
+{
+	Obj_Manager->Update(_elapsedtime);
+};
+
+void FrameWork::OnRender(float _elapsedtime)
+{
+	Unit_Render->OnRender(_elapsedtime);
+};
+
+

@@ -141,8 +141,7 @@ namespace MathLib
 	};
 	void MathLib::SortByYvalue(Vector3* _out, const std::span<Vector3>& _In)
 	{
-		auto tmp = std::make_unique<Vector3[]>(_In.size());
-		memcpy(&tmp, &_In, _In.size());
+		Vector3 tmp[]{_In[0], _In[1], _In[2]};	
 
 		int i = _In.size() - 1, j = 0;
 		while (i != 0)

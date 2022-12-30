@@ -6,7 +6,7 @@ ObjectMNG::ObjectMNG()
 	FlyWeightObject.push_back(std::make_shared<Sphere>());
 }
 
-void ObjectMNG::CreateObject(FigureType& _type, Vector3 _Pos)
+void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
 {	
 	size_t Size = FlyWeightObject.size();
 	
@@ -20,4 +20,8 @@ void ObjectMNG::CreateObject(FigureType& _type, Vector3 _Pos)
 			//프로토타입패턴 이용->텍스쳐를 입히게되면 경량패턴으로 교체
 		}
 	}
+}
+
+void ObjectMNG::Update(float _elapsedTime)
+{
 }

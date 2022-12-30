@@ -6,12 +6,19 @@ Render::Render()
 	DibSec.InitializeDib();
 }
 
-void Render::OnRender()
+void Render::OnRender(float _elapsedTime)
 {
 	if (ThreadPool_Component == nullptr || ObjectMng_Component == nullptr)
 		return;
 
+	//ThreadPool_Component->EnqueueJob(&RasterizePolygon, , , , DibSec);
+	Vertex tmp[3];
+	tmp[0].Pos = Quaternion(10.f, 10.f, 0.f, 1.f); tmp[0].Color.G = 1.f;
+	tmp[1].Pos = Quaternion(20.f, 30.f, 0.f, 1.f);
+	tmp[2].Pos = Quaternion(40.f, 20.f, 0.f, 1.f);
 
+	ThreadPool_Component->EnqueueJob([this](Vertex tmp[]) { RasterizePolygon(tmp[0], tmp[1], tmp[2]); }, tmp);
+	DibSec.BitBltDibSection();
 }
 
 void Render::BackSpaceCuling()
@@ -22,8 +29,9 @@ void Render::PlaneCulling()
 {
 }
 
-void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, DibSection& _DibSec)
+void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3)
 {
+	/*
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
 	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
@@ -44,20 +52,29 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
+	*/
+/**************임시****************/
+	Vector3 Vertices[3]{ Vector3(_p1.Pos.X, _p1.Pos.Y, _p1.Pos.Z),
+						Vector3(_p2.Pos.X, _p2.Pos.Y, _p2.Pos.Z),
+						Vector3(_p3.Pos.X, _p3.Pos.Y, _p3.Pos.Z) };
+/**************임시****************/
+	int CorrectionX = DibSec.GetClientX() / 2;
+	int CorrectionY = DibSec.GetClientY() / 2;
+
 	MathLib::SortByYvalue(Vertices, Vertices);
 	LineFunction2D LineFunc[3];
 	MathLib::Make2DLinFunction(&LineFunc[0], Vertices[0], Vertices[2]);
 	MathLib::Make2DLinFunction(&LineFunc[1], Vertices[0], Vertices[1]);
 	MathLib::Make2DLinFunction(&LineFunc[2], Vertices[1], Vertices[2]);
 
-	for (int i = Vertices[2].Y; i <= Vertices[0].Y; i++)
+	for (int i = Vertices[0].Y; i <= Vertices[2].Y; i++)
 	{
 		if (i <= Vertices[1].Y)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
 		{
 			float StartX = LineFunc[0].GetXValueByPoint(Vertices[0].X, i), 
 					EndX = LineFunc[1].GetXValueByPoint(Vertices[0].X, i);
 
-			if (StartX < EndX)
+			if (StartX > EndX)
 				MathLib::SwapElement(&StartX, &EndX);
 			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
 			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
@@ -67,7 +84,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 		
-				_DibSec.DotPixel(j, i, _p1.Color.ToColor32());
+				DibSec.DotPixel(j + CorrectionX, i + CorrectionY, _p1.Color.ToColor32());
 			}
 		}
 		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
@@ -75,7 +92,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			float StartX = LineFunc[0].GetXValueByPoint(Vertices[2].X, i),
 					EndX = LineFunc[2].GetXValueByPoint(Vertices[2].X, i);
 
-			if (StartX < EndX)
+			if (StartX > EndX)
 				MathLib::SwapElement(&StartX, &EndX);
 			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
 			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
@@ -85,7 +102,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 
-				_DibSec.DotPixel(j, i, _p1.Color.ToColor32());
+				DibSec.DotPixel(j + CorrectionX, i + CorrectionY, _p1.Color.ToColor32());
 			}
 		}
 	}

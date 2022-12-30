@@ -30,7 +30,7 @@ public:
 	: Position(_ref.Position), Rotation(_ref.Rotation), Scale(_ref.Scale),
 		FigureMat44(_ref.FigureMat44), Vertices(_ref.Vertices), 
 		Indices(_ref.Indices), Figure_type(_ref.Figure_type) {};
-	FORCEINLINE Figure_Interface(const Figure_Interface&& _ref) 
+	FORCEINLINE Figure_Interface(Figure_Interface&& _ref) noexcept
 	:	Position(std::move(_ref.Position)), Rotation(std::move(_ref.Rotation)), Scale(std::move(_ref.Scale)),
 		FigureMat44(std::move(_ref.FigureMat44)), Vertices(std::move(_ref.Vertices)),
 		Indices(std::move(_ref.Indices)), Figure_type(std::move(_ref.Figure_type)) {};
