@@ -156,6 +156,7 @@
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="DepthBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="DepthBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3DRenderer.rc" />

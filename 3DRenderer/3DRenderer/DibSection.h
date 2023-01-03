@@ -35,6 +35,8 @@ public:
 	}
 	FORCEINLINE int GetClientX() { return rtClient_.right; }
 	FORCEINLINE int GetClientY() { return rtClient_.bottom; }
+	FORCEINLINE bool CheckIntersectClientRect(const int& _x, const int& _y)
+	{	return (_x < 0 || _x > rtClient_.right || _y < 0 || _y > rtClient_.bottom) ? false : true;	}
 	void DotPixel(const int& _ix, const int& _iy, const Color32& _Cl);
 
 public:	

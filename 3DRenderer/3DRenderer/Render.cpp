@@ -4,6 +4,13 @@
 Render::Render()
 {
 	DibSec.InitializeDib();
+	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());
+	InitializeCriticalSection(&CRSC);
+}
+
+Render::~Render()
+{
+	DeleteCriticalSection(&CRSC);
 }
 
 void Render::OnRender(float _elapsedTime)
@@ -11,22 +18,39 @@ void Render::OnRender(float _elapsedTime)
 	if (ThreadPool_Component == nullptr || ObjectMng_Component == nullptr)
 		return;
 
-	//ThreadPool_Component->EnqueueJob(&RasterizePolygon, , , , DibSec);
 	Vertex tmp[3];
-	tmp[0].Pos = Quaternion(10.f, 10.f, 0.f, 1.f); tmp[0].Color.G = 1.f;
-	tmp[1].Pos = Quaternion(20.f, 30.f, 0.f, 1.f);
-	tmp[2].Pos = Quaternion(40.f, 20.f, 0.f, 1.f);
+	tmp[0].Pos = Quaternion(10.f, 10.f, 0.1f, 1.f); tmp[0].Color.G = 1.f;
+	tmp[1].Pos = Quaternion(20.f, 30.f, 0.1f, 1.f);
+	tmp[2].Pos = Quaternion(40.f, 20.f, 0.1f, 1.f);
+
+	Vertex tmp1[3];
+	tmp1[0].Pos = Quaternion(30.f, 10.f, 0.1f, 1.f); tmp1[0].Color.B = 1.f;
+	tmp1[1].Pos = Quaternion(40.f, 30.f, 0.1f, 1.f);
+	tmp1[2].Pos = Quaternion(60.f, 20.f, 0.1f, 1.f);
 
 	ThreadPool_Component->EnqueueJob([this](Vertex tmp[]) { RasterizePolygon(tmp[0], tmp[1], tmp[2]); }, tmp);
+	ThreadPool_Component->EnqueueJob([this](Vertex tmp[]) { RasterizePolygon(tmp[0], tmp[1], tmp[2]); }, tmp1);
+
 	DibSec.BitBltDibSection();
+	DepthBuf.ClearDepthBuffer();
 }
 
 void Render::BackSpaceCuling()
 {
 }
 
-void Render::PlaneCulling()
+Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _W)
 {
+	Vector3 u = _p3p1Vec, v = _p3p2Vec;
+	float udotv = MathLib::DotProduct(u.X, u.Y, v.X, v.Y),
+		  wdotv = MathLib::DotProduct(_W.X, _W.Y, v.X, v.Y),
+		  wdotu = MathLib::DotProduct(_W.X, _W.Y, u.X, u.Y),
+		  uu = MathLib::DotProduct(u.X, u.Y, u.X, u.Y),
+		  vv = MathLib::DotProduct(v.X, v.Y, v.X, v.Y);
+
+	float t = (wdotu * udotv - wdotv * uu) / ((udotv * udotv) - uu * vv);
+	float s = (wdotv*udotv - wdotu*vv) / (udotv*udotv - uu*vv);
+	return std::move(Vector3(s, t, 1 - s - t));
 }
 
 void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3)
@@ -58,8 +82,8 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 						Vector3(_p2.Pos.X, _p2.Pos.Y, _p2.Pos.Z),
 						Vector3(_p3.Pos.X, _p3.Pos.Y, _p3.Pos.Z) };
 /**************임시****************/
-	int CorrectionX = DibSec.GetClientX() / 2;
-	int CorrectionY = DibSec.GetClientY() / 2;
+	int CorrectionX = DibSec.GetClientX() / 2, CorrectionY = DibSec.GetClientY() / 2;
+	int ResultX, ResultY;
 
 	MathLib::SortByYvalue(Vertices, Vertices);
 	LineFunction2D LineFunc[3];
@@ -81,10 +105,24 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j <= EndX; j++)
 			{
+				ResultX = j + CorrectionX; 
+				ResultY = i + CorrectionY;
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
-		
-				DibSec.DotPixel(j + CorrectionX, i + CorrectionY, _p1.Color.ToColor32());
+				if(!DibSec.CheckIntersectClientRect(ResultX, ResultY))
+					continue;
+
+				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
+													Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
+
+				float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
+				
+				EnterCriticalSection(&CRSC);
+				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
+					continue;
+				LeaveCriticalSection(&CRSC);
+				
+				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());		
 			}
 		}
 		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
@@ -99,10 +137,24 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j <= EndX; j++)
 			{
+				ResultX = j + CorrectionX;
+				ResultY = i + CorrectionY;
 				//Zbuffer 그리기 확인위치
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
+				if (!DibSec.CheckIntersectClientRect(ResultX, ResultY))
+					continue;
 
-				DibSec.DotPixel(j + CorrectionX, i + CorrectionY, _p1.Color.ToColor32());
+				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2],
+												Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
+
+				float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
+
+				EnterCriticalSection(&CRSC);
+				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
+					continue;
+				LeaveCriticalSection(&CRSC);
+				
+				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());				
 			}
 		}
 	}

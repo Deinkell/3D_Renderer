@@ -37,6 +37,9 @@
     <Filter Include="Global\Proj&amp;Frustum">
       <UniqueIdentifier>{bedc9b1c-4094-4852-9caa-7d3fa1123bcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\DepthBuffer">
+      <UniqueIdentifier>{b9701887-4667-4416-8368-a086709164df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="LinearColor.h">
       <Filter>Global\struct</Filter>
     </ClInclude>
+    <ClInclude Include="DepthBuffer.h">
+      <Filter>Global\DepthBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DRenderer.cpp">
@@ -187,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="LinearColor.cpp">
       <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthBuffer.cpp">
+      <Filter>Global\DepthBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

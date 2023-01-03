@@ -39,14 +39,14 @@ void DibSection::InitializeDib()
 }
 
 void DibSection::ClearDib(const Color32& _color)
-{
-	Color32* dest = ScreenBuffer_;
+{	
 	UINT32 totalCount = rtClient_.right * rtClient_.bottom;
-	memset(ScreenBuffer_, 0, totalCount * sizeof(Color32));
+	memset(ScreenBuffer_, _color.ColorValue, totalCount * sizeof(Color32));
 }
 
 void DibSection::BitBltDibSection()
 {
 	BitBlt(hScreenDC_, 0, 0, rtClient_.right, rtClient_.bottom, hMemoryDC_, 0, 0, SRCCOPY);	
+	ClearDib(Color32(255, 255, 255, 255));
 }
 

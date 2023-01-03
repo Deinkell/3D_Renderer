@@ -84,6 +84,10 @@ namespace MathLib
 	{
 		return std::move(((_ref1.X * _ref2.X) + (_ref1.Y * _ref2.Y) + (_ref1.Z * _ref2.Z)));
 	};
+	float DotProduct(const float& _x1, const float& _y1, const float& _x2, const float& _y2)
+	{
+		return std::move(_x1*_x2 + _y1*_y2);
+	};
 	float MathLib::GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2)
 	{
 		return std::move(acos((DotProduct(_ref1, _ref2)) / (_ref1.GetVectorLength() * _ref2.GetVectorLength())));
