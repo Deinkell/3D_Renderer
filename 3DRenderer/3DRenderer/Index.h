@@ -8,9 +8,9 @@ public:
 public:
 	Index() = default;
 	FORCEINLINE constexpr Index(const int& _ref1, const int& _ref2, const int& _ref3)
-	: _0(_ref1), _1(_ref2), _2(_ref2){};
+	: _0(_ref1), _1(_ref2), _2(_ref3){};
 	FORCEINLINE Index(int&& _ref1, int&& _ref2, int&& _ref3, bool&& _CheckingCalc)
-	: _0(std::move(_ref1)), _1(std::move(_ref2)), _2(std::move(_ref2)) {};
+	: _0(std::move(_ref1)), _1(std::move(_ref2)), _2(std::move(_ref3)) {};
 	~Index() = default;
 
 public:

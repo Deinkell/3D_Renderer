@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <timeapi.h>
 #include "FrameWork.h"
 #include "Figure_Interface.h"
 
@@ -11,21 +12,22 @@ void FrameWork::Initialize()
 	Unit_Render->SetObjectMng(Obj_Manager);
 	Unit_Render->SetThreadPool(Unit_hreadPool);
 	Obj_Manager->CreateObject(FigureType::Sphere_type);
+
+	QueryPerformanceFrequency(&Timer);
+	TimeScale = 1.0 / Timer.QuadPart;
+	QueryPerformanceCounter(&End);
 };
 
 void FrameWork::Ontick()
 {
-	QueryPerformanceFrequency(&timer);
-	QueryPerformanceCounter(&start);	
-	DeltaTime = (start.QuadPart - end.QuadPart) / (float)timer.QuadPart;
-
-	if (DeltaTime <= 0)
-		DeltaTime = 0;
+	QueryPerformanceCounter(&Start);
+	DeltaTime = (Start.QuadPart - End.QuadPart) * TimeScale;
 
 	Update(DeltaTime);
 	OnRender(DeltaTime);
+	RenderFPS(DeltaTime);
 
-	QueryPerformanceCounter(&end);
+	End = Start;
 };
 
 void FrameWork::Update(float _elapsedtime)
@@ -37,5 +39,10 @@ void FrameWork::OnRender(float _elapsedtime)
 {
 	Unit_Render->OnRender(_elapsedtime);
 };
+
+void FrameWork::RenderFPS(float _elapsedtime)
+{
+	Unit_Render->RenderFPS(_elapsedtime);
+}
 
 

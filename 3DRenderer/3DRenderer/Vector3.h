@@ -56,17 +56,16 @@ FORCEINLINE constexpr void Vector3::operator+= (const Vector3& _ref)
 FORCEINLINE constexpr bool Vector3::operator==(const Vector3& _ref)
 {
 	return !(X == _ref.X) ? false : !(Y == _ref.Y) ? false : !(Z == _ref.Z) ? false : true;
-}
-
+};
 FORCEINLINE Vector3 Vector3::GetNormalVector()
 {
-	float size = (float)sqrt((X * X) + (Y * Y) + (Z * Z));
+	float size = std::move(X * X + Y * Y + Z * Z);
 	
 	if (size == 0)
 		return std::move(Vector3());
 
 	return std::move(Vector3((X / size), (Y / size), (Z / size)));
-}
+};
 
 ////////////////Vec3 global operator/////////////////
 FORCEINLINE Vector3 operator+ (const Vector3& _ref1, const Vector3& _ref2)

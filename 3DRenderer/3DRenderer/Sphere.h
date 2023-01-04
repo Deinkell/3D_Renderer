@@ -18,5 +18,6 @@ public:
 
 public:
 	void SubDivide(); //20면체를 쪼개서 구형태로 만들기 위한 작업
+	void SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _P3);
 };
 

@@ -15,8 +15,8 @@ protected:
 	Vector3 Scale{1.f, 1.f, 1.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
 	Matrix44 FigureMat44;
-	std::shared_ptr<std::vector<Vertex>> Vertices;
-	std::shared_ptr<std::vector<Index>> Indices;
+	std::shared_ptr<std::vector<Vertex>> Vertices = std::make_shared<std::vector<Vertex>>();
+	std::shared_ptr<std::vector<Index>> Indices = std::make_shared<std::vector<Index>>();
 	FigureType Figure_type;
 
 public:

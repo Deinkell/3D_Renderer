@@ -4,6 +4,8 @@
 ObjectMNG::ObjectMNG()
 {
 	FlyWeightObject.push_back(std::make_shared<Sphere>());
+	for(auto i : FlyWeightObject)
+		i->Init();
 }
 
 void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
@@ -24,4 +26,6 @@ void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
 
 void ObjectMNG::Update(float _elapsedTime)
 {
+	for (auto i : ObjectVectors)
+		i->Ontick(_elapsedTime);
 }

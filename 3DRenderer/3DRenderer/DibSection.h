@@ -21,6 +21,9 @@ private:
 	Color32* ScreenBuffer_ = nullptr;
 
 	std::unique_ptr<BYTE*> pBits_;
+	TCHAR Title[128];
+	double accumulate_ElapsedTime;
+	int CountCallFps;
 
 public:
 	DibSection() = default;
@@ -43,5 +46,6 @@ public:
 	void InitializeDib();
 	void ClearDib(const Color32& _color = Color32(255,255,255,0));
 	void BitBltDibSection();	
+	void SetWindowsTitleFPS(const float& _elapsedTime);
 };
 

@@ -32,6 +32,14 @@ void Sphere::Init()
 	for (int i = 0; i < 20; ++i)
 		Indices->push_back(tmpIndeces[i]);
 	//20면체 생성
+	SubDivide();
+	//구로 분할
+
+	for(auto &i : *Indices)
+		SetNormal((*Vertices)[i._0], (*Vertices)[i._1], (*Vertices)[i._2]);
+
+	for (auto& i : *Vertices)
+		i.NormalVec = i.NormalVec.GetNormalVector();
 }
 
 void Sphere::Move(time_t _time)
@@ -49,4 +57,17 @@ void Sphere::Ontick(time_t _time)
 
 void Sphere::SubDivide()
 {
+
+}
+
+void Sphere::SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _p3)
+{
+	Vector3 p1p2 = Vector3(_p2.Pos.X, _p2.Pos.Y, _p2.Pos.Z) - Vector3(_p1.Pos.X, _p1.Pos.Y, _p1.Pos.Z);
+	Vector3 p1p3 = Vector3(_p3.Pos.X, _p3.Pos.Y, _p3.Pos.Z) - Vector3(_p1.Pos.X, _p1.Pos.Y, _p1.Pos.Z);
+	Vector3 Cross = MathLib::CrossProduct(p1p2, p1p3);
+	Cross = Cross.GetNormalVector();
+
+	_p1.NormalVec += Cross;
+	_p2.NormalVec += Cross;
+	_p3.NormalVec += Cross;
 }

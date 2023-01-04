@@ -22,6 +22,8 @@ void DibSection::InitializeDib()
 	GetClientRect(hWnd_, &rtClient_);
 	iHeight_ = rtClient_.bottom;
 	iWidth_ = rtClient_.right;
+	accumulate_ElapsedTime = 0;
+	CountCallFps = 0;
 
 	hMemoryDC_ = CreateCompatibleDC(hScreenDC_);
 
@@ -48,5 +50,19 @@ void DibSection::BitBltDibSection()
 {
 	BitBlt(hScreenDC_, 0, 0, rtClient_.right, rtClient_.bottom, hMemoryDC_, 0, 0, SRCCOPY);	
 	ClearDib(Color32(255, 255, 255, 255));
+}
+
+void DibSection::SetWindowsTitleFPS(const float& _elapsedTime)
+{
+	accumulate_ElapsedTime += _elapsedTime;
+	CountCallFps++;
+
+	if (accumulate_ElapsedTime > 0.5f)
+	{
+		_stprintf_s(Title, _T("3DRenderer : [%.f fps]"), 1.f * CountCallFps / accumulate_ElapsedTime );
+		::SetWindowText(hWnd_, Title);
+		accumulate_ElapsedTime = 0;
+		CountCallFps = 0;
+	}	
 }
 

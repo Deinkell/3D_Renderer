@@ -255,6 +255,6 @@ namespace MathLib
 		float SrqSz = _ref.X * _ref.X + _ref.Y * _ref.Y + _ref.Z * _ref.Z;
 		SrqSz = GetInvSqrt(SrqSz);
 		
-		return std::move(Quaternion(_ref.X / SrqSz, _ref.Y / SrqSz, _ref.Z / SrqSz, _ref.W / SrqSz));
+		return std::move(Quaternion(_ref.X * SrqSz, _ref.Y * SrqSz, _ref.Z * SrqSz, _ref.W * SrqSz));
 	}; 	
 };

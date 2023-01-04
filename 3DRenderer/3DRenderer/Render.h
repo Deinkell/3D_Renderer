@@ -32,5 +32,7 @@ public:
 	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _w);
 	void RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3);
 	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김, Z버퍼 연산부분 추후 추가	
+	Color32 MakePhongShader(const Vector3& _LightPos, const Vector3& _PixelNormal);
+	void RenderFPS(float _elapsedTime);
 };
 

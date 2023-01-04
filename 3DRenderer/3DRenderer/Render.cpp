@@ -106,8 +106,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			for (int j = StartX; j <= EndX; j++)
 			{
 				ResultX = j + CorrectionX; 
-				ResultY = i + CorrectionY;
-				//Zbuffer 그리기 확인위치
+				ResultY = i + CorrectionY;				
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 				if(!DibSec.CheckIntersectClientRect(ResultX, ResultY))
 					continue;
@@ -120,6 +119,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 				EnterCriticalSection(&CRSC);
 				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
 					continue;
+				//깊이버퍼 체크
 				LeaveCriticalSection(&CRSC);
 				
 				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());		
@@ -138,8 +138,7 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 			for (int j = StartX; j <= EndX; j++)
 			{
 				ResultX = j + CorrectionX;
-				ResultY = i + CorrectionY;
-				//Zbuffer 그리기 확인위치
+				ResultY = i + CorrectionY;				
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 				if (!DibSec.CheckIntersectClientRect(ResultX, ResultY))
 					continue;
@@ -152,10 +151,21 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 				EnterCriticalSection(&CRSC);
 				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
 					continue;
+				//깊이버퍼 체크
 				LeaveCriticalSection(&CRSC);
 				
 				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());				
 			}
 		}
 	}
+}
+
+Color32 Render::MakePhongShader(const Vector3& _LightPos, const Vector3& _PixelNormal)
+{
+	return Color32();
+}
+
+void Render::RenderFPS(float _elapsedTime)
+{
+	DibSec.SetWindowsTitleFPS(_elapsedTime);
 }

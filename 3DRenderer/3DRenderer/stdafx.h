@@ -7,6 +7,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <stdio.h>
 #include <time.h>
 
 //커스텀 파일
@@ -24,3 +25,5 @@
 #include "ObjectMNG.h"
 #include "PerspectiveTest.h"
 #include "Figure_define.h"
+
+#pragma comment(lib, "Winmm.lib")
