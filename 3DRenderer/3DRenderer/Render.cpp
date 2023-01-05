@@ -60,7 +60,7 @@ Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vec
 	return std::move(Vector3(s, t, 1 - s - t));
 }
 
-void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3)
+void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD)
 {
 	/*
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
@@ -174,18 +174,21 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 	}
 }
 
-Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal)
+Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal, const PhongData& _PD)
 {
 	//방향광을 전제로 계산(픽셀에서 광원과의 노말을 구하는데는 연산량이 너무 늘어나서 방향광으로 선택)
 	LightObj* Lighting = ObjectMng_Component->GetLightSun();
 	Vector3 l_DirLight = _ObjPos - Lighting->GetPosition();
 	Vector3 v_ObjToCamera = _ObjPos - Camera_Component->GetPosition();
-	Vector3 r_ReflectVec = -1 * 2 * (MathLib::DotProduct((-1 * l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight;
+	Vector3 r_ReflectVec = -2 * (MathLib::DotProduct((-1 * l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight;
 	float a_Shining = LightObj::ShiningConst;
 
-	//믈체별로 Material(Ambient, Diffuse, Specular)값을 필요로하는듯, 확인 후 추가 필요
+	Vector3 Ambient = Lighting->GetKAmb() * _PD.Ambient,
+			Diffuse = Lighting->GetKDiff() * _PD.Diffuse * (MathLib::DotProduct(_PixelNormal, l_DirLight)),
+			Specular = Lighting->GetKSpec() *_PD.Specular * pow(MathLib::DotProduct(r_ReflectVec, v_ObjToCamera), a_Shining);
 
-	return Color32();
+	return Color32(Ambient.X + Diffuse.X + Specular.X, Ambient.Y + Diffuse.Y + Specular.Y, 
+														Ambient.Z + Diffuse.Z + Specular.Z);
 }
 
 void Render::RenderFPS(float _elapsedTime)

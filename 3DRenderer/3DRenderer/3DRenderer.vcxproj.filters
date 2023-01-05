@@ -132,6 +132,9 @@
     <ClInclude Include="LightObj.h">
       <Filter>Global\Figure</Filter>
     </ClInclude>
+    <ClInclude Include="PhongData.h">
+      <Filter>BaseHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="LightObj.cpp">
       <Filter>Global\Figure</Filter>
+    </ClCompile>
+    <ClCompile Include="PhongData.cpp">
+      <Filter>FrameWork</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

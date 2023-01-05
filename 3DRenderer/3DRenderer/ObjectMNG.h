@@ -7,7 +7,7 @@ class ObjectMNG
 private:
 	std::vector<std::shared_ptr<Figure_Interface>> FlyWeightObject;
 	std::vector<std::shared_ptr<Figure_Interface>> ObjectVectors;
-	LightObj Lighting_Sun;
+	LightObj Lighting_Sun{1.f, 1.f, 1.f};
 
 public:
 	ObjectMNG();

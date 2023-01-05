@@ -146,6 +146,7 @@
     <ClInclude Include="Matrix44.h" />
     <ClInclude Include="ObjectMNG.h" />
     <ClInclude Include="PerspectiveTest.h" />
+    <ClInclude Include="PhongData.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Proj.h" />
     <ClInclude Include="Quaternion.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Matrix44.cpp" />
     <ClCompile Include="ObjectMNG.cpp" />
     <ClCompile Include="PerspectiveTest.cpp" />
+    <ClCompile Include="PhongData.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Proj.cpp" />
     <ClCompile Include="Quaternion.cpp" />

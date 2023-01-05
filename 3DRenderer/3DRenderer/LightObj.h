@@ -4,21 +4,23 @@
 class LightObj : public Sphere
 {
 private:
-	Vector3 Ambient, Diffuse, Specular;
+	float KAmbient, KDiffuse, KSpecular;
 
 public:
 	static const int ShiningConst = 3;
 
 public:
 	LightObj() : Sphere(FigureType::Light_OBJECT) {};
-	LightObj(const Vector3& _Amb, const Vector3& _Dif, const Vector3& _Spc) 
-	: Ambient(_Amb), Diffuse(_Dif), Specular(_Spc), Sphere(FigureType::Light_OBJECT) {};
+	LightObj(const float& _Amb, const float& _Dif, const float& _Spc)
+	: KAmbient(_Amb), KDiffuse(_Dif), KSpecular(_Spc), Sphere(FigureType::Light_OBJECT) {};
 	~LightObj() = default;
 
 public:
-	FORCEINLINE void SetAmbient(const Vector3& _Amb) { Ambient = _Amb; }
-	FORCEINLINE void SetDiffuse(const Vector3& _Dif) { Diffuse = _Dif; }
-	FORCEINLINE void SetSpecular(const Vector3& _Spc) { Specular = _Spc; }
-
+	FORCEINLINE void SetAmbient(const float& _Amb) { KAmbient = _Amb; }
+	FORCEINLINE void SetDiffuse(const float& _Dif) { KDiffuse = _Dif; }
+	FORCEINLINE void SetSpecular(const float& _Spc) { KSpecular = _Spc; }
+	FORCEINLINE float GetKAmb() { return KAmbient; }
+	FORCEINLINE float GetKDiff() { return KDiffuse; }
+	FORCEINLINE float GetKSpec() { return KSpecular; }
 };
 

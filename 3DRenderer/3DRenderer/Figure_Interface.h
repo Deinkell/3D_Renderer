@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Figure_define.h"
+#include "PhongData.h"
 
 struct Vector3;
 struct Vertex;
@@ -14,6 +15,7 @@ protected:
 	Vector3 Rotation{0.f, 0.f, 0.f};
 	Vector3 Scale{1.f, 1.f, 1.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
+	PhongData PhongD{ Vector3(30.0f, 30.0f, 30.0f), Vector3(255.0f, 100.0f, 100.0f), Vector3(255.0f, 255.0f, 255.0f)};
 	Matrix44 FigureMat44;
 	std::shared_ptr<std::vector<Vertex>> Vertices = std::make_shared<std::vector<Vertex>>();
 	std::shared_ptr<std::vector<Index>> Indices = std::make_shared<std::vector<Index>>();
@@ -46,6 +48,9 @@ public:
 	FORCEINLINE constexpr void SetRotation(const auto _Rot) { Rotation = _Rot; }
 	FORCEINLINE constexpr void SetScale(const auto _Scale) { Scale = _Scale; }
 	FORCEINLINE constexpr void SetMatrix44(const auto _Mat) { FigureMat44 = _Mat; }
+	FORCEINLINE constexpr void SetAmbient(const Vector3& _amb) { PhongD.Ambient = _amb; }
+	FORCEINLINE constexpr void SetDiffuse(const Vector3& _dif) { PhongD.Diffuse = _dif; }
+	FORCEINLINE constexpr void SetSpecular(const Vector3& _spc) { PhongD.Specular = _spc; }
 	// Set함수
 	FORCEINLINE decltype(auto) GetVertices() { return Vertices; }
 	FORCEINLINE decltype(auto) GetIndices() { return Indices; }
@@ -54,6 +59,7 @@ public:
 	FORCEINLINE constexpr decltype(auto) GetRotation() { return Rotation; }
 	FORCEINLINE constexpr decltype(auto) GetScale() { return Scale; }
 	FORCEINLINE decltype(auto) GetMatrix44() { return FigureMat44; }
+	FORCEINLINE decltype(auto) GetPhongData() { return PhongD; }
 	// Get함수
 public:
 	void MakeWorldMatrix();
