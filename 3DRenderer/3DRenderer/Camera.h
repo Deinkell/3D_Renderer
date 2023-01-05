@@ -16,6 +16,8 @@ public:
 	FORCEINLINE explicit constexpr Camera(const Vector3& _Pos, const Vector3& _Lookat) : Position(_Pos), LookAt(_Lookat) {};
 	//반드시 Position과 LookAt을 기입하는 생성을 유도
 public:
+	FORCEINLINE constexpr Vector3 GetPosition() { return Position; }
+public:
 	void Initialize();
 	void MakeViewMatrix();
 };

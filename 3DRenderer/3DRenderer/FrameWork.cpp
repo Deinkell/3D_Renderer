@@ -7,10 +7,10 @@ void FrameWork::Initialize()
 {
 	Unit_Render = std::make_shared<Render>();
 	Obj_Manager = std::make_shared<ObjectMNG>();
-	Unit_hreadPool = std::make_shared<ThreadPool>(4);
+	Unit_Camera = std::make_shared<Camera>();
+	Unit_threadPool = std::make_shared<ThreadPool>(4);
 
-	Unit_Render->SetObjectMng(Obj_Manager);
-	Unit_Render->SetThreadPool(Unit_hreadPool);
+	Unit_Render->Initialize(Obj_Manager, Unit_threadPool, Unit_Camera);
 	Obj_Manager->CreateObject(FigureType::Sphere_type);
 
 	QueryPerformanceFrequency(&Timer);

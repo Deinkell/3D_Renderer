@@ -9,7 +9,8 @@ class FrameWork
 private:
 	std::shared_ptr<Render> Unit_Render;
 	std::shared_ptr<ObjectMNG> Obj_Manager;
-	std::shared_ptr<ThreadPool> Unit_hreadPool;
+	std::shared_ptr<ThreadPool> Unit_threadPool;
+	std::shared_ptr<Camera > Unit_Camera;
 
 	LARGE_INTEGER Start, End, Timer;
 	double TimeScale;

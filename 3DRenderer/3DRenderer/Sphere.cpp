@@ -42,7 +42,7 @@ void Sphere::Init()
 		i.NormalVec = i.NormalVec.GetNormalVector();
 }
 
-void Sphere::Move(time_t _time)
+void Sphere::Move(float _time)
 {
 }
 
@@ -51,7 +51,7 @@ void Sphere::MakeRenderData()
 	//정점의 래스터라이즈 직전까지 연산작업 
 }
 
-void Sphere::Ontick(time_t _time)
+void Sphere::Ontick(float _time)
 {
 }
 

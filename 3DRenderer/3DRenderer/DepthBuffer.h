@@ -5,7 +5,7 @@ class DepthBuffer
 private:
 	float* DepthBufferBlock;
 	int SizeOfDepthBuffer;
-	int ClientWidth, ClientHeight;
+	int ClientWidth, ClientHeight;	
 
 public:
 	DepthBuffer() = default;
@@ -16,8 +16,8 @@ public:
 	{
 		float* depth = DepthBufferBlock;
 		depth += (_x + ClientWidth * _y);
-
-		if ( *depth <= _Depth)
+		
+		if (*depth <= _Depth)
 			return false;
 
 		*depth = _Depth;

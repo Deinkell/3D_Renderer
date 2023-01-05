@@ -59,7 +59,8 @@ void DibSection::SetWindowsTitleFPS(const float& _elapsedTime)
 
 	if (accumulate_ElapsedTime > 0.5f)
 	{
-		_stprintf_s(Title, _T("3DRenderer : [%.f fps]"), 1.f * CountCallFps / accumulate_ElapsedTime );
+		//_stprintf_s(Title, _T("3DRenderer : [%.f fps]"), 1.f * CountCallFps / accumulate_ElapsedTime );
+		_stprintf_s(Title, _T("3DRenderer : [%d fps]"), CountCallFps);
 		::SetWindowText(hWnd_, Title);
 		accumulate_ElapsedTime = 0;
 		CountCallFps = 0;

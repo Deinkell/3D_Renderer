@@ -23,7 +23,9 @@
 #include "MathLib.h"
 #include "ThreadPool.h"
 #include "ObjectMNG.h"
+#include "LightObj.h"
 #include "PerspectiveTest.h"
+#include "Camera.h"
 #include "Figure_define.h"
 
 #pragma comment(lib, "Winmm.lib")

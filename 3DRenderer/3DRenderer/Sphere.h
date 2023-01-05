@@ -6,15 +6,16 @@ class Sphere : public Figure_Interface
 {
 public:
 	FORCEINLINE Sphere() : Figure_Interface(FigureType::Sphere_type) {};
+	FORCEINLINE Sphere(const FigureType& _type) : Figure_Interface(_type) {};
 	FORCEINLINE Sphere(const Vector3& _pos) : Figure_Interface(_pos, FigureType::Sphere_type) {};
 	FORCEINLINE Sphere(const Sphere& _ref) 	: Figure_Interface(_ref) {};
 	~Sphere() = default;
 
 public:
 	virtual void Init() override;
-	virtual void Move(time_t _time) override;	
+	virtual void Move(float _time) override;	
 	virtual void MakeRenderData() override;
-	virtual void Ontick(time_t _time) override;
+	virtual void Ontick(float _time) override;
 
 public:
 	void SubDivide(); //20면체를 쪼개서 구형태로 만들기 위한 작업

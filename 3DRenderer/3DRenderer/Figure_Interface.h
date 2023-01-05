@@ -63,8 +63,8 @@ public:
 
 public:
 	virtual void Init() abstract = 0;
-	virtual void Move(time_t _time) abstract = 0;
+	virtual void Move(float _time) abstract = 0;
 	virtual void MakeRenderData() abstract = 0;
-	virtual void Ontick(time_t _time) abstract = 0;
+	virtual void Ontick(float _time) abstract = 0;
 };
 

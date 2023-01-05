@@ -13,6 +13,13 @@ Render::~Render()
 	DeleteCriticalSection(&CRSC);
 }
 
+void Render::Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<ThreadPool>& _Thdpool, std::shared_ptr<Camera>& _Camera)
+{
+	ObjectMng_Component = _ObjMng;
+	ThreadPool_Component = _Thdpool;
+	Camera_Component = _Camera;
+}
+
 void Render::OnRender(float _elapsedTime)
 {
 	if (ThreadPool_Component == nullptr || ObjectMng_Component == nullptr)
@@ -116,11 +123,15 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 
 				float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
 				
+			
 				EnterCriticalSection(&CRSC);
 				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
+				{
+					LeaveCriticalSection(&CRSC);
 					continue;
-				//깊이버퍼 체크
+				}
 				LeaveCriticalSection(&CRSC);
+				//깊이버퍼 체크			
 				
 				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());		
 			}
@@ -150,9 +161,12 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 
 				EnterCriticalSection(&CRSC);
 				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
-					continue;
-				//깊이버퍼 체크
+				{
+					LeaveCriticalSection(&CRSC);
+					continue;					
+				}
 				LeaveCriticalSection(&CRSC);
+				//깊이버퍼 체크			
 				
 				DibSec.DotPixel(ResultX, ResultY, _p1.Color.ToColor32());				
 			}
@@ -160,8 +174,17 @@ void Render::RasterizePolygon(const Vertex& _p1, const Vertex& _p2, const Vertex
 	}
 }
 
-Color32 Render::MakePhongShader(const Vector3& _LightPos, const Vector3& _PixelNormal)
+Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal)
 {
+	//방향광을 전제로 계산(픽셀에서 광원과의 노말을 구하는데는 연산량이 너무 늘어나서 방향광으로 선택)
+	LightObj* Lighting = ObjectMng_Component->GetLightSun();
+	Vector3 l_DirLight = _ObjPos - Lighting->GetPosition();
+	Vector3 v_ObjToCamera = _ObjPos - Camera_Component->GetPosition();
+	Vector3 r_ReflectVec = -1 * 2 * (MathLib::DotProduct((-1 * l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight;
+	float a_Shining = LightObj::ShiningConst;
+
+	//믈체별로 Material(Ambient, Diffuse, Specular)값을 필요로하는듯, 확인 후 추가 필요
+
 	return Color32();
 }
 

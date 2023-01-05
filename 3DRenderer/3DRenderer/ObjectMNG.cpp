@@ -4,8 +4,9 @@
 ObjectMNG::ObjectMNG()
 {
 	FlyWeightObject.push_back(std::make_shared<Sphere>());
-	for(auto i : FlyWeightObject)
+	for (auto i : FlyWeightObject)
 		i->Init();
+	
 }
 
 void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
