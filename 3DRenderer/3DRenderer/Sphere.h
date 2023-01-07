@@ -2,6 +2,8 @@
 #include "Figure_define.h"
 #include "Figure_Interface.h"
 
+static constexpr int Sphere_Divide = 4;
+
 class Sphere : public Figure_Interface
 {
 public:
@@ -18,7 +20,7 @@ public:
 	virtual void Ontick(float _time) override;
 
 public:
-	void SubDivide(); //20면체를 쪼개서 구형태로 만들기 위한 작업
+	void SubDivide(int _NumOfDivide); //20면체를 쪼개서 구형태로 만들기 위한 작업
 	void SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _P3);
 };
 

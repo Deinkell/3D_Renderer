@@ -8,6 +8,7 @@ class Camera
 private:
 	Vector3 Position, LookAt;
 	Vector3 Direction[3]; // 0 : Up / 1 : Right / 2 : Front
+	Vector3 NormalVec;
 	Matrix44 CameraMat;
 
 public:
@@ -17,8 +18,14 @@ public:
 	//반드시 Position과 LookAt을 기입하는 생성을 유도
 public:
 	FORCEINLINE constexpr Vector3 GetPosition() { return Position; }
+	FORCEINLINE Matrix44 GetCameraMat() { return CameraMat; }
+	FORCEINLINE constexpr Vector3 GetNormal() { return NormalVec; }
+
 public:
 	void Initialize();
 	void MakeViewMatrix();
+	void Update();
+	void Move(float _elapsedTime);
+	void UpdateAxis();
 };
 

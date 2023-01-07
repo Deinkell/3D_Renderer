@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include "Sphere.h"
+#include "LightObj.h"
+
+class Camera;
+class Proj;
 
 class ObjectMNG
 {
@@ -18,9 +22,13 @@ public:
 	FORCEINLINE constexpr FigureType GetObjectType(int& _idx) { return ObjectVectors[_idx]->GetFigureType(); }
 	FORCEINLINE std::shared_ptr<Figure_Interface> GetObject(const int& _idx) { return ObjectVectors[_idx]; }
 	FORCEINLINE LightObj* GetLightSun() { return &Lighting_Sun; }
+	FORCEINLINE decltype(auto) GetPhongData(const int& _idx) {return ObjectVectors[_idx]->GetPhongData();}
+	FORCEINLINE decltype(auto) GetObj_Vertices(const int& _idx) { return ObjectVectors[_idx]->GetVertices(); }
+	FORCEINLINE decltype(auto) GetObj_Indicies(const int& _idx) { return ObjectVectors[_idx]->GetIndices(); }
 
 public:
 	void CreateObject(const FigureType& _type, const Vector3 _Pos = Vector3());
 	void Update(float _elapsedTime);
+	void PrepareRender_MakeMat(const Matrix44& _CameraMat, const Matrix44& _ProjMat);
 };
 

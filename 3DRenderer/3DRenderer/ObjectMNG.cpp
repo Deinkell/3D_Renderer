@@ -5,8 +5,7 @@ ObjectMNG::ObjectMNG()
 {
 	FlyWeightObject.push_back(std::make_shared<Sphere>());
 	for (auto i : FlyWeightObject)
-		i->Init();
-	
+		i->Init();	
 }
 
 void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
@@ -14,7 +13,7 @@ void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
 	size_t Size = FlyWeightObject.size();
 	
 	for(int i = 0; i < Size; i++)
-	{
+	{		
 		if (_type == FlyWeightObject[i]->GetFigureType())
 		{
 			FlyWeightObject[i]->SetPosition(_Pos);
@@ -29,4 +28,10 @@ void ObjectMNG::Update(float _elapsedTime)
 {
 	for (auto i : ObjectVectors)
 		i->Ontick(_elapsedTime);
+}
+
+void ObjectMNG::PrepareRender_MakeMat(const Matrix44& _CameraMat, const Matrix44& _ProjMat)
+{
+	for (auto& i : ObjectVectors)
+		i->MakeMatrix(_CameraMat, _ProjMat);
 }

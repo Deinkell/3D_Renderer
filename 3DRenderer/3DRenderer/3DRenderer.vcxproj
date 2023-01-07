@@ -133,6 +133,7 @@
     <ClInclude Include="3DRenderer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color32.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="DibSection.h" />
     <ClInclude Include="Figure_define.h" />
     <ClInclude Include="Figure_Interface.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Proj.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="RenderData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stdafx.h" />
@@ -181,6 +183,7 @@
     <ClCompile Include="Proj.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="RenderData.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

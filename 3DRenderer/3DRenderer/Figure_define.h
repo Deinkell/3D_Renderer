@@ -2,7 +2,7 @@
 
 enum class FigureType : char
 {
-	None,
-	Sphere_type,
-	Light_OBJECT,
+	None = 0,
+	Sphere_type = 1,
+	Light_OBJECT = 2,
 };

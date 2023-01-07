@@ -22,10 +22,12 @@ void Figure_Interface::MakeWorldMatrix()
 
 void Figure_Interface::MakeViewMatrix(const Matrix44& _CameraMatrix)
 {
-
+	MathLib::CrossProduct(&FigureMat44, _CameraMatrix, FigureMat44);
+	//MathLib::CrossProduct(&FigureMat44, FigureMat44, _CameraMatrix);
 }
 
-void Figure_Interface::MakeProjMatrix()
+void Figure_Interface::MakeProjMatrix(const Matrix44& ProjMat)
 {
-
+	MathLib::CrossProduct(&FigureMat44, ProjMat, FigureMat44);
+	//MathLib::CrossProduct(&FigureMat44, FigureMat44, ProjMat);
 }

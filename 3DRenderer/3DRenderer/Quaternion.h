@@ -1,5 +1,6 @@
 #pragma once
 #include "MathLib.h"
+#include "Vector3.h"
 
 struct Quaternion
 {
@@ -8,6 +9,7 @@ public:
 	
 public:
 	FORCEINLINE constexpr Quaternion() : X(0.f), Y(0.f), Z(0.f), W(0.f) {};
+	FORCEINLINE constexpr Quaternion(const Vector3& _ref) : X(_ref.X), Y(_ref.Y), Z(_ref.Z), W(0.f) {};
 	FORCEINLINE Quaternion(const float& _x, const float& _y, const float& _z, const float& _w) 
 	: X(_x), Y(_y), Z(_z), W(_w) {};
 	FORCEINLINE Quaternion(float&& _x, float&& _y, float&& _z, float&& _w)

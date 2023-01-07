@@ -9,9 +9,9 @@ void Sphere::Init()
 
 	Quaternion tmpVertices[12] =
 	{
-		Quaternion(-X, N, Z, 0.f), Quaternion(X, N, Z, 0.f), Quaternion(-X, N, -Z, 0.f), Quaternion(X, N, -Z, 0.f),
-		Quaternion(N, Z, X, 0.f), Quaternion(N, Z, -X, 0.f), Quaternion(N, -Z, X, 0.f), Quaternion(N, -Z, -X, 0.f),
-		Quaternion(Z, X, N, 0.f), Quaternion(-Z, X, N, 0.f), Quaternion(Z, -X, N, 0.f), Quaternion(-Z, -X, N, 0.f)
+		Quaternion(-X, N, Z, 1.f), Quaternion(X, N, Z, 1.f), Quaternion(-X, N, -Z, 1.f), Quaternion(X, N, -Z, 1.f),
+		Quaternion(N, Z, X, 1.f), Quaternion(N, Z, -X, 1.f), Quaternion(N, -Z, X, 1.f), Quaternion(N, -Z, -X, 1.f),
+		Quaternion(Z, X, N, 1.f), Quaternion(-Z, X, N, 1.f), Quaternion(Z, -X, N, 1.f), Quaternion(-Z, -X, N, 1.f)
 	};
 
 	for (int i = 0; i < 12; ++i)
@@ -32,11 +32,8 @@ void Sphere::Init()
 	for (int i = 0; i < 20; ++i)
 		Indices->push_back(tmpIndeces[i]);
 	//20면체 생성
-	SubDivide();
+	SubDivide(Sphere_Divide);
 	//구로 분할
-
-	for(auto &i : *Indices)
-		SetNormal((*Vertices)[i._0], (*Vertices)[i._1], (*Vertices)[i._2]);
 
 	for (auto& i : *Vertices)
 		i.NormalVec = i.NormalVec.GetNormalVector();
@@ -48,6 +45,7 @@ void Sphere::Move(float _time)
 
 void Sphere::MakeRenderData()
 {
+	
 	//정점의 래스터라이즈 직전까지 연산작업 
 }
 
@@ -55,8 +53,40 @@ void Sphere::Ontick(float _time)
 {
 }
 
-void Sphere::SubDivide()
+void Sphere::SubDivide(int _NumOfDivide)
 {
+	int idxSize, VtxSize;
+
+	for (int i = 0; i < _NumOfDivide; ++i)
+	{
+		idxSize = Indices->size();
+		for (int k = 0; k < idxSize; ++k)
+		{
+			auto& j = (*Indices)[k];
+			VtxSize = Vertices->size();
+			Vertex Divide01, Divide02, Divide03;
+			Divide01.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._1].Pos) * 0.5f;
+			Divide01.Pos.W = 0.0f;
+			Divide02.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._2].Pos) * 0.5f;
+			Divide02.Pos.W = 0.0f;
+			Divide03.Pos = ((*Vertices)[j._1].Pos + (*Vertices)[j._2].Pos) * 0.5f;
+			Divide03.Pos.W = 0.0f;
+
+			Vertices->push_back(Divide01);
+			Vertices->push_back(Divide02);
+			Vertices->push_back(Divide03);
+
+			Index Dividx01, Dividx02, Dividx03;
+			Dividx01._0 = j._0; Dividx01._1 = VtxSize; Dividx01._2 = VtxSize + 1;
+			Dividx02._0 = j._1; Dividx02._1 = VtxSize; Dividx02._2 = VtxSize + 2;
+			Dividx03._0 = j._2; Dividx03._1 = VtxSize + 1; Dividx03._2 = VtxSize + 2;
+			j._0 = VtxSize; j._1 = VtxSize + 1; j._2 = VtxSize + 2;
+
+			Indices->push_back(Dividx01);
+			Indices->push_back(Dividx02);
+			Indices->push_back(Dividx03);
+		}
+	}
 
 }
 

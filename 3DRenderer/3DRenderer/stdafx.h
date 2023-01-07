@@ -26,6 +26,9 @@
 #include "LightObj.h"
 #include "PerspectiveTest.h"
 #include "Camera.h"
+#include "Proj.h"
+
 #include "Figure_define.h"
+#include "Define.h"
 
 #pragma comment(lib, "Winmm.lib")

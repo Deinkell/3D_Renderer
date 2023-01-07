@@ -133,7 +133,13 @@
       <Filter>Global\Figure</Filter>
     </ClInclude>
     <ClInclude Include="PhongData.h">
-      <Filter>BaseHeader</Filter>
+      <Filter>Global\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderData.h">
+      <Filter>Global\struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +219,10 @@
       <Filter>Global\Figure</Filter>
     </ClCompile>
     <ClCompile Include="PhongData.cpp">
-      <Filter>FrameWork</Filter>
+      <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderData.cpp">
+      <Filter>Global\struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

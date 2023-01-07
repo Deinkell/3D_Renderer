@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MathLib.h"
 #include "Vector3.h"
 #include "Color32.h"
 #include "LinearColor.h"
@@ -40,7 +41,11 @@ public:
 
 public:
 	FORCEINLINE Vector3 GetNormalVec() { return NormalVec; }
+
+public:
+	void MakeRenderdata(const Matrix44& _FMat);
 };
+
 
 
 ////////////////Vertex global operator/////////////////

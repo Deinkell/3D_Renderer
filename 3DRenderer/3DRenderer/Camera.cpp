@@ -3,10 +3,7 @@
 
 void Camera::Initialize()
 {
-	Vector3 tempUpVector{ 0.f, 1.f, 0.f }; //¿ùµå ¾÷º¤ÅÍ
-	Direction[2] = LookAt - Position; //Front
-	Direction[1] = MathLib::CrossProduct(Direction[2], tempUpVector); //Right
-	Direction[0] = MathLib::CrossProduct(Direction[1], Direction[2]); //Up
+	UpdateAxis();
 };
 
 void Camera::MakeViewMatrix()
@@ -30,4 +27,24 @@ void Camera::MakeViewMatrix()
 	CameraMat.mat44[3][1] = -(Position.X * Direction[0].X + Position.Y * Direction[0].Y + Position.Z * Direction[0].Z);
 	CameraMat.mat44[3][2] = -(Position.X * Direction[2].X + Position.Y * Direction[2].Y + Position.Z * Direction[2].Z);
 	CameraMat.mat44[3][3] = 1.f;
+}
+void Camera::Update()
+{
+};
+
+void Camera::Move(float _elapsedTime)
+{
+};
+
+void Camera::UpdateAxis()
+{
+	Vector3 tempUpVector{ 0.f, 1.f, 0.f }; //¿ùµå ¾÷º¤ÅÍ
+	Direction[2] = LookAt - Position; //Front
+	Direction[1] = MathLib::CrossProduct(Direction[2], tempUpVector); //Right
+	Direction[0] = MathLib::CrossProduct(Direction[1], Direction[2]); //Up
+
+	for (int i = 0; i < 3; i++)
+		Direction[i] = Direction[i].GetNormalVector();
+
+	NormalVec = Direction[2];
 };

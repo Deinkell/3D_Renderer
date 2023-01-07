@@ -27,7 +27,7 @@ public:
 		std::shared_ptr<std::vector<Index>> _Indices, FigureType _type)
 	: Vertices(_Vertices), Indices(_Indices), Figure_type(_type){};
 	FORCEINLINE Figure_Interface(const Vector3& _Pos, const FigureType& _type) : Position(_Pos), Figure_type(Figure_type) {}
-	FORCEINLINE Figure_Interface(const FigureType& _type) : Figure_type(Figure_type) {}
+	FORCEINLINE Figure_Interface(const FigureType& _type) : Figure_type(_type) {}
 	FORCEINLINE Figure_Interface(const Figure_Interface& _ref)
 	: Position(_ref.Position), Rotation(_ref.Rotation), Scale(_ref.Scale),
 		FigureMat44(_ref.FigureMat44), Vertices(_ref.Vertices), 
@@ -53,6 +53,8 @@ public:
 	FORCEINLINE constexpr void SetSpecular(const Vector3& _spc) { PhongD.Specular = _spc; }
 	// Set함수
 	FORCEINLINE decltype(auto) GetVertices() { return Vertices; }
+	FORCEINLINE decltype(auto) GetVerticesSize() { return Vertices->size(); }
+	FORCEINLINE decltype(auto) GetVertex(const int& _idx) { return (*Vertices)[_idx]; }
 	FORCEINLINE decltype(auto) GetIndices() { return Indices; }
 	FORCEINLINE constexpr decltype(auto) GetFigureType() { return Figure_type; }
 	FORCEINLINE constexpr decltype(auto) GetPosition() { return Position; }
@@ -64,8 +66,14 @@ public:
 public:
 	void MakeWorldMatrix();
 	void MakeViewMatrix(const Matrix44& _CameraMatrix);
-	void MakeProjMatrix();
+	void MakeProjMatrix(const Matrix44& ProjMat);
 	//공용으로 쓰는 매트릭스 생성함수
+	FORCEINLINE void MakeMatrix(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
+	{
+		MakeWorldMatrix();
+		MakeViewMatrix(_CameraMatrix);
+		MakeProjMatrix(_ProjMat);
+	}
 
 public:
 	virtual void Init() abstract = 0;
