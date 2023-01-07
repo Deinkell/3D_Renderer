@@ -15,7 +15,7 @@ public:
 FORCEINLINE constexpr float LineFunction2D::GetXValueByPoint(const float& _X, const float& _Y)
 {
 	if(XSlopeZero)
-		return _Y;
+		return _X;
 
 	if(YSlopeZero)
 		return _X;
@@ -29,7 +29,7 @@ FORCEINLINE constexpr float LineFunction2D::GetYValueByPoint(const float& _X, co
 		return _Y;
 
 	if (YSlopeZero)
-		return _X;
+		return _Y;
 
 	return std::move((Slope * _X)  + Constant);
 };

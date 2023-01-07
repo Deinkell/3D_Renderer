@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Render.h"
 
-Render::Render()
+Render::Render(HWND _hWnd)
 : Projection(10, 4000, CLIENT_WIDTH, CLIENT_HEIGHT)
 {
-	DibSec.InitializeDib();
-	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());
+	DibSec.InitializeDib(_hWnd);
+	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());	
 	InitializeCriticalSection(&CRSC);
 }
 
 Render::~Render()
-{
+{	
 	DeleteCriticalSection(&CRSC);
 }
 
@@ -52,14 +52,15 @@ void Render::RenderObj()
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
 		Matrix44 FMat = ObjectMng_Component->GetObjectW(i)->GetMatrix44();
 
-		for (auto& j : *Vertices)
-			j.MakeRenderdata(FMat);
-		
 		for (auto& j : *Indicies)
-		{			
+		{		
+			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };
+			tmp[0].MakeRenderdata(FMat); tmp[1].MakeRenderdata(FMat); tmp[2].MakeRenderdata(FMat);
 			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) {
 				RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, 
-				(*Vertices)[j._0], (*Vertices)[j._1], (*Vertices)[j._2], PhoD);
+				tmp[0], tmp[1], tmp[2], PhoD);
+
+			//RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD);
 		}
 	}
 }
@@ -92,7 +93,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		return;
 
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-	std::vector<PerspectiveTest> testPlanes = {
+/*	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
 		{TestFuncPY, EdgeFuncPY},
@@ -102,12 +103,12 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		{TestFuncNear, EdgeFuncNear}
 	};
 
-	//for (auto& p : testPlanes)
-	//	p.ClipTriangles(tmpVertices); //삼각형 클리핑(ndc 공간에서 삼각형 보정진행)
+	for (auto& p : testPlanes)
+		p.ClipTriangles(tmpVertices); //삼각형 클리핑(ndc 공간에서 삼각형 보정진행)
 
-	//if (tmpVertices.size() == 0)
-	//	return;
-
+	if (tmpVertices.size() == 0)
+		return;
+*/
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
@@ -123,7 +124,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 	for (int i = Vertices[0].Y; i <= Vertices[2].Y; i++)
 	{
-		if (i <= Vertices[1].Y)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
+		if (i <= Vertices[1].Y && !LineFunc[1].YSlopeZero)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
 		{
 			float StartX = LineFunc[0].GetXValueByPoint(Vertices[0].X, i), 
 					EndX = LineFunc[1].GetXValueByPoint(Vertices[0].X, i);
@@ -140,7 +141,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 				if(!DibSec.CheckIntersectClientRect(ResultX, ResultY))
 					continue;
-
+				/*
 				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
 													Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
 
@@ -162,6 +163,11 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				EnterCriticalSection(&CRSC);
 				RD_vec.push_back(Rd);
 				LeaveCriticalSection(&CRSC);
+				*/
+				EnterCriticalSection(&CRSC);
+				RD_vec.push_back(RenderData(ResultX, ResultY, Color32(255,0,0,255)));
+				LeaveCriticalSection(&CRSC);
+			
 			}
 		}
 		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
@@ -175,13 +181,13 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j <= EndX; j++)
-			{
+			{			
 				ResultX = j + CorrectionX;
 				ResultY = i + CorrectionY;				
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 				if (!DibSec.CheckIntersectClientRect(ResultX, ResultY))
 					continue;
-
+				/*
 				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2],
 												Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
 
@@ -202,6 +208,10 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				EnterCriticalSection(&CRSC);
 				RD_vec.push_back(Rd);
 				LeaveCriticalSection(&CRSC);
+				*/
+				EnterCriticalSection(&CRSC);
+				RD_vec.push_back(RenderData(ResultX, ResultY, Color32(255, 0, 0, 255)));
+				LeaveCriticalSection(&CRSC);				
 			}
 		}
 	}
@@ -225,9 +235,16 @@ Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNor
 }
 
 void Render::DotPixel_RD()
-{
-	for(auto& i : RD_vec)
+{	
+	for (auto& i : RD_vec)
+	{	
+		if (i.X < 0 || i.Y < 0 || i.X > CLIENT_WIDTH || i.Y > CLIENT_HEIGHT)
+			return;
+
 		DibSec.DotPixel(i.X, i.Y, i.Color);
+	}
+	
+	RD_vec.clear();
 }
 
 void Render::RenderFPS(float _elapsedTime)

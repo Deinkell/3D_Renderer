@@ -15,7 +15,7 @@ class Render
 private:
 	DibSection DibSec; //Dib는 컴포넌트가 아닌 랜더의 필수 맴버변수, 관리를 따로 할곳도 필요도 없기때문
 	DepthBuffer DepthBuf;
-	Proj Projection;
+	Proj Projection;	
 	CRITICAL_SECTION CRSC;
 	std::vector<RenderData> RD_vec;
 
@@ -30,7 +30,7 @@ public:
 	FORCEINLINE void SetCamera (std::shared_ptr<Camera>&_ref) { Camera_Component = _ref; };
 
 public:
-	Render();
+	Render(HWND _hWnd);
 	~Render();
 
 public:

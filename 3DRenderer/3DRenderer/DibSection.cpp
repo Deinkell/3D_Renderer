@@ -11,13 +11,16 @@ DibSection::~DibSection()
 
 void DibSection::DotPixel(const int& _ix, const int& _iy, const Color32& _Cl)
 {
+	if (_ix < 0 || _iy < 0 || _ix >= rtClient_.right || _iy >= rtClient_.bottom)
+		return;
+
 	Color32* dest = ScreenBuffer_;
 	*(dest + GetScreenBufferPosition(_ix, _iy)) = _Cl;
 }
 
-void DibSection::InitializeDib()
+void DibSection::InitializeDib(HWND _hWnd)
 {
-	hWnd_ = GetActiveWindow();
+	hWnd_ = _hWnd;
 	hScreenDC_ = GetDC(hWnd_);
 	GetClientRect(hWnd_, &rtClient_);
 	iHeight_ = rtClient_.bottom;

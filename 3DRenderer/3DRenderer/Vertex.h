@@ -41,6 +41,7 @@ public:
 
 public:
 	FORCEINLINE Vector3 GetNormalVec() { return NormalVec; }
+	void SetNormalVec();
 
 public:
 	void MakeRenderdata(const Matrix44& _FMat);

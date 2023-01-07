@@ -2,7 +2,7 @@
 #include "Figure_define.h"
 #include "Figure_Interface.h"
 
-static constexpr int Sphere_Divide = 4;
+static constexpr int Sphere_Divide = 3;
 
 class Sphere : public Figure_Interface
 {

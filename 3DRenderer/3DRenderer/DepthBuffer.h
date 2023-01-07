@@ -9,7 +9,7 @@ private:
 
 public:
 	DepthBuffer() = default;
-	~DepthBuffer() { if (DepthBufferBlock != nullptr) delete DepthBufferBlock; }
+	~DepthBuffer() { if (DepthBufferBlock != nullptr) delete[] DepthBufferBlock; }
 
 public:
 	FORCEINLINE bool CheckDepthBuffer(const int& _x, const int& _y, const float& _Depth)

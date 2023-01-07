@@ -15,6 +15,7 @@
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
+HWND ghWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
@@ -50,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
     FrameWork Frame;
-    Frame.Initialize();
+    Frame.Initialize(ghWnd);
     // 기본 메시지 루프입니다:
     ZeroMemory(&msg, sizeof(msg));
     // 기본 메시지 루프입니다.
@@ -112,16 +113,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_CAPTION | WS_BORDER | WS_SYSMENU,
+   ghWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_CAPTION | WS_BORDER | WS_SYSMENU,
       100, 0, CLIENT_WIDTH, CLIENT_HEIGHT, nullptr, nullptr, hInstance, nullptr);
    
-   if (!hWnd)
+   if (!ghWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   ShowWindow(ghWnd, nCmdShow);
+   UpdateWindow(ghWnd);
 
    return TRUE;
 }

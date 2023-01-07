@@ -3,9 +3,9 @@
 #include "FrameWork.h"
 #include "Figure_Interface.h"
 
-void FrameWork::Initialize()
+void FrameWork::Initialize(HWND _hWnd)
 {
-	Unit_Render = std::make_shared<Render>();
+	Unit_Render = std::make_shared<Render>(_hWnd);
 	Obj_Manager = std::make_shared<ObjectMNG>();
 	Unit_Camera = std::make_shared<Camera>(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 0.f, 1000.f));
 	Unit_threadPool = std::make_shared<ThreadPool>(4);
