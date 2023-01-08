@@ -59,7 +59,7 @@ FORCEINLINE constexpr bool Vector3::operator==(const Vector3& _ref)
 };
 FORCEINLINE Vector3 Vector3::GetNormalVector()
 {
-	float size = std::move(X * X + Y * Y + Z * Z);
+	float size = std::move(sqrt(X * X + Y * Y + Z * Z));
 	
 	if (size == 0)
 		return std::move(Vector3());

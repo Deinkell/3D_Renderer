@@ -17,6 +17,7 @@ private:
 	std::mutex m_job_q;
 
 	bool stop_all;
+	bool Thread_wait[4]{ true, true, true, true };
 
 public:
 	ThreadPool(size_t _num_threads);
@@ -25,9 +26,10 @@ public:
 public:	
 	template<class F, class... Args>
 	FORCEINLINE void EnqueueJob(F&& f, Args&&... args);	
+	bool AllThreadWait() { return bool(Thread_wait[0] & Thread_wait[1] & Thread_wait[2] & Thread_wait[3]); }
 
 private:
-	void WorkerThread();
+	void WorkerThread(const int _Number);	
 };
 
 template<class F, class... Args>

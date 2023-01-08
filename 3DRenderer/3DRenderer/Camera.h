@@ -24,7 +24,7 @@ public:
 public:
 	void Initialize();
 	void MakeViewMatrix();
-	void Update();
+	void Update(float _elapsedTime);
 	void Move(float _elapsedTime);
 	void UpdateAxis();
 };

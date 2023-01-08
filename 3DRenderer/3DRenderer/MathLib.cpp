@@ -98,14 +98,14 @@ namespace MathLib
 		//yaw = y, pitch = x, roll = z;
 		float Yaw = _Rotate.Y, Pitch = _Rotate.X, Roll = _Rotate.Z;
 		float CosR = cos(Roll / 2), CosP = cos(Pitch / 2), CosY = cos(Yaw / 2);
-		float SinR = sin(Roll / 2), SinP = sin(Pitch / 2), SinY = cos(Yaw / 2);
+		float SinR = sin(Roll / 2), SinP = sin(Pitch / 2), SinY = sin(Yaw / 2);
 
 		float W = CosR * CosP * CosY + SinR * SinP * SinY;
 		float X = CosR * SinP * CosY + SinR * CosP * SinY;
 		float Y = CosR * CosP * SinY - SinR * SinP * CosY;
 		float Z = SinR * CosP * CosY - CosR * SinP * SinY;
-
-		_Out->mat44[0][0] = 1 - (2 * Y * Y) - (2 * X * X);
+		
+		_Out->mat44[0][0] = 1 - (2 * Y * Y) - (2 * Z * Z); // 1 - (2 * Y * Y) - (2 * X * X);
 		_Out->mat44[0][1] = 2 * X * Y - 2 * W * Z;
 		_Out->mat44[0][2] = 2 * X * Z + 2 * W * Y;
 		_Out->mat44[0][3] = 0;
@@ -121,9 +121,32 @@ namespace MathLib
 		_Out->mat44[2][3] = 0;
 
 		_Out->mat44[3][0] = 0;
+		_Out->mat44[3][1] = 0;
+		_Out->mat44[3][2] = 0;
+		_Out->mat44[3][3] = 1;
+		//책에서는 행렬 연산의 행렬이 바뀌어 있으므로 공식은 프로그램에 맞춰 수정(위는 원래 책의 공식)
+
+		/*
+		_Out->mat44[0][0] = 1 - (2 * Y * Y) - (2 * Z * Z); // 1 - (2 * Y * Y) - (2 * X * X);
+		_Out->mat44[0][1] = 2 * X * Y + 2 * W * Z;
+		_Out->mat44[0][2] = 2 * X * Z - 2 * W * Y;
+		_Out->mat44[0][3] = 0;
+
+		_Out->mat44[1][0] = 2 * X * Y - 2 * W * Z;
+		_Out->mat44[1][1] = 1 - (2 * X * X) - (2 * Z * Z);
+		_Out->mat44[1][2] = 2 * Y * Z + 2 * W * X;
+		_Out->mat44[1][3] = 0;
+
+		_Out->mat44[2][0] = 2 * X * Z + 2 * W * Y;
+		_Out->mat44[2][1] = 2 * Y * Z - 2 * W * X;
+		_Out->mat44[2][2] = 1 - (2 * X * X) - (2 * Y * Y);
+		_Out->mat44[2][3] = 0;
+
 		_Out->mat44[3][0] = 0;
-		_Out->mat44[3][0] = 0;
-		_Out->mat44[3][0] = 1;
+		_Out->mat44[3][1] = 0;
+		_Out->mat44[3][2] = 0;
+		_Out->mat44[3][3] = 1;		
+		*/
 	};
 	void MathLib::Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2)
 	{
@@ -255,6 +278,23 @@ namespace MathLib
 		float SrqSz = _ref.X * _ref.X + _ref.Y * _ref.Y + _ref.Z * _ref.Z;
 		SrqSz = GetInvSqrt(SrqSz);
 		
-		return std::move(Quaternion(_ref.X * SrqSz, _ref.Y * SrqSz, _ref.Z * SrqSz, _ref.W * SrqSz));
-	}; 	
+		return std::move(Quaternion(_ref.X * SrqSz, _ref.Y * SrqSz, _ref.Z * SrqSz, _ref.W));
+	}
+	Vector3 EraseDecimalXY(Vector3& _Vec)
+	{
+		float tmp;
+		Vector3 tmpVec;
+
+		tmpVec.X = (int)_Vec.X;
+		tmp = _Vec.X - tmpVec.X;
+		if (tmp > 0.5f)
+			tmpVec.X = tmpVec.X + 1;	
+
+		tmpVec.Y = (int)_Vec.Y;
+		tmp = _Vec.Y - tmpVec.Y;
+		if (tmp > 0.5f)
+			tmpVec.Y = tmpVec.Y + 1;
+
+		return std::move(tmpVec);
+	};
 };

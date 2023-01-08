@@ -35,7 +35,7 @@ namespace MathLib
 	void		CrossProduct(Vector3* _out, const Vector3& _ref1, const Vector3& _ref2);
 	Vector3		CrossProduct(const Vector3& _ref1, const Vector3& _ref2);
 	//외적 관련 함수들
-	float		DotProduct(const Vector3& _ref1, const Vector3& _ref2); 
+	float		DotProduct(const Vector3& _ref1, const Vector3& _ref2);
 	float		DotProduct(const float& _x1, const float& _y1, const float& _x2, const float& _y2);
 	float		GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2);
 	void		MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate);
@@ -46,6 +46,9 @@ namespace MathLib
 	Plane		MakePlane(const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
 	void		MakePlane(Plane* _Out, const Vector3& _ref1, const Vector3& _ref2, const Vector3& _ref3);
 	void		MakePlaneWithMat(std::span<Plane>* _Planearr, const Matrix44& _Mat);
+	//파이프라인 관련 함수
 	float		GetInvSqrt(const float& _ref);
 	Quaternion	GetNormal(const Quaternion& _ref);
-};
+	//계산 함수
+	Vector3		EraseDecimalXY(Vector3& _Vec);
+}

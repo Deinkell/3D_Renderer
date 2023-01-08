@@ -4,6 +4,7 @@
 void Camera::Initialize()
 {
 	UpdateAxis();
+	MakeViewMatrix();
 };
 
 void Camera::MakeViewMatrix()
@@ -28,8 +29,10 @@ void Camera::MakeViewMatrix()
 	CameraMat.mat44[3][2] = -(Position.X * Direction[2].X + Position.Y * Direction[2].Y + Position.Z * Direction[2].Z);
 	CameraMat.mat44[3][3] = 1.f;
 }
-void Camera::Update()
+void Camera::Update(float _elapsedTime)
 {
+	Move(_elapsedTime);
+	MakeViewMatrix();
 };
 
 void Camera::Move(float _elapsedTime)

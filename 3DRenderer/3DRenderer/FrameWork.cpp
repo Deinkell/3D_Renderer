@@ -12,6 +12,7 @@ void FrameWork::Initialize(HWND _hWnd)
 
 	Unit_Render->Initialize(Obj_Manager, Unit_threadPool, Unit_Camera);
 	Obj_Manager->CreateObject(FigureType::Sphere_type);
+	Unit_Camera->Initialize();
 
 	QueryPerformanceFrequency(&Timer);
 	TimeScale = 1.0 / Timer.QuadPart;

@@ -3,6 +3,8 @@
 
 void Sphere::Init()
 {
+	Position.Z = 100.f;
+
 	const float X = 0.525731112119133606f;
 	const float Z = 0.850650808352039932f;
 	const float N = 0.0f;
@@ -90,7 +92,6 @@ void Sphere::SubDivide(int _NumOfDivide)
 			Indices->push_back(Dividx03);
 		}
 	}
-
 }
 
 void Sphere::SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _p3)

@@ -71,8 +71,8 @@ public:
 	FORCEINLINE void MakeMatrix(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
 	{
 		MakeWorldMatrix();
-		//MakeViewMatrix(_CameraMatrix);
-		//MakeProjMatrix(_ProjMat);
+		MakeViewMatrix(_CameraMatrix);
+		MakeProjMatrix(_ProjMat);
 	}
 
 public:

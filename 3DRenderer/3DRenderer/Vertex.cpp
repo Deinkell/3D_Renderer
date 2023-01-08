@@ -4,8 +4,8 @@
 
 void Vertex::SetNormalVec()
 {
-	float sqrt = MathLib::GetInvSqrt(Pos.X*Pos.X + Pos.Y*Pos.Y + Pos.Z*Pos.Z);
-	NormalVec = std::move(Vector3(Pos.X * sqrt, Pos.Y * sqrt, Pos.Z * sqrt));
+	float invsqrt = MathLib::GetInvSqrt(Pos.X*Pos.X + Pos.Y*Pos.Y + Pos.Z*Pos.Z);
+	NormalVec = std::move(Vector3(Pos.X * invsqrt, Pos.Y * invsqrt, Pos.Z * invsqrt));
 }
 
 void Vertex::MakeRenderdata(const Matrix44& _FMat)

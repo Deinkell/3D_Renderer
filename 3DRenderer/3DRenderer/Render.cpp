@@ -2,11 +2,11 @@
 #include "Render.h"
 
 Render::Render(HWND _hWnd)
-: Projection(10, 4000, CLIENT_WIDTH, CLIENT_HEIGHT)
 {
 	DibSec.InitializeDib(_hWnd);
 	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());	
 	InitializeCriticalSection(&CRSC);
+	Projection = std::make_unique<Proj>(10, 1000, DibSec.GetClientX(), DibSec.GetClientY());
 }
 
 Render::~Render()
@@ -28,17 +28,16 @@ void Render::OnRender(float _elapsedTime)
 
 	PrepareObj_for_Render();
 	RenderObj();
-	DotPixel_RD();
-
-	DibSec.BitBltDibSection();
+	BitBltDib();
+	//DibSec.BitBltDibSection(); //싱글스레드 렌더링시 적용
 	DepthBuf.ClearDepthBuffer();
 }
 
 void Render::PrepareObj_for_Render()
 {
 	Camera_Component->MakeViewMatrix();
-	Projection.MakeProjMatrix();
-	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection.GetProjMat());
+	Projection->MakeProjMatrix();
+	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
 void Render::RenderObj()
@@ -48,19 +47,20 @@ void Render::RenderObj()
 	{
 		std::shared_ptr<std::vector<Vertex>> Vertices = ObjectMng_Component->GetObj_Vertices(i);
 		std::shared_ptr<std::vector<Index>> Indicies = ObjectMng_Component->GetObj_Indicies(i);
-		Vector3 Position = ObjectMng_Component->GetObjectW(i)->GetPosition();
+		Vector3 Position = ObjectMng_Component->GetObj_Position(i);
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
-		Matrix44 FMat = ObjectMng_Component->GetObjectW(i)->GetMatrix44();
+		Matrix44 FMat = ObjectMng_Component->GetObj_Matrix(i);
 
 		for (auto& j : *Indicies)
 		{		
-			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };
+			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };  			
 			tmp[0].MakeRenderdata(FMat); tmp[1].MakeRenderdata(FMat); tmp[2].MakeRenderdata(FMat);
-			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) {
-				RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, 
-				tmp[0], tmp[1], tmp[2], PhoD);
 
-			//RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD);
+			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, 
+																		Vertex tmp3, PhongData _PhongD) 
+			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
+
+			//RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD); //싱글스레드 렌더링
 		}
 	}
 }
@@ -93,7 +93,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		return;
 
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-/*	std::vector<PerspectiveTest> testPlanes = {
+	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
 		{TestFuncPY, EdgeFuncPY},
@@ -108,15 +108,18 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 	if (tmpVertices.size() == 0)
 		return;
-*/
+
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
 
-	int CorrectionX = DibSec.GetClientX() / 2, CorrectionY = DibSec.GetClientY() / 2;
+	int CorrectionX = DibSec.GetClientX() / 2, CorrectionY = DibSec.GetClientY() / 2;	
 	int ResultX, ResultY;
 
 	MathLib::SortByYvalue(Vertices, Vertices);
+	for (int i = 0; i < 3; i++)
+		Vertices[i] = MathLib::EraseDecimalXY(Vertices[i]);
+
 	LineFunction2D LineFunc[3];
 	MathLib::Make2DLinFunction(&LineFunc[0], Vertices[0], Vertices[2]);
 	MathLib::Make2DLinFunction(&LineFunc[1], Vertices[0], Vertices[1]);
@@ -124,7 +127,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 	for (int i = Vertices[0].Y; i <= Vertices[2].Y; i++)
 	{
-		if (i <= Vertices[1].Y && !LineFunc[1].YSlopeZero)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
+		if (i <= Vertices[1].Y)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
 		{
 			float StartX = LineFunc[0].GetXValueByPoint(Vertices[0].X, i), 
 					EndX = LineFunc[1].GetXValueByPoint(Vertices[0].X, i);
@@ -133,8 +136,9 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				MathLib::SwapElement(&StartX, &EndX);
 			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
 			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
-			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
-			for (int j = StartX; j <= EndX; j++)
+			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)			
+
+			for (int j = StartX; j < EndX; j++)
 			{
 				ResultX = j + CorrectionX; 
 				ResultY = i + CorrectionY;				
@@ -157,17 +161,10 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				LeaveCriticalSection(&CRSC);
 				//깊이버퍼 체크			
 				Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);
-				RenderData Rd(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));
-				
-				EnterCriticalSection(&CRSC);
-				RD_vec.push_back(Rd);
-				LeaveCriticalSection(&CRSC);
+					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
+				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
 				*/
-				EnterCriticalSection(&CRSC);
-				RD_vec.push_back(RenderData(ResultX, ResultY, Color32(255,0,0,255)));
-				LeaveCriticalSection(&CRSC);
-			
+				DibSec.DotPixel(ResultX, ResultY, Color32(255, 0, 0, 255));//test			
 			}
 		}
 		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
@@ -180,7 +177,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
 			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
-			for (int j = StartX; j <= EndX; j++)
+			for (int j = StartX; j < EndX; j++)
 			{			
 				ResultX = j + CorrectionX;
 				ResultY = i + CorrectionY;				
@@ -202,16 +199,10 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				LeaveCriticalSection(&CRSC);
 				//깊이버퍼 체크		
 				Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);
-				RenderData Rd(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));
-
-				EnterCriticalSection(&CRSC);
-				RD_vec.push_back(Rd);
-				LeaveCriticalSection(&CRSC);
+					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
+				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
 				*/
-				EnterCriticalSection(&CRSC);
-				RD_vec.push_back(RenderData(ResultX, ResultY, Color32(255, 0, 0, 255)));
-				LeaveCriticalSection(&CRSC);				
+				DibSec.DotPixel(ResultX, ResultY, Color32(255, 0, 0, 255));//test
 			}
 		}
 	}
@@ -234,20 +225,8 @@ Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNor
 														Ambient.Z + Diffuse.Z + Specular.Z);
 }
 
-void Render::DotPixel_RD()
-{	
-	for (auto& i : RD_vec)
-	{	
-		if (i.X < 0 || i.Y < 0 || i.X > CLIENT_WIDTH || i.Y > CLIENT_HEIGHT)
-			return;
-
-		DibSec.DotPixel(i.X, i.Y, i.Color);
-	}
-	
-	RD_vec.clear();
-}
-
 void Render::RenderFPS(float _elapsedTime)
 {
 	DibSec.SetWindowsTitleFPS(_elapsedTime);
 }
+
