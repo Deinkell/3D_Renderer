@@ -13,7 +13,6 @@ public:
 	FORCEINLINE Vector3(const float& _x, const float& _y, const float& _z) : X(_x), Y(_y), Z(_z) {};
 	FORCEINLINE Vector3(float&& _x, float&& _y, float&& _z)
 	: X(std::move(_x)), Y(std::move(_y)), Z(std::move(_z)) {};
-	
 	template<typename T> requires std::is_same<Vector3, T>::value
 	FORCEINLINE Vector3(T&& _ref)
 	: X(std::forward<float>(_ref.X)), Y(std::forward<float>(_ref.Y)), Z(std::forward<float>(_ref.Z)) {};

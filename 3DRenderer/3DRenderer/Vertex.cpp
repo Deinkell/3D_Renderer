@@ -11,5 +11,6 @@ void Vertex::SetNormalVec()
 void Vertex::MakeRenderdata(const Matrix44& _FMat)
 {
 	Pos = MathLib::CrossProduct(_FMat, Pos);	
-	SetNormalVec();
+	Quaternion tmp(MathLib::CrossProduct(_FMat, NormalVec));
+	NormalVec = Vector3(tmp.X, tmp.Y, tmp.Z).GetNormalVector();
 };

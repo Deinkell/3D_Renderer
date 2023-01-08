@@ -66,7 +66,7 @@ public:
 public:
 	void MakeWorldMatrix();
 	void MakeViewMatrix(const Matrix44& _CameraMatrix);
-	void MakeProjMatrix(const Matrix44& ProjMat);
+	void MakeProjMatrix(const Matrix44& _ProjMat);
 	//공용으로 쓰는 매트릭스 생성함수
 	FORCEINLINE void MakeMatrix(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
 	{

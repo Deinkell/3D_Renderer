@@ -6,7 +6,7 @@ Render::Render(HWND _hWnd)
 	DibSec.InitializeDib(_hWnd);
 	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());	
 	InitializeCriticalSection(&CRSC);
-	Projection = std::make_unique<Proj>(10, 1000, DibSec.GetClientX(), DibSec.GetClientY());
+	Projection = std::make_unique<Proj>(5, 1000, DibSec.GetClientX(), DibSec.GetClientY());
 }
 
 Render::~Render()
@@ -36,7 +36,6 @@ void Render::OnRender(float _elapsedTime)
 void Render::PrepareObj_for_Render()
 {
 	Camera_Component->MakeViewMatrix();
-	Projection->MakeProjMatrix();
 	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
@@ -53,9 +52,8 @@ void Render::RenderObj()
 
 		for (auto& j : *Indicies)
 		{		
-			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };  			
-			tmp[0].MakeRenderdata(FMat); tmp[1].MakeRenderdata(FMat); tmp[2].MakeRenderdata(FMat);
-
+			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };  					
+			tmp[0].MakeRenderdata(FMat); tmp[1].MakeRenderdata(FMat); tmp[2].MakeRenderdata(FMat);		
 			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, 
 																		Vertex tmp3, PhongData _PhongD) 
 			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
@@ -93,7 +91,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		return;
 
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-	std::vector<PerspectiveTest> testPlanes = {
+	/*std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
 		{TestFuncPY, EdgeFuncPY},
@@ -105,10 +103,10 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 	for (auto& p : testPlanes)
 		p.ClipTriangles(tmpVertices); //삼각형 클리핑(ndc 공간에서 삼각형 보정진행)
-
+	
 	if (tmpVertices.size() == 0)
 		return;
-
+	*/
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};

@@ -43,8 +43,8 @@ void Camera::UpdateAxis()
 {
 	Vector3 tempUpVector{ 0.f, 1.f, 0.f }; //¿ùµå ¾÷º¤ÅÍ
 	Direction[2] = LookAt - Position; //Front
-	Direction[1] = MathLib::CrossProduct(Direction[2], tempUpVector); //Right
-	Direction[0] = MathLib::CrossProduct(Direction[1], Direction[2]); //Up
+	Direction[1] = MathLib::CrossProduct(tempUpVector, Direction[2]); //Right
+	Direction[0] = MathLib::CrossProduct(Direction[2], Direction[1]); //Up
 
 	for (int i = 0; i < 3; i++)
 		Direction[i] = Direction[i].GetNormalVector();
