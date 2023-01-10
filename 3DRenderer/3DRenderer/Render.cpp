@@ -6,7 +6,7 @@ Render::Render(HWND _hWnd)
 	DibSec.InitializeDib(_hWnd);
 	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());	
 	InitializeCriticalSection(&CRSC);
-	Projection = std::make_unique<Proj>(5, 1000, DibSec.GetClientX(), DibSec.GetClientY());
+	Projection = std::make_unique<Proj>(1, 1000, DibSec.GetClientX(), DibSec.GetClientY());
 }
 
 Render::~Render()
@@ -19,6 +19,9 @@ void Render::Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<Thr
 	ObjectMng_Component = _ObjMng;
 	ThreadPool_Component = _Thdpool;
 	Camera_Component = _Camera;
+
+	ClientX = DibSec.GetClientX() / 2;
+	ClientY = DibSec.GetClientY() / 2;
 }
 
 void Render::OnRender(float _elapsedTime)
@@ -39,6 +42,20 @@ void Render::PrepareObj_for_Render()
 	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
+void Render::MakePolygonNDCData(Vertex* _vt, const Matrix44& _FinalMat, const Matrix44& _WrdViewMat)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		_vt[i].MakeRenderdata(_FinalMat, _WrdViewMat);
+		_vt[i].Pos.X = _vt[i].Pos.X / _vt[i].Pos.W;
+		_vt[i].Pos.Y = _vt[i].Pos.Y / _vt[i].Pos.W;
+		_vt[i].Pos.Z = _vt[i].Pos.Z / _vt[i].Pos.W;
+
+		_vt[i].Pos.X = _vt[i].Pos.X * ClientX + ClientX;
+		_vt[i].Pos.Y = -_vt[i].Pos.Y * ClientY + ClientY;
+	}
+}
+
 void Render::RenderObj()
 {
 	int ObjSize = ObjectMng_Component->GetObjectVectorSize();
@@ -48,12 +65,13 @@ void Render::RenderObj()
 		std::shared_ptr<std::vector<Index>> Indicies = ObjectMng_Component->GetObj_Indicies(i);
 		Vector3 Position = ObjectMng_Component->GetObj_Position(i);
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
-		Matrix44 FMat = ObjectMng_Component->GetObj_Matrix(i);
+		Matrix44 FMat = ObjectMng_Component->GetObj_FinalMatrix(i);
+		Matrix44 WrdViewMat = ObjectMng_Component->GetObj_WrdViewMat(i);
 
 		for (auto& j : *Indicies)
 		{		
-			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };  					
-			tmp[0].MakeRenderdata(FMat); tmp[1].MakeRenderdata(FMat); tmp[2].MakeRenderdata(FMat);		
+			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] }; 	
+			MakePolygonNDCData(tmp, FMat, WrdViewMat);
 			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, 
 																		Vertex tmp3, PhongData _PhongD) 
 			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
@@ -89,9 +107,10 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 {	
 	if (!BackSpaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
 		return;
-
+	
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-	/*std::vector<PerspectiveTest> testPlanes = {
+	/*
+	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
 		{TestFuncPY, EdgeFuncPY},
@@ -110,9 +129,6 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
-
-	int CorrectionX = DibSec.GetClientX() / 2, CorrectionY = DibSec.GetClientY() / 2;	
-	int ResultX, ResultY;
 
 	MathLib::SortByYvalue(Vertices, Vertices);
 	for (int i = 0; i < 3; i++)
@@ -137,11 +153,9 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)			
 
 			for (int j = StartX; j < EndX; j++)
-			{
-				ResultX = j + CorrectionX; 
-				ResultY = i + CorrectionY;				
+			{					
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
-				if(!DibSec.CheckIntersectClientRect(ResultX, ResultY))
+				if(!DibSec.CheckIntersectClientRect(j, i))
 					continue;
 				/*
 				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
@@ -162,7 +176,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
 				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
 				*/
-				DibSec.DotPixel(ResultX, ResultY, Color32(255, 0, 0, 255));//test			
+				DibSec.DotPixel(j, i, Color32(255, 0, 0, 255));//test			
 			}
 		}
 		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
@@ -177,10 +191,8 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
 			for (int j = StartX; j < EndX; j++)
 			{			
-				ResultX = j + CorrectionX;
-				ResultY = i + CorrectionY;				
 				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
-				if (!DibSec.CheckIntersectClientRect(ResultX, ResultY))
+				if (!DibSec.CheckIntersectClientRect(j, i))
 					continue;
 				/*
 				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2],
@@ -200,7 +212,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
 				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
 				*/
-				DibSec.DotPixel(ResultX, ResultY, Color32(255, 0, 0, 255));//test
+				DibSec.DotPixel(j, i, Color32(255, 0, 0, 255));//test
 			}
 		}
 	}

@@ -61,7 +61,7 @@ namespace MathLib
 	Quaternion MathLib::CrossProduct(const Matrix44& _refMat, const Quaternion& _refQ)
 	{
 		return std::move(Quaternion(
-			((_refQ.X * _refMat.mat44[0][0]) + (_refQ.Y * _refMat.mat44[1][0]) + (_refQ.Z * _refMat.mat44[2][0]) + (_refQ.W * _refMat.mat44[3][0]))
+			(  (_refQ.X * _refMat.mat44[0][0]) + (_refQ.Y * _refMat.mat44[1][0]) + (_refQ.Z * _refMat.mat44[2][0]) + (_refQ.W * _refMat.mat44[3][0]))
 			, ((_refQ.X * _refMat.mat44[0][1]) + (_refQ.Y * _refMat.mat44[1][1]) + (_refQ.Z * _refMat.mat44[2][1]) + (_refQ.W * _refMat.mat44[3][1]))
 			, ((_refQ.X * _refMat.mat44[0][2]) + (_refQ.Y * _refMat.mat44[1][2]) + (_refQ.Z * _refMat.mat44[2][2]) + (_refQ.W * _refMat.mat44[3][2]))
 			, ((_refQ.X * _refMat.mat44[0][3]) + (_refQ.Y * _refMat.mat44[1][3]) + (_refQ.Z * _refMat.mat44[2][3]) + (_refQ.W * _refMat.mat44[3][3]))));

@@ -8,9 +8,9 @@ void Vertex::SetNormalVec()
 	NormalVec = std::move(Vector3(Pos.X * invsqrt, Pos.Y * invsqrt, Pos.Z * invsqrt));
 }
 
-void Vertex::MakeRenderdata(const Matrix44& _FMat)
+void Vertex::MakeRenderdata(const Matrix44& _FMat, const Matrix44& _WrdViewMat)
 {
 	Pos = MathLib::CrossProduct(_FMat, Pos);	
-	Quaternion tmp(MathLib::CrossProduct(_FMat, NormalVec));
+	Quaternion tmp(MathLib::CrossProduct(_WrdViewMat, NormalVec));
 	NormalVec = Vector3(tmp.X, tmp.Y, tmp.Z).GetNormalVector();
 };

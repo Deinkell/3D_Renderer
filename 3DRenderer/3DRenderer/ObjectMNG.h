@@ -25,7 +25,8 @@ public:
 	FORCEINLINE decltype(auto) GetPhongData(const int& _idx) {return ObjectVectors[_idx]->GetPhongData();}
 	FORCEINLINE decltype(auto) GetObj_Vertices(const int& _idx) { return ObjectVectors[_idx]->GetVertices(); }
 	FORCEINLINE decltype(auto) GetObj_Indicies(const int& _idx) { return ObjectVectors[_idx]->GetIndices(); }
-	FORCEINLINE decltype(auto) GetObj_Matrix(const int& _idx) { return ObjectVectors[_idx]->GetMatrix44(); }
+	FORCEINLINE decltype(auto) GetObj_FinalMatrix(const int& _idx) { return ObjectVectors[_idx]->GetMatrix44(); }
+	FORCEINLINE decltype(auto) GetObj_WrdViewMat(const int& _idx) { return ObjectVectors[_idx]->GetWrdViewMat(); }
 	FORCEINLINE decltype(auto) GetObj_Position(const int& _idx) { return ObjectVectors[_idx]->GetPosition(); }
 
 public:

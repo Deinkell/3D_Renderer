@@ -8,7 +8,7 @@ class Proj
 {
 private:
 	float Near, Far;
-	float Width, Height, NMinustF, Fovy, Dist;
+	float Width, Height, NMinustF, Fovy, Dist, Aspect;
 	Matrix44 ProjMat;
 
 public:
@@ -16,6 +16,7 @@ public:
 	FORCEINLINE explicit Proj(T&& _Near, T&& _Far, T&& _Width, T&& _Height_) 
 	: Near(_Near), Far(_Far), Width(_Width), Height(_Height_) 
 	{
+		Aspect = (Width / Height);
 		NMinustF = Near - Far;
 		Fovy = (float)(PROJECTION_FOV * 3.14 / 180.0f);
 		Dist = 1.0f / tanf(Fovy / 2.0f);

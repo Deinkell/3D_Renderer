@@ -12,11 +12,11 @@ class Figure_Interface
 {
 protected:
 	Vector3 Position{0.f, 0.f, 0.f};
-	Vector3 Rotation{0.f, 0.f, 0.f};
-	Vector3 Scale{50.f, 50.f, 50.f};
+	Vector3 Rotation{0.f, 10.f, 0.f};
+	Vector3 Scale{10.f, 10.f, 10.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
 	PhongData PhongD{ Vector3(30.0f, 30.0f, 30.0f), Vector3(255.0f, 100.0f, 100.0f), Vector3(255.0f, 255.0f, 255.0f)};
-	Matrix44 FigureMat44;
+	Matrix44 FigureMat44, MatWrdView;
 	std::shared_ptr<std::vector<Vertex>> Vertices = std::make_shared<std::vector<Vertex>>();
 	std::shared_ptr<std::vector<Index>> Indices = std::make_shared<std::vector<Index>>();
 	FigureType Figure_type;
@@ -61,18 +61,21 @@ public:
 	FORCEINLINE constexpr decltype(auto) GetRotation() { return Rotation; }
 	FORCEINLINE constexpr decltype(auto) GetScale() { return Scale; }
 	FORCEINLINE decltype(auto) GetMatrix44() { return FigureMat44; }
+	FORCEINLINE decltype(auto) GetWrdViewMat() { return MatWrdView; }
 	FORCEINLINE decltype(auto) GetPhongData() { return PhongD; }
 	// Get함수
 public:
-	void MakeWorldMatrix();
-	void MakeViewMatrix(const Matrix44& _CameraMatrix);
-	void MakeProjMatrix(const Matrix44& _ProjMat);
+	void MakeWorldMatrix(Matrix44* _Out);
+	void MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMatrix);
+	void MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat);
 	//공용으로 쓰는 매트릭스 생성함수
 	FORCEINLINE void MakeMatrix(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
 	{
-		MakeWorldMatrix();
-		MakeViewMatrix(_CameraMatrix);
-		MakeProjMatrix(_ProjMat);
+		MakeWorldMatrix(&FigureMat44);
+		MakeWorldMatrix(&MatWrdView);
+		MakeViewMatrix(&FigureMat44,_CameraMatrix);
+		MakeViewMatrix(&MatWrdView,_CameraMatrix);
+		MakeProjMatrix(&FigureMat44, _ProjMat);
 	}
 
 public:

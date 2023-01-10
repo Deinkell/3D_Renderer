@@ -1,4 +1,4 @@
 #pragma once
 
-#define CLIENT_WIDTH 900
-#define CLIENT_HEIGHT 900
+#define CLIENT_WIDTH 1000
+#define CLIENT_HEIGHT 700

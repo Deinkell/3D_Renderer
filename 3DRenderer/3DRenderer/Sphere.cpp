@@ -3,8 +3,6 @@
 
 void Sphere::Init()
 {
-	Position.Z = 100.f;
-
 	const float X = 0.525731112119133606f;
 	const float Z = 0.850650808352039932f;
 	const float N = 0.0f;
@@ -52,7 +50,8 @@ void Sphere::MakeRenderData()
 }
 
 void Sphere::Ontick(float _time)
-{
+{	
+	RotateSun(Vector3(0.f, 0.f, 0.f), _time);
 }
 
 void Sphere::SubDivide(int _NumOfDivide)
@@ -104,4 +103,18 @@ void Sphere::SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _p3)
 	_p1.NormalVec += Cross;
 	_p2.NormalVec += Cross;
 	_p3.NormalVec += Cross;
+}
+
+void Sphere::RotateSun(const Vector3& _Center, const float& _elapsed)
+{
+	static float theata = 0.f;
+	theata += 5 * _elapsed;
+	if (theata >= 360.f)
+		theata -= 360.f;
+
+	Vector3 CenterMinusPos = _Center - Position;
+	float Length = sqrt(CenterMinusPos.X * CenterMinusPos.X + CenterMinusPos.Y + CenterMinusPos.Y + CenterMinusPos.Z * CenterMinusPos.Z);
+
+	Position.X = Length * sin(theata);
+	Position.Z = Length * cos(theata) ;
 }

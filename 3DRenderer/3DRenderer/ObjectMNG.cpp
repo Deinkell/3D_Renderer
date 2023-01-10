@@ -18,6 +18,7 @@ void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
 		{
 			FlyWeightObject[i]->SetPosition(_Pos);
 			auto tmp(FlyWeightObject[i]);
+			tmp->SetPosition(Vector3(50.f, 0.f, 0.f));
 			ObjectVectors.push_back(std::move(tmp));
 			//프로토타입패턴 이용->텍스쳐를 입히게되면 경량패턴으로 교체
 		}

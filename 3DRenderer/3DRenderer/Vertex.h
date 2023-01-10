@@ -44,7 +44,7 @@ public:
 	void SetNormalVec();
 
 public:
-	void MakeRenderdata(const Matrix44& _FMat);
+	void MakeRenderdata(const Matrix44& _FMat, const Matrix44& _WrdViewMat);
 };
 
 

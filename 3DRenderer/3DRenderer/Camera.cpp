@@ -3,6 +3,8 @@
 
 void Camera::Initialize()
 {
+	Position.Z = -150;
+	Position.Y = 70;
 	UpdateAxis();
 	MakeViewMatrix();
 };
