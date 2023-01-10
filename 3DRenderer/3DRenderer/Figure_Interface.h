@@ -68,6 +68,9 @@ public:
 	void MakeWorldMatrix(Matrix44* _Out);
 	void MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMatrix);
 	void MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat);
+	void MatXspin(Matrix44* _Out, const float& _Xspin);
+	void MatYspin(Matrix44* _Out, const float& _Yspin);
+	void MatZspin(Matrix44* _Out, const float& _Zspin);
 	//공용으로 쓰는 매트릭스 생성함수
 	FORCEINLINE void MakeMatrix(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
 	{

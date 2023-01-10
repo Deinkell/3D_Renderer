@@ -116,5 +116,5 @@ void Sphere::RotateSun(const Vector3& _Center, const float& _elapsed)
 	float Length = sqrt(CenterMinusPos.X * CenterMinusPos.X + CenterMinusPos.Y + CenterMinusPos.Y + CenterMinusPos.Z * CenterMinusPos.Z);
 
 	Position.X = Length * sin(theata);
-	Position.Z = Length * cos(theata) ;
+	Position.Z = Length * cos(theata);
 }

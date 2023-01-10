@@ -52,7 +52,7 @@ void Render::MakePolygonNDCData(Vertex* _vt, const Matrix44& _FinalMat, const Ma
 		_vt[i].Pos.Z = _vt[i].Pos.Z / _vt[i].Pos.W;
 
 		_vt[i].Pos.X = _vt[i].Pos.X * ClientX + ClientX;
-		_vt[i].Pos.Y = -_vt[i].Pos.Y * ClientY + ClientY;
+		_vt[i].Pos.Y = -_vt[i].Pos.Y * ClientY + ClientY;	
 	}
 }
 
@@ -109,7 +109,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		return;
 	
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-	/*
+	
 	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
@@ -125,7 +125,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 	
 	if (tmpVertices.size() == 0)
 		return;
-	*/
+	
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
 						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z)};
@@ -141,80 +141,50 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 	for (int i = Vertices[0].Y; i <= Vertices[2].Y; i++)
 	{
+		float StartX, EndX;
 		if (i <= Vertices[1].Y)//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 작을 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
 		{
-			float StartX = LineFunc[0].GetXValueByPoint(Vertices[0].X, i), 
-					EndX = LineFunc[1].GetXValueByPoint(Vertices[0].X, i);
-
-			if (StartX > EndX)
-				MathLib::SwapElement(&StartX, &EndX);
-			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
-			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
-			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)			
-
-			for (int j = StartX; j < EndX; j++)
-			{					
-				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
-				if(!DibSec.CheckIntersectClientRect(j, i))
-					continue;
-				/*
-				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
-													Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
-
-				float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
-				
-			
-				EnterCriticalSection(&CRSC);
-				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
-				{
-					LeaveCriticalSection(&CRSC);
-					continue;
-				}
-				LeaveCriticalSection(&CRSC);
-				//깊이버퍼 체크			
-				Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
-				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
-				*/
-				DibSec.DotPixel(j, i, Color32(255, 0, 0, 255));//test			
-			}
+			StartX = LineFunc[0].GetXValueByPoint(Vertices[0].X, i),
+			EndX = LineFunc[1].GetXValueByPoint(Vertices[0].X, i);
 		}
-		else//Y값의 크기로 정렬 된 버텍스리스트의 중간값보다 클 때(X,y 기울기 0은 절편을 구하기때문에 고려x)
+		else
 		{
-			float StartX = LineFunc[0].GetXValueByPoint(Vertices[2].X, i),
-					EndX = LineFunc[2].GetXValueByPoint(Vertices[2].X, i);
+			StartX = LineFunc[0].GetXValueByPoint(Vertices[2].X, i),
+			EndX = LineFunc[2].GetXValueByPoint(Vertices[2].X, i);
+		}
 
-			if (StartX > EndX)
-				MathLib::SwapElement(&StartX, &EndX);
-			//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
-			//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
-			//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)
-			for (int j = StartX; j < EndX; j++)
-			{			
-				//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
-				if (!DibSec.CheckIntersectClientRect(j, i))
-					continue;
-				/*
-				Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2],
+		if (StartX > EndX)
+			MathLib::SwapElement(&StartX, &EndX);
+		//버텍스 3개의 값을 y값 오름차순으로 정렬하여 각 정점끼리의 직선의 방정식을 생성,
+		//최소y에서 최대y까지의 길이사이에서 각 직선의 방정식을 이용하여 i = y 지점의 양 직선 사이의 점을 구하고
+		//두 점 사이의 모든 빈자리를 채움(삼각형 내부에 직선을 그리는 식으로 삼각형을 모두 채움)			
+
+		for (int j = StartX; j < EndX; j++)
+		{					
+			//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
+			if(!DibSec.CheckIntersectClientRect(j, i))
+				continue;
+			/*
+			Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
 												Vertices[1] - Vertices[2], Vector3(ResultX, ResultY, 0));
 
-				float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
-
-				EnterCriticalSection(&CRSC);
-				if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
-				{
-					LeaveCriticalSection(&CRSC);
-					continue;					
-				}
+			float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;
+				
+			
+			EnterCriticalSection(&CRSC);
+			if (!DepthBuf.CheckDepthBuffer(ResultX, ResultY, PixelZvalue))
+			{
 				LeaveCriticalSection(&CRSC);
-				//깊이버퍼 체크		
-				Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-					+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
-				DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
-				*/
-				DibSec.DotPixel(j, i, Color32(255, 0, 0, 255));//test
+				continue;
 			}
-		}
+			LeaveCriticalSection(&CRSC);
+			//깊이버퍼 체크			
+			Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
+				+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
+			DibSec.DotPixel(ResultX, ResultY, MakePhongShader(_ObjPos, PixelNormal, _PD));				
+			*/
+			DibSec.DotPixel(j, i, Color32(255, 0, 0, 255));//test			
+		}				
 	}
 }
 

@@ -3,8 +3,8 @@
 
 void Camera::Initialize()
 {
-	Position.Z = -150;
-	Position.Y = 70;
+	Position.Z = -250;
+	Position.Y = 100;
 	UpdateAxis();
 	MakeViewMatrix();
 };
@@ -34,6 +34,7 @@ void Camera::MakeViewMatrix()
 void Camera::Update(float _elapsedTime)
 {
 	Move(_elapsedTime);
+	UpdateAxis();
 	MakeViewMatrix();
 };
 

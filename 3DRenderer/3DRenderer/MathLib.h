@@ -27,6 +27,14 @@ namespace MathLib
 	{
 		return (A >= (T)0) ? A : -A;
 	};
+	template<typename T> requires std::is_fundamental_v<T>
+	FORCEINLINE constexpr T Degree360Lerp(const T _In)
+	{
+		if (_In >= 0)
+			return _In < 360 ? _In : _In - 360;
+		else
+			return _In > -360 ? _In : _In + 360;
+	}
 	//템플릿 함수들
 	void		CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2);
 	Matrix44	CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2);
