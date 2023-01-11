@@ -13,7 +13,7 @@ class Figure_Interface
 protected:
 	Vector3 Position{0.f, 0.f, 0.f};
 	Vector3 Rotation{0.f, 10.f, 0.f};
-	Vector3 Scale{10.f, 10.f, 10.f};
+	Vector3 Scale{32.f, 32.f, 32.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
 	PhongData PhongD{ Vector3(30.0f, 30.0f, 30.0f), Vector3(255.0f, 100.0f, 100.0f), Vector3(255.0f, 255.0f, 255.0f)};
 	Matrix44 FigureMat44, MatWrdView;

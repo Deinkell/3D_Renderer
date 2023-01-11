@@ -35,6 +35,12 @@ namespace MathLib
 		else
 			return _In > -360 ? _In : _In + 360;
 	}
+	template<typename T> requires std::is_fundamental_v<T>
+	FORCEINLINE Vector3 GetVec2Normal(const T& _X, const T& _Y)
+	{
+		float InvSqrt = 1 / sqrt(_X * _X + _Y * _Y);
+		return Vector3(_X * InvSqrt, _Y * InvSqrt, 0.f);
+	}
 	//템플릿 함수들
 	void		CrossProduct(Matrix44* _out, const Matrix44& _ref1, const Matrix44& _ref2);
 	Matrix44	CrossProduct(const Matrix44& _ref1, const Matrix44& _ref2);
@@ -59,4 +65,6 @@ namespace MathLib
 	Quaternion	GetNormal(const Quaternion& _ref);
 	//계산 함수
 	Vector3		EraseDecimalXY(Vector3& _Vec);
+	float		EraseDecimalXY_lifting(const float& _ref);
+	float		EraseDecimalXY_falling(const float& _ref);
 }

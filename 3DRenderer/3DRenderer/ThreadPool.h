@@ -26,10 +26,10 @@ public:
 public:	
 	template<class F, class... Args>
 	FORCEINLINE void EnqueueJob(F&& f, Args&&... args);	
-	bool AllThreadWait() { return bool(Thread_wait[0] & Thread_wait[1] & Thread_wait[2] & Thread_wait[3]); }
+	bool AllThreadWait();
 
 private:
-	void WorkerThread(const int _Number);	
+	void WorkerThread(const int _Number);		
 };
 
 template<class F, class... Args>

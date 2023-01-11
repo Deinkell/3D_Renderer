@@ -40,7 +40,7 @@ public:
 	void Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<ThreadPool>& _Thdpool, std::shared_ptr<Camera>& _Camera);
 	void OnRender(float _elapsedTime);
 	void PrepareObj_for_Render();
-	void MakePolygonNDCData(Vertex* _vt, const Matrix44& _FinalMat, const Matrix44& _WrdViewMat);
+	void MakePolygonNDCData(std::vector<Vertex>& _vt);
 	void RenderObj();
 	bool BackSpaceCuling(const Vector3& _Normal);
 	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _w);
@@ -52,7 +52,7 @@ public:
 
 FORCEINLINE void Render::BitBltDib()
 {
-	while (1)
+	while(1)
 	{
 		if (ThreadPool_Component->AllThreadWait())
 		{
@@ -60,4 +60,6 @@ FORCEINLINE void Render::BitBltDib()
 			break;
 		}
 	}
+
+	DepthBuf.ClearDepthBuffer();
 }

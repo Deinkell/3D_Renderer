@@ -297,6 +297,23 @@ namespace MathLib
 		if (tmp > 0.5f)
 			tmpVec.Y = tmpVec.Y + 1;
 
+		tmpVec.Z = _Vec.Z;
+
 		return std::move(tmpVec);
+	}
+	float EraseDecimalXY_lifting(const float& _ref)
+	{
+		float tmp;
+		tmp = (int)_ref;
+		tmp = _ref - tmp;
+
+		if (tmp > 0.f)
+			return std::move((int)_ref + 1);
+		else
+			return std::move((int)_ref);
+	};
+	float EraseDecimalXY_falling(const float& _ref)
+	{
+		return std::move((int)_ref);
 	};
 };
