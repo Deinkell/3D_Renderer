@@ -11,7 +11,7 @@ class ObjectMNG
 private:
 	std::vector<std::shared_ptr<Figure_Interface>> FlyWeightObject;
 	std::vector<std::shared_ptr<Figure_Interface>> ObjectVectors;
-	LightObj Lighting_Sun{1.f, 1.f, 1.f};
+	LightObj Lighting_Sun{0.4f, 0.4f, 0.4f};
 
 public:
 	ObjectMNG();
@@ -27,6 +27,7 @@ public:
 	FORCEINLINE decltype(auto) GetObj_Indicies(const int& _idx) { return ObjectVectors[_idx]->GetIndices(); }
 	FORCEINLINE decltype(auto) GetObj_FinalMatrix(const int& _idx) { return ObjectVectors[_idx]->GetMatrix44(); }
 	FORCEINLINE decltype(auto) GetObj_WrdViewMat(const int& _idx) { return ObjectVectors[_idx]->GetWrdViewMat(); }
+	FORCEINLINE decltype(auto) GetObj_WrdMat(const int& _idx) { return ObjectVectors[_idx]->GetWorldMat(); }
 	FORCEINLINE decltype(auto) GetObj_Position(const int& _idx) { return ObjectVectors[_idx]->GetPosition(); }
 
 public:

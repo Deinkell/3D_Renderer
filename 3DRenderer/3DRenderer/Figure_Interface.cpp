@@ -67,7 +67,7 @@ void Figure_Interface::MatZspin(Matrix44* _Out, const float& _Zspin)
 
 void Figure_Interface::MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMatrix)
 {
-	MathLib::CrossProduct(_Out, *_Out, _CameraMatrix);
+	MathLib::CrossProduct(_Out, WorldMat, _CameraMatrix);
 }
 
 void Figure_Interface::MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat)

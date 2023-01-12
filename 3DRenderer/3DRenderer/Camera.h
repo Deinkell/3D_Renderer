@@ -20,6 +20,7 @@ public:
 	FORCEINLINE constexpr Vector3 GetPosition() { return Position; }
 	FORCEINLINE Matrix44 GetCameraMat() { return CameraMat; }
 	FORCEINLINE constexpr Vector3 GetNormal() { return NormalVec; }
+	FORCEINLINE constexpr Vector3 GetFrontAxis() { return Direction[2]; }
 
 public:
 	void Initialize();

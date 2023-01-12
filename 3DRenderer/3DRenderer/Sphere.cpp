@@ -34,7 +34,6 @@ void Sphere::Init()
 	//20면체 생성
 	SubDivide(Sphere_Divide);
 	//구로 분할
-
 	for (auto& i : *Vertices)
 		i.SetNormalVec();
 }
@@ -66,15 +65,15 @@ void Sphere::SubDivide(int _NumOfDivide)
 			auto& j = (*Indices)[k];
 			VtxSize = Vertices->size();
 			Vertex Divide01, Divide02, Divide03;
-			Divide01.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._1].Pos) * 0.5f;
-			Divide01.Pos.W = 1.0f;
+			Divide01.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._1].Pos) * 0.5f;			
 			Divide01.Pos = Divide01.Pos.GetNormal();
-			Divide02.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._2].Pos) * 0.5f;
-			Divide02.Pos.W = 1.0f;
+			Divide01.Pos.W = 1.0f;
+			Divide02.Pos = ((*Vertices)[j._0].Pos + (*Vertices)[j._2].Pos) * 0.5f;			
 			Divide02.Pos = Divide02.Pos.GetNormal();
-			Divide03.Pos = ((*Vertices)[j._1].Pos + (*Vertices)[j._2].Pos) * 0.5f;
-			Divide03.Pos.W = 1.0f;
+			Divide02.Pos.W = 1.0f;
+			Divide03.Pos = ((*Vertices)[j._1].Pos + (*Vertices)[j._2].Pos) * 0.5f;			
 			Divide03.Pos = Divide03.Pos.GetNormal();
+			Divide03.Pos.W = 1.0f;
 
 			Vertices->push_back(Divide01);
 			Vertices->push_back(Divide02);
@@ -107,14 +106,11 @@ void Sphere::SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _p3)
 
 void Sphere::RotateSun(const Vector3& _Center, const float& _elapsed)
 {
-	static float theata = 0.f;
-	theata += 5 * _elapsed;
+	static float theata = 0.f;	
+	theata += Rotate_Speed * _elapsed;
 	if (theata >= 360.f)
 		theata -= 360.f;
 
-	Vector3 CenterMinusPos = _Center - Position;
-	float Length = sqrt(CenterMinusPos.X * CenterMinusPos.X + CenterMinusPos.Y + CenterMinusPos.Y + CenterMinusPos.Z * CenterMinusPos.Z);
-
-	Position.X = Length * sin(theata);
-	Position.Z = Length * cos(theata);
+	Position.X = Rotate_Dist * sin(theata) + _Center.X;
+	Position.Z = Rotate_Dist * cos(theata) + _Center.Z;
 }

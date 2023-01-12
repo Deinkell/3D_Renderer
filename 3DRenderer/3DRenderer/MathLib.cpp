@@ -277,10 +277,10 @@ namespace MathLib
 	};//고속 역제곱근 공식 => 1/루트(x)의 값을 넘겨줌
 	Quaternion MathLib::GetNormal(const Quaternion& _ref)
 	{
-		float SrqSz = _ref.X * _ref.X + _ref.Y * _ref.Y + _ref.Z * _ref.Z;
+		float SrqSz = _ref.X * _ref.X + _ref.Y * _ref.Y + _ref.Z * _ref.Z ;
 		SrqSz = GetInvSqrt(SrqSz);
 		
-		return std::move(Quaternion(_ref.X * SrqSz, _ref.Y * SrqSz, _ref.Z * SrqSz, _ref.W));
+		return std::move(Quaternion(_ref.X * SrqSz, _ref.Y * SrqSz, _ref.Z * SrqSz, _ref.W ));
 	}
 	Vector3 EraseDecimalXY(Vector3& _Vec)
 	{

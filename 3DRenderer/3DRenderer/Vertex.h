@@ -63,5 +63,5 @@ FORCEINLINE constexpr Vertex operator*(const float& _ratio, const Vertex& _ref)
 
 FORCEINLINE constexpr Vertex operator+(const Vertex& _ref1, const Vertex& _ref2)
 {
-	return std::move(Vertex(_ref1.Pos + _ref2.Pos, _ref1.Color + _ref2.Color,_ref1.NormalVec + _ref2.NormalVec, _ref1.U + _ref2.U, _ref1.V + _ref2.V));
+	return std::move(Vertex(_ref1.Pos + _ref2.Pos, _ref1.Color + _ref2.Color,(_ref1.NormalVec + _ref2.NormalVec).GetNormalVector(), _ref1.U + _ref2.U, _ref1.V + _ref2.V));
 }

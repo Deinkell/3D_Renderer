@@ -42,5 +42,5 @@ void ThreadPool::WorkerThread(const int _Number)
 
 bool ThreadPool::AllThreadWait()
 { 	
-	return bool(Thread_wait[0] & Thread_wait[1] & Thread_wait[2] & Thread_wait[3]);
+	return bool((Thread_wait[0] & Thread_wait[1] & Thread_wait[2] & Thread_wait[3]) && jobs.empty());
 }

@@ -63,21 +63,21 @@ void Render::RenderObj()
 		Vector3 Position = ObjectMng_Component->GetObj_Position(i);
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
 		Matrix44 FMat = ObjectMng_Component->GetObj_FinalMatrix(i);
-		Matrix44 WrdViewMat = ObjectMng_Component->GetObj_WrdViewMat(i);
+		Matrix44 WrdMat = ObjectMng_Component->GetObj_WrdMat(i);
 
 		for (auto& j : *Indicies)
 		{		
 			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };
-			tmp[0].MakeRenderdata(FMat, WrdViewMat); 
-			tmp[1].MakeRenderdata(FMat, WrdViewMat); 
-			tmp[2].MakeRenderdata(FMat, WrdViewMat);
+			tmp[0].MakeRenderdata(FMat, WrdMat);
+			tmp[1].MakeRenderdata(FMat, WrdMat);
+			tmp[2].MakeRenderdata(FMat, WrdMat);
 			
-			//ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) 
-			//{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
+			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) 
+			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
 			//멀티스레드 렌더링
-			RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD); 
+			//RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD); 
 			//싱글스레드 렌더링
-		}
+		}		
 	}
 }
 
@@ -168,10 +168,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 				continue;
 			
 			Vector3 Geotmp[3]{ Vertices[0] - Vertices[2],Vertices[1] - Vertices[2], Vector3(j, i, 0) - Vertices[2] };
-			Vector3 GeoPos = Geometric_centroid_VertexCalc(Geotmp[0], Geotmp[1], Geotmp[2]);
-
-			//Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0] - Vertices[2], 
-			//									Vertices[1] - Vertices[2], Vector3(j, i, 0) - Vertices[2]);
+			Vector3 GeoPos = Geometric_centroid_VertexCalc(Geotmp[0], Geotmp[1], Geotmp[2]);	
 
 			if(GeoPos.X < 0.f || GeoPos.X > 1.f || GeoPos.Y < 0.f || GeoPos.Y > 1.f || GeoPos.Z < 0.f || GeoPos.Z > 1.f)
 				continue;
@@ -187,11 +184,9 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			LeaveCriticalSection(&CRSC);
 			//깊이버퍼 체크			
 			Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-				+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);				
-			DibSec.DotPixel(j, i, MakePhongShader(_ObjPos, PixelNormal, _PD));		
-			
-			
-			//DibSec.DotPixel(j, i, Color32(255, 0, 0, 0));
+				+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);
+	
+			DibSec.DotPixel(j, i, MakePhongShader(_ObjPos, PixelNormal, _PD));	
 		}				
 	}
 }
@@ -200,14 +195,14 @@ Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNor
 {
 	//방향광을 전제로 계산(픽셀에서 광원과의 노말을 구하는데는 연산량이 너무 늘어나서 방향광으로 선택)
 	LightObj* Lighting = ObjectMng_Component->GetLightSun();
-	Vector3 l_DirLight = _ObjPos - Lighting->GetPosition();
-	Vector3 v_ObjToCamera = _ObjPos - Camera_Component->GetPosition();
-	Vector3 r_ReflectVec = -2 * (MathLib::DotProduct((-1 * l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight;
+	Vector3 l_DirLight = (_ObjPos - Lighting->GetPosition()).GetNormalVector();
+	Vector3	v_ObjToCamera = (Camera_Component->GetNormal()).GetNormalVector();
+	Vector3	r_ReflectVec = (-2 * (MathLib::DotProduct((-1*l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight).GetNormalVector();
 	float a_Shining = LightObj::ShiningConst;
 
-	Vector3 Ambient = Lighting->GetKAmb() * _PD.Ambient,			
-			Diffuse = Lighting->GetKDiff() * _PD.Diffuse * (MathLib::DotProduct(_PixelNormal, l_DirLight)),
-			Specular = Lighting->GetKSpec() *_PD.Specular * pow(MathLib::DotProduct(r_ReflectVec, v_ObjToCamera), a_Shining);
+	Vector3 Ambient = Lighting->GetKAmb() *_PD.Ambient,
+			Diffuse = Lighting->GetKDiff() * _PD.Diffuse * max((MathLib::DotProduct(_PixelNormal, l_DirLight)), 0),
+			Specular = Lighting->GetKSpec() *_PD.Specular * pow(max(MathLib::DotProduct(r_ReflectVec, v_ObjToCamera), 0), a_Shining);
 
 	return Color32(Ambient.X + Diffuse.X + Specular.X, Ambient.Y + Diffuse.Y + Specular.Y, Ambient.Z + Diffuse.Z + Specular.Z);
 }
