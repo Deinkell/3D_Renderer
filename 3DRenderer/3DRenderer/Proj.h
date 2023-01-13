@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROJECTION_FOV 60.f
+#define PROJECTION_FOV 90.f
 
 struct Matrix44;
 

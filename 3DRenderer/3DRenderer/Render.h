@@ -40,9 +40,9 @@ public:
 	void Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<ThreadPool>& _Thdpool, std::shared_ptr<Camera>& _Camera);
 	void OnRender(float _elapsedTime);
 	void PrepareObj_for_Render();
-	void MakePolygonNDCData(std::vector<Vertex>& _vt);
+	void MakePolygonViewPortData(std::vector<Vertex>& _vt);
 	void RenderObj();
-	bool BackSpaceCuling(const Vector3& _Normal);
+	bool BackFaceCuling(const Vector3& _Normal);
 	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _w);
 	void RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
 	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김

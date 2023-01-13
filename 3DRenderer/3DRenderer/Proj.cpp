@@ -12,4 +12,5 @@ void Proj::MakeProjMatrix()
 	ProjMat.mat44[2][3] = (2 * Far * Near) / NMinustF;
 	ProjMat.mat44[3][2] = -1.0f;
 	ProjMat.mat44[3][3] = 0.f;
+	
 }

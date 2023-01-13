@@ -11,7 +11,7 @@ void Camera::Initialize()
 
 void Camera::MakeViewMatrix()
 {
-	CameraMat.mat44[0][0] = Direction[1].X; //Right บคลอ
+	CameraMat.mat44[0][0] =	Direction[1].X; //Right บคลอ
 	CameraMat.mat44[1][0] = Direction[1].Y;
 	CameraMat.mat44[2][0] = Direction[1].Z;
 	CameraMat.mat44[3][0] = 0.f;
@@ -25,12 +25,13 @@ void Camera::MakeViewMatrix()
 	CameraMat.mat44[1][2] = Direction[2].Y;
 	CameraMat.mat44[2][2] = Direction[2].Z;
 	CameraMat.mat44[3][2] = 0.f;
-
+	
 	CameraMat.mat44[3][0] = -(Position.X * Direction[1].X + Position.Y * Direction[1].Y + Position.Z * Direction[1].Z);
 	CameraMat.mat44[3][1] = -(Position.X * Direction[0].X + Position.Y * Direction[0].Y + Position.Z * Direction[0].Z);
 	CameraMat.mat44[3][2] = -(Position.X * Direction[2].X + Position.Y * Direction[2].Y + Position.Z * Direction[2].Z);
-	CameraMat.mat44[3][3] = 1.f;
+	CameraMat.mat44[3][3] = 1.f;	
 }
+
 void Camera::Update(float _elapsedTime)
 {
 	Move(_elapsedTime);

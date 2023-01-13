@@ -40,10 +40,10 @@ void Render::PrepareObj_for_Render()
 	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
-void Render::MakePolygonNDCData(std::vector<Vertex>& _vt)
+void Render::MakePolygonViewPortData(std::vector<Vertex>& _vt)
 {
 	for (auto& i : _vt)
-	{		
+	{			
 		i.Pos.X = i.Pos.X / i.Pos.W;
 		i.Pos.Y = i.Pos.Y / i.Pos.W;
 		i.Pos.Z = i.Pos.Z / i.Pos.W;
@@ -63,14 +63,15 @@ void Render::RenderObj()
 		Vector3 Position = ObjectMng_Component->GetObj_Position(i);
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
 		Matrix44 FMat = ObjectMng_Component->GetObj_FinalMatrix(i);
-		Matrix44 WrdMat = ObjectMng_Component->GetObj_WrdMat(i);
+		Matrix44 WrdMat = ObjectMng_Component->GetObj_WrdMat(i);		
 
 		for (auto& j : *Indicies)
 		{		
 			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };
+		
 			tmp[0].MakeRenderdata(FMat, WrdMat);
 			tmp[1].MakeRenderdata(FMat, WrdMat);
-			tmp[2].MakeRenderdata(FMat, WrdMat);
+			tmp[2].MakeRenderdata(FMat, WrdMat);		
 			
 			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) 
 			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
@@ -81,9 +82,9 @@ void Render::RenderObj()
 	}
 }
 
-bool Render::BackSpaceCuling(const Vector3& _Normal)
+bool Render::BackFaceCuling(const Vector3& _Normal)
 {
-	if (0 > MathLib::DotProduct(Camera_Component->GetNormal(), _Normal))
+	if (0.f <= MathLib::DotProduct(Camera_Component->GetNormal(), _Normal))
 		return false;
 
 	return true;
@@ -105,7 +106,7 @@ Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vec
 
 void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD)
 {	
-	if (!BackSpaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
+	if (!BackFaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
 		return;
 	
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
@@ -126,7 +127,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 	if (tmpVertices.size() == 0)
 		return;
 	
-	MakePolygonNDCData(tmpVertices);
+	MakePolygonViewPortData(tmpVertices);
 
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
@@ -185,7 +186,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			//깊이버퍼 체크			
 			Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
 				+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);
-	
+			PixelNormal.X =  -1 * PixelNormal.X;
 			DibSec.DotPixel(j, i, MakePhongShader(_ObjPos, PixelNormal, _PD));	
 		}				
 	}
@@ -195,9 +196,9 @@ Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNor
 {
 	//방향광을 전제로 계산(픽셀에서 광원과의 노말을 구하는데는 연산량이 너무 늘어나서 방향광으로 선택)
 	LightObj* Lighting = ObjectMng_Component->GetLightSun();
-	Vector3 l_DirLight = (_ObjPos - Lighting->GetPosition()).GetNormalVector();
-	Vector3	v_ObjToCamera = (Camera_Component->GetNormal()).GetNormalVector();
-	Vector3	r_ReflectVec = (-2 * (MathLib::DotProduct((-1*l_DirLight), _PixelNormal)) * _PixelNormal - l_DirLight).GetNormalVector();
+	Vector3 l_DirLight = (_ObjPos - Lighting->GetPosition()).GetNormalVector();		
+	Vector3	v_ObjToCamera = (_ObjPos - Camera_Component->GetPosition()).GetNormalVector();
+	Vector3	r_ReflectVec = (2 * (MathLib::DotProduct((-1*l_DirLight), _PixelNormal)) * _PixelNormal + l_DirLight).GetNormalVector();
 	float a_Shining = LightObj::ShiningConst;
 
 	Vector3 Ambient = Lighting->GetKAmb() *_PD.Ambient,
