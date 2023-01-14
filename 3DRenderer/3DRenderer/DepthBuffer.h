@@ -14,8 +14,11 @@ public:
 public:
 	FORCEINLINE bool CheckDepthBuffer(const int& _x, const int& _y, const float& _Depth)
 	{
+		if (_x < 0 || _x >= ClientWidth || _y < 0 || _y >= ClientHeight)
+			return false;
+
 		float* depth = DepthBufferBlock;
-		depth += (_x + ClientWidth * _y);
+		depth += (_x + ClientHeight * _y);
 		
 		if (*depth <= _Depth)
 			return false;

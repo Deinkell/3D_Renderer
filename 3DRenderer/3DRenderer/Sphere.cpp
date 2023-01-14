@@ -51,6 +51,9 @@ void Sphere::MakeRenderData()
 void Sphere::Ontick(float _time)
 {	
 	RotateSun(Vector3(0.f, 0.f, 0.f), _time);
+
+	//Position.X = 3;
+	//Position.Z = 99;
 }
 
 void Sphere::SubDivide(int _NumOfDivide)

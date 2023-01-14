@@ -40,14 +40,20 @@ void Render::PrepareObj_for_Render()
 	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
+void Render::MakePolygonNDCData(Vertex* _Polygon)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		_Polygon[i].Pos.X = _Polygon[i].Pos.X / _Polygon[i].Pos.W;
+		_Polygon[i].Pos.Y = _Polygon[i].Pos.Y / _Polygon[i].Pos.W;
+		_Polygon[i].Pos.Z = _Polygon[i].Pos.Z / _Polygon[i].Pos.W;
+	}
+}
+
 void Render::MakePolygonViewPortData(std::vector<Vertex>& _vt)
 {
 	for (auto& i : _vt)
-	{			
-		i.Pos.X = i.Pos.X / i.Pos.W;
-		i.Pos.Y = i.Pos.Y / i.Pos.W;
-		i.Pos.Z = i.Pos.Z / i.Pos.W;
-
+	{	
 		i.Pos.X = i.Pos.X * ClientX + ClientX;
 		i.Pos.Y = -i.Pos.Y * ClientY + ClientY;	
 	}
@@ -64,20 +70,41 @@ void Render::RenderObj()
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
 		Matrix44 FMat = ObjectMng_Component->GetObj_FinalMatrix(i);
 		Matrix44 WrdMat = ObjectMng_Component->GetObj_WrdMat(i);		
-
+		Matrix44 WrdView = ObjectMng_Component->GetObj_WrdViewMat(i);
+		
 		for (auto& j : *Indicies)
 		{		
 			Vertex tmp[3]{ (*Vertices)[j._0] , (*Vertices)[j._1] , (*Vertices)[j._2] };
-		
+			
 			tmp[0].MakeRenderdata(FMat, WrdMat);
 			tmp[1].MakeRenderdata(FMat, WrdMat);
-			tmp[2].MakeRenderdata(FMat, WrdMat);		
-			
-			ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD) 
-			{ RasterizePolygon(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
-			//멀티스레드 렌더링
-			//RasterizePolygon(Position,	tmp[0], tmp[1], tmp[2], PhoD); 
-			//싱글스레드 렌더링
+			tmp[2].MakeRenderdata(FMat, WrdMat);
+			MakePolygonNDCData(tmp);//동차좌표계로 변환
+				
+			WireFrame = false;
+			Thread_Render = true;
+
+			if (WireFrame)
+			{
+				if (Thread_Render)
+				{
+					ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3)
+						{ RasterizePolygon_wire(tmp1, tmp2, tmp3); }, tmp[0], tmp[1], tmp[2]);
+				}
+				else
+					RasterizePolygon_wire(tmp[0], tmp[1], tmp[2]);
+			}
+			else
+			{
+				if (Thread_Render)
+				{
+					ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD)
+						{ RasterizePolygon_Phong(_Position, tmp1, tmp2, tmp3, _PhongD); }, Position, tmp[0], tmp[1], tmp[2], PhoD);
+				}//멀티스레드 렌더링
+				else
+					RasterizePolygon_Phong(Position, tmp[0], tmp[1], tmp[2], PhoD);
+			   //싱글스레드 렌더링
+			}
 		}		
 	}
 }
@@ -90,9 +117,10 @@ bool Render::BackFaceCuling(const Vector3& _Normal)
 	return true;
 }
 
-Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _W)
+Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p1, const Vector3& _p2, 
+														const Vector3& _p3,	const Vector3& _W)
 {
-	Vector3 u = _p3p1Vec, v = _p3p2Vec, W = _W;	
+	Vector3 u = _p1-_p3, v = _p2 - _p3, W = _W;	
 	float udotv = MathLib::DotProduct(u.X, u.Y, v.X, v.Y),
 		  wdotv = MathLib::DotProduct(_W.X, _W.Y, v.X, v.Y),
 		  wdotu = MathLib::DotProduct(_W.X, _W.Y, u.X, u.Y),
@@ -104,13 +132,14 @@ Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vec
 	return std::move(Vector3(s, t, 1 - s - t));
 }
 
-void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD)
+void Render::RasterizePolygon_Phong(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD)
 {	
 	if (!BackFaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
 		return;
+	//백페이스 컬링
 	
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
-	
+
 	std::vector<PerspectiveTest> testPlanes = {
 		{TestFuncW0, EdgeFuncW0},
 		{TestFuncNY, EdgeFuncNY},
@@ -120,14 +149,15 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 		{TestFuncFar, EdgeFuncFar},
 		{TestFuncNear, EdgeFuncNear}
 	};
-
+	
 	for (auto& p : testPlanes)
 		p.ClipTriangles(tmpVertices); //삼각형 클리핑(동차좌표계에서 진행 후 ndc 변환)
 	
 	if (tmpVertices.size() == 0)
 		return;
-	
+	//절두체컬링
 	MakePolygonViewPortData(tmpVertices);
+	//ndc -> 뷰포트 진행
 
 	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
 						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
@@ -141,7 +171,7 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 	MathLib::Make2DLinFunction(&LineFunc[0], Vertices[0], Vertices[2]);
 	MathLib::Make2DLinFunction(&LineFunc[1], Vertices[0], Vertices[1]);
 	MathLib::Make2DLinFunction(&LineFunc[2], Vertices[1], Vertices[2]);
-
+	
 	for (int i = Vertices[0].Y; i <= Vertices[2].Y; i++)
 	{
 		float StartX, EndX;
@@ -164,18 +194,22 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 
 		for (int j = StartX; j <= EndX; j++)
 		{					
-			//PhongShader(폴리곤 노말값을 통한 램버트 반사값 계산위치)
 			if(!DibSec.CheckIntersectClientRect(j, i))
 				continue;
-			
-			Vector3 Geotmp[3]{ Vertices[0] - Vertices[2],Vertices[1] - Vertices[2], Vector3(j, i, 0) - Vertices[2] };
-			Vector3 GeoPos = Geometric_centroid_VertexCalc(Geotmp[0], Geotmp[1], Geotmp[2]);	
-
+		
+			Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0], Vertices[1], Vertices[2], 
+																	Vector3(j, i, 0) - Vertices[2]);
+			//무게중심 좌표계 생성
 			if(GeoPos.X < 0.f || GeoPos.X > 1.f || GeoPos.Y < 0.f || GeoPos.Y > 1.f || GeoPos.Z < 0.f || GeoPos.Z > 1.f)
 				continue;
 
-			float PixelZvalue = Vertices[0].Z * GeoPos.X + Vertices[1].Z * GeoPos.Y + Vertices[2].Z * GeoPos.Z;		
-
+			float invZ0 = 1.f / tmpVertices[0].Pos.W;
+			float invZ1 = 1.f / tmpVertices[1].Pos.W;
+			float invZ2 = 1.f / tmpVertices[2].Pos.W;
+			float Z = invZ0 * GeoPos.Z + invZ1 * GeoPos.X + invZ2 * GeoPos.Y, invZ = 1.f / Z;
+			float PixelZvalue = (Vertices[0].Z * GeoPos.X * invZ1 + Vertices[1].Z * GeoPos.Y * invZ2 + 
+								Vertices[2].Z * GeoPos.Z * invZ0)*invZ;		
+			//무게중심 좌표계 보간값
 			EnterCriticalSection(&CRSC);
 			if (!DepthBuf.CheckDepthBuffer(j, i, PixelZvalue))
 			{
@@ -184,28 +218,159 @@ void Render::RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const V
 			}
 			LeaveCriticalSection(&CRSC);
 			//깊이버퍼 체크			
-			Vector3 PixelNormal = (tmpVertices[0].NormalVec * GeoPos.X)
-				+ (tmpVertices[1].NormalVec * GeoPos.Y) + (tmpVertices[2].NormalVec * GeoPos.Z);
-			PixelNormal.X =  -1 * PixelNormal.X;
-			DibSec.DotPixel(j, i, MakePhongShader(_ObjPos, PixelNormal, _PD));	
+			Vector3 PixelNormal = ((tmpVertices[0].NormalVec * GeoPos.X * invZ1)
+				+ (tmpVertices[1].NormalVec * GeoPos.Y * invZ2) + (tmpVertices[2].NormalVec * GeoPos.Z * invZ0))*invZ;			
+			//무게중심 좌표계로 보간된 노말을 이용해 퐁 역산
+			DibSec.DotPixel(j, i, MakePhongShader(_ObjPos, PixelNormal, _PD));			
 		}				
 	}
+}
+
+void Render::RasterizePolygon_wire(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3)
+{
+	if (!BackFaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
+		return;
+	//백페이스 컬링
+
+	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
+
+	std::vector<PerspectiveTest> testPlanes = {
+		{TestFuncW0, EdgeFuncW0},
+		{TestFuncNY, EdgeFuncNY},
+		{TestFuncPY, EdgeFuncPY},
+		{TestFuncNX, EdgeFuncNX},
+		{TestFuncPX, EdgeFuncPX},
+		{TestFuncFar, EdgeFuncFar},
+		{TestFuncNear, EdgeFuncNear}
+	};
+
+	for (auto& p : testPlanes)
+		p.ClipTriangles(tmpVertices); //삼각형 클리핑(동차좌표계에서 진행 후 ndc 변환)
+
+	if (tmpVertices.size() == 0)
+		return;
+	//절두체컬링
+	MakePolygonViewPortData(tmpVertices);
+	//ndc -> 뷰포트 진행
+
+	Vector3 Vertices[3]{ Vector3(tmpVertices[0].Pos.X, tmpVertices[0].Pos.Y, tmpVertices[0].Pos.Z),
+						Vector3(tmpVertices[1].Pos.X, tmpVertices[1].Pos.Y, tmpVertices[1].Pos.Z),
+						Vector3(tmpVertices[2].Pos.X, tmpVertices[2].Pos.Y, tmpVertices[2].Pos.Z) };
+
+	MathLib::SortByYvalue(Vertices, Vertices);
+	for (int i = 0; i < 3; i++)
+
+	Vertices[i] = MathLib::EraseDecimalXY(Vertices[i]);
+		
+	LineDraw(Vertices[0].X, Vertices[0].Y, Vertices[1].X, Vertices[1].Y, Color32(0, 0, 0));
+	LineDraw(Vertices[0].X, Vertices[0].Y, Vertices[2].X, Vertices[2].Y, Color32(0, 0, 0));
+	LineDraw(Vertices[2].X, Vertices[2].Y, Vertices[1].X, Vertices[1].Y, Color32(0, 0, 0));	
 }
 
 Color32 Render::MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal, const PhongData& _PD)
 {
 	//방향광을 전제로 계산(픽셀에서 광원과의 노말을 구하는데는 연산량이 너무 늘어나서 방향광으로 선택)
 	LightObj* Lighting = ObjectMng_Component->GetLightSun();
-	Vector3 l_DirLight = (_ObjPos - Lighting->GetPosition()).GetNormalVector();		
+	Vector3 PixNor(_PixelNormal); PixNor = PixNor.GetNormalVector();
+	Vector3 l_DirLight = (_ObjPos - Lighting->GetPosition()).GetNormalVector();
 	Vector3	v_ObjToCamera = (_ObjPos - Camera_Component->GetPosition()).GetNormalVector();
-	Vector3	r_ReflectVec = (2 * (MathLib::DotProduct((-1*l_DirLight), _PixelNormal)) * _PixelNormal + l_DirLight).GetNormalVector();
+	float ldotPixNor = MathLib::DotProduct((l_DirLight), _PixelNormal);	
 	float a_Shining = LightObj::ShiningConst;
+	Vector3 Ambient = Lighting->GetKAmb() * _PD.Ambient,
+			Diffuse = Lighting->GetKDiff() * _PD.Diffuse * max(-1 * MathLib::DotProduct(_PixelNormal, l_DirLight), 0.f);
+	Vector3	Specular;
 
-	Vector3 Ambient = Lighting->GetKAmb() *_PD.Ambient,
-			Diffuse = Lighting->GetKDiff() * _PD.Diffuse * max((MathLib::DotProduct(_PixelNormal, l_DirLight)), 0),
-			Specular = Lighting->GetKSpec() *_PD.Specular * pow(max(MathLib::DotProduct(r_ReflectVec, v_ObjToCamera), 0), a_Shining);
-
+	if (ldotPixNor >= 0)
+	{
+		Specular.X = 0; Specular.Y = 0; Specular.Z = 0;
+	}
+	else
+	{
+		Vector3	r_ReflectVec = (-2 * ldotPixNor * _PixelNormal + l_DirLight).GetNormalVector();
+		Specular = Lighting->GetKSpec() * _PD.Specular * pow(max(-1 * MathLib::DotProduct(r_ReflectVec, v_ObjToCamera), 0.f), a_Shining);
+	}	
+	
 	return Color32(Ambient.X + Diffuse.X + Specular.X, Ambient.Y + Diffuse.Y + Specular.Y, Ambient.Z + Diffuse.Z + Specular.Z);
+}
+
+void Render::LineDraw(int _x1, int _y1, int _x2, int _y2, const Color32& _color)
+{
+	bool yLonger = false;
+	int shortLen = _y2 - _y1;
+	int longLen = _x2 - _x1;
+
+
+	if (abs(shortLen) > abs(longLen))
+	{
+		int swap = shortLen;
+		shortLen = longLen;
+		longLen = swap;
+		yLonger = true;
+	}
+
+	int decInc;
+
+	if (longLen == 0)
+		decInc = 0;
+	else
+		decInc = (shortLen << 16) / longLen;
+
+	if (yLonger)
+	{
+		if (longLen > 0)
+		{
+			longLen += _y1;
+
+			for (int j = 0x8000 + (_x1 << 16); _y1 <= longLen; ++_y1)
+			{
+				if (!DibSec.CheckIntersectClientRect(j >> 16, _y1))
+					continue;
+
+				DibSec.DotPixel(j >> 16, _y1, _color);
+				j += decInc;
+			}
+			return;
+		}
+
+		longLen += _y1;
+
+		for (int j = 0x8000 + (_x1 << 16); _y1 >= longLen; --_y1)
+		{
+			if (!DibSec.CheckIntersectClientRect(j >> 16, _y1))
+				continue;
+
+			DibSec.DotPixel(j >> 16, _y1, _color);
+			j -= decInc;
+		}
+		return;
+	}
+
+	if (longLen > 0)
+	{
+		longLen += _x1;
+		for (int j = 0x8000 + (_y1 << 16); _x1 <= longLen; ++_x1)
+		{
+			if (!DibSec.CheckIntersectClientRect(_x1, j >> 16))
+				continue;
+
+			DibSec.DotPixel(_x1, j >> 16, _color);
+			j += decInc;
+		}
+		return;
+	}
+
+	longLen += _x1;
+
+	for (int j = 0x8000 + (_y1 << 16); _x1 >= longLen; --_x1)
+	{
+		if (!DibSec.CheckIntersectClientRect(_x1, j >> 16))
+			continue;
+
+		DibSec.DotPixel(_x1, j >> 16, _color);
+		j -= decInc;
+	}
+
+	return;
 }
 
 void Render::RenderFPS(float _elapsedTime)

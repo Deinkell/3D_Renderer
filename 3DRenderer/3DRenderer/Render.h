@@ -18,6 +18,7 @@ private:
 	std::unique_ptr<Proj> Projection;	
 	CRITICAL_SECTION CRSC;
 	float ClientX, ClientY;	
+	bool WireFrame = false, Thread_Render = false;
 
 private:
 	std::shared_ptr<ObjectMNG> ObjectMng_Component;
@@ -40,13 +41,16 @@ public:
 	void Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<ThreadPool>& _Thdpool, std::shared_ptr<Camera>& _Camera);
 	void OnRender(float _elapsedTime);
 	void PrepareObj_for_Render();
+	void MakePolygonNDCData(Vertex* _Polygon);
 	void MakePolygonViewPortData(std::vector<Vertex>& _vt);
 	void RenderObj();
 	bool BackFaceCuling(const Vector3& _Normal);
-	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p3p1Vec, const Vector3& _p3p2Vec, const Vector3& _w);
-	void RasterizePolygon(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
+	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p1, const Vector3& _p2, const Vector3& _p3, const Vector3& _w);
+	void RasterizePolygon_Phong(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
 	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김
+	void RasterizePolygon_wire(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3);
 	Color32 MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal, const PhongData& _PD);	
+	void LineDraw(int _x1, int _y1, int _x2, int _y2, const Color32& _color);
 	void RenderFPS(float _elapsedTime);
 };
 

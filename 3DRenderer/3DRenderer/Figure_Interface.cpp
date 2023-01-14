@@ -12,7 +12,7 @@ void Figure_Interface::MakeWorldMatrix(Matrix44* _Out)
 	
 	Matrix44 QuaternionMat;
 	MathLib::MakeQuaternionRotateMatrix(&QuaternionMat, Rotation);
-	MathLib::CrossProduct(&Result, Result, QuaternionMat);	
+	MathLib::CrossProduct(&Result, Result, QuaternionMat);		
 	//쿼터니온 회전연산식
 	/*	
 	Matrix44 MatX, MatY, MatZ;
@@ -30,8 +30,8 @@ void Figure_Interface::MakeWorldMatrix(Matrix44* _Out)
 	TransMat.mat44[3][0] = Position.X;
 	TransMat.mat44[3][1] = Position.Y; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함(입력값의 수정, 계산식은 동일) 
 	TransMat.mat44[3][2] = Position.Z; //Z축과 Y축 교환으로 Upvector가 Z축이되도록 함(입력값의 수정, 계산식은 동일) 
-
 	MathLib::CrossProduct(&Result, Result, TransMat);	
+	
 	*_Out = Result;
 }
 
@@ -67,7 +67,7 @@ void Figure_Interface::MatZspin(Matrix44* _Out, const float& _Zspin)
 
 void Figure_Interface::MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMatrix)
 {
-	MathLib::CrossProduct(_Out, WorldMat, _CameraMatrix);
+	MathLib::CrossProduct(_Out, WorldMat, _CameraMatrix);	
 }
 
 void Figure_Interface::MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat)

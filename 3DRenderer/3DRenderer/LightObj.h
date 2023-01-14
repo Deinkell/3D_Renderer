@@ -7,7 +7,7 @@ private:
 	float KAmbient, KDiffuse, KSpecular;
 
 public:
-	static const int ShiningConst = 3;
+	static const int ShiningConst = 10;
 
 public:
 	LightObj() : Sphere(FigureType::Light_OBJECT) {};
