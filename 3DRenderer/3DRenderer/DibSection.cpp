@@ -11,9 +11,6 @@ DibSection::~DibSection()
 
 void DibSection::DotPixel(const int& _ix, const int& _iy, const Color32& _Cl)
 {
-	if (_Cl.R > 50 && _Cl.G > 50 && _Cl.B > 50)
-		int a = 0;
-
 	if (_ix < 0 || _iy < 0 || _ix >= rtClient_.right || _iy >= rtClient_.bottom)
 		return;
 

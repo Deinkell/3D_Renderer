@@ -1,14 +1,13 @@
 #pragma once
 #include "DibSection.h"
 #include "DepthBuffer.h"
-#include "RenderData.h"
+#include "Figure_define.h"
 
 struct Vertex;
 class ObjectMNG;
 class ThreadPool;
 class Camera;
 class Proj;
-enum class FigureType : char;
 
 class Render
 {
@@ -17,8 +16,10 @@ private:
 	DepthBuffer DepthBuf;
 	std::unique_ptr<Proj> Projection;	
 	CRITICAL_SECTION CRSC;
+	Matrix44 ViewPortMat;
 	float ClientX, ClientY;	
-	bool WireFrame = false, Thread_Render = false;
+	RenderType Render_Type = RenderType::PhongShading;
+	bool Thread_Render = false;
 
 private:
 	std::shared_ptr<ObjectMNG> ObjectMng_Component;
@@ -39,6 +40,7 @@ public:
 
 public:
 	void Initialize(std::shared_ptr<ObjectMNG>& _ObjMng, std::shared_ptr<ThreadPool>& _Thdpool, std::shared_ptr<Camera>& _Camera);
+	void MakeViewPortMat();
 	void OnRender(float _elapsedTime);
 	void PrepareObj_for_Render();
 	void MakePolygonNDCData(Vertex* _Polygon);
@@ -49,6 +51,7 @@ public:
 	void RasterizePolygon_Phong(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
 	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김
 	void RasterizePolygon_wire(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3);
+	void RasterizePolygon_Flat(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const Color32& _Color);
 	Color32 MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal, const PhongData& _PD);	
 	void LineDraw(int _x1, int _y1, int _x2, int _y2, const Color32& _color);
 	void RenderFPS(float _elapsedTime);

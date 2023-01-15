@@ -6,3 +6,10 @@ enum class FigureType : char
 	Sphere_type = 1,
 	Light_OBJECT = 2,
 };
+
+enum class RenderType : char
+{
+	WireFrame,
+	FlatShading,
+	PhongShading
+};

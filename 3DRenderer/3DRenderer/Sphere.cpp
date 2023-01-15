@@ -36,6 +36,8 @@ void Sphere::Init()
 	//구로 분할
 	for (auto& i : *Vertices)
 		i.SetNormalVec();
+
+	Scale.X = 32.f; Scale.Y = 32.f; Scale.Z = 32.f;
 }
 
 void Sphere::Move(float _time)
@@ -50,10 +52,10 @@ void Sphere::MakeRenderData()
 
 void Sphere::Ontick(float _time)
 {	
-	RotateSun(Vector3(0.f, 0.f, 0.f), _time);
-
-	//Position.X = 3;
-	//Position.Z = 99;
+	if(RoateY)
+		RotateSun_Y(Vector3(0.f, 0.f, 0.f), _time);
+	else
+		RotateSun_X(Vector3(0.f, 0.f, 0.f), _time);
 }
 
 void Sphere::SubDivide(int _NumOfDivide)
@@ -107,7 +109,7 @@ void Sphere::SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _p3)
 	_p3.NormalVec += Cross;
 }
 
-void Sphere::RotateSun(const Vector3& _Center, const float& _elapsed)
+void Sphere::RotateSun_Y(const Vector3& _Center, const float& _elapsed)
 {
 	static float theata = 0.f;	
 	theata += Rotate_Speed * _elapsed;
@@ -116,4 +118,15 @@ void Sphere::RotateSun(const Vector3& _Center, const float& _elapsed)
 
 	Position.X = Rotate_Dist * sin(theata) + _Center.X;
 	Position.Z = Rotate_Dist * cos(theata) + _Center.Z;
+}
+
+void Sphere::RotateSun_X(const Vector3& _Center, const float& _elapsed)
+{
+	static float theata = 0.f;
+	theata += Rotate_Speed * _elapsed;
+	if (theata >= 360.f)
+		theata -= 360.f;
+
+	Position.Y = -Rotate_Dist * sin(theata) + _Center.X;
+	Position.Z = -Rotate_Dist * cos(theata) + _Center.Z;
 }

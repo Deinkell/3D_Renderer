@@ -1,27 +1,58 @@
 #include "stdafx.h"
 #include "ObjectMNG.h"
 
+ObjectMNG::~ObjectMNG()
+{
+	int Size = FlyWeightObject.size();
+	for(int i = Size-1; i >= 0; i--)
+		delete FlyWeightObject[i];
+}
+
 ObjectMNG::ObjectMNG()
 {
-	FlyWeightObject.push_back(std::make_shared<Sphere>());
-	for (auto i : FlyWeightObject)
-		i->Init();	
+	FlyWeightObject.push_back(new Sphere());
+	int Size = FlyWeightObject.size();
+	for (auto& i : FlyWeightObject)
+		i->Init();
+
+	Lighting_Sun = std::make_shared<LightObj>(0.4f, 0.4f, 0.4f);
+	Lighting_Sun->Init();
+	Lighting_Sun->SetRenderType(RenderType::FlatShading);
+	//ObjectVectors.push_back(Lighting_Sun);
 }
 
 void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
-{	
+{
 	size_t Size = FlyWeightObject.size();
-	
-	for(int i = 0; i < Size; i++)
-	{		
-		if (_type == FlyWeightObject[i]->GetFigureType())
+
+	switch (_type)
+	{
+		case FigureType::Sphere_type:
 		{
-			FlyWeightObject[i]->SetPosition(_Pos);
-			auto tmp(FlyWeightObject[i]);
-			tmp->SetPosition(Vector3(0.f, 0.f, 0.f));
-			ObjectVectors.push_back(std::move(tmp));
-			//프로토타입패턴 이용->텍스쳐를 입히게되면 경량패턴으로 교체
+			for (int i = 0; i < Size; i++)
+			{
+				if (_type == FlyWeightObject[i]->GetFigureType())
+				{
+					FlyWeightObject[i]->SetPosition(_Pos);
+					auto tmp(std::make_shared<Sphere>(*FlyWeightObject[i]));
+					tmp->SetPosition(Vector3(0.f, 0.f, 0.f));
+					ObjectVectors.push_back(std::move(tmp));
+					//프로토타입패턴 이용					
+				}
+			}
+			break;
 		}
+		default:
+			return;		
+	}
+
+	
+	//테스트를 위한 임시 코드
+	int size = ObjectVectors.size();
+	if (size == 2)
+	{
+		std::shared_ptr<Sphere> tmp = std::static_pointer_cast<Sphere>(ObjectVectors[1]);	
+		tmp->SetRotateY(false);
 	}
 }
 
@@ -34,5 +65,6 @@ void ObjectMNG::Update(float _elapsedTime)
 void ObjectMNG::PrepareRender_MakeMat(const Matrix44& _CameraMat, const Matrix44& _ProjMat)
 {
 	for (auto& i : ObjectVectors)
-		i->MakeMatrix(_CameraMat, _ProjMat);
+		i->MakeMatrix(_CameraMat, _ProjMat);	
 }
+

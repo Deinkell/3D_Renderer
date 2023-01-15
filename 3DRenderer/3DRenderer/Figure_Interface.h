@@ -13,20 +13,22 @@ class Figure_Interface
 protected:
 	Vector3 Position{0.f, 0.f, 0.f};
 	Vector3 Rotation{0.f, 0.f, 0.f};
-	Vector3 Scale{32.f, 32.f, 32.f};
+	Vector3 Scale{1.f, 1.f, 1.f};
 	// Z축과 Y축의 데이터를 바꿔서 이용하여 Z축과 Y축을 교체, upVector는 Z축이 되도록 함
 	PhongData PhongD{ Vector3(30.0f, 30.0f, 30.0f), Vector3(255.0f, 0.0f, 0.0f), Vector3(255.0f, 255.0f, 255.0f)};
 	Matrix44 FigureMat44, WorldMat, MatWrdView;
 	std::shared_ptr<std::vector<Vertex>> Vertices = std::make_shared<std::vector<Vertex>>();
 	std::shared_ptr<std::vector<Index>> Indices = std::make_shared<std::vector<Index>>();
 	FigureType Figure_type;
+	RenderType Render_type = RenderType::PhongShading;
 
 public:
 	Figure_Interface() = default;
 	FORCEINLINE Figure_Interface(const std::shared_ptr<std::vector<Vertex>> _Vertices, 
 		std::shared_ptr<std::vector<Index>> _Indices, FigureType _type)
 	: Vertices(_Vertices), Indices(_Indices), Figure_type(_type){};
-	FORCEINLINE Figure_Interface(const Vector3& _Pos, const FigureType& _type) : Position(_Pos), Figure_type(Figure_type) {}
+	FORCEINLINE Figure_Interface(const Vector3& _Pos, const FigureType& _type) 
+	: Position(_Pos), Figure_type(_type) {}
 	FORCEINLINE Figure_Interface(const FigureType& _type) : Figure_type(_type) {}
 	FORCEINLINE Figure_Interface(const Figure_Interface& _ref)
 	: Position(_ref.Position), Rotation(_ref.Rotation), Scale(_ref.Scale),
@@ -35,7 +37,7 @@ public:
 	FORCEINLINE Figure_Interface(Figure_Interface&& _ref) noexcept
 	:	Position(std::move(_ref.Position)), Rotation(std::move(_ref.Rotation)), Scale(std::move(_ref.Scale)),
 		FigureMat44(std::move(_ref.FigureMat44)), Vertices(std::move(_ref.Vertices)),
-		Indices(std::move(_ref.Indices)), Figure_type(std::move(_ref.Figure_type)) {};
+		Indices(std::move(_ref.Indices)), Figure_type(std::move(_ref.Figure_type)), Render_type(std::move(_ref.Render_type)) {};
 	~Figure_Interface() = default;
 
 public:	
@@ -51,12 +53,14 @@ public:
 	FORCEINLINE constexpr void SetAmbient(const Vector3& _amb) { PhongD.Ambient = _amb; }
 	FORCEINLINE constexpr void SetDiffuse(const Vector3& _dif) { PhongD.Diffuse = _dif; }
 	FORCEINLINE constexpr void SetSpecular(const Vector3& _spc) { PhongD.Specular = _spc; }
+	FORCEINLINE constexpr void SetRenderType(const RenderType& _Type) {	Render_type = _Type; }
 	// Set함수
 	FORCEINLINE decltype(auto) GetVertices() { return Vertices; }
 	FORCEINLINE decltype(auto) GetVerticesSize() { return Vertices->size(); }
 	FORCEINLINE decltype(auto) GetVertex(const int& _idx) { return (*Vertices)[_idx]; }
 	FORCEINLINE decltype(auto) GetIndices() { return Indices; }
 	FORCEINLINE constexpr decltype(auto) GetFigureType() { return Figure_type; }
+	FORCEINLINE constexpr decltype(auto) GetRenderType() { return Render_type; }
 	FORCEINLINE constexpr decltype(auto) GetPosition() { return Position; }
 	FORCEINLINE constexpr decltype(auto) GetRotation() { return Rotation; }
 	FORCEINLINE constexpr decltype(auto) GetScale() { return Scale; }

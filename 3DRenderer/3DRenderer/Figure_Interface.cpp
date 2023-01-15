@@ -3,6 +3,7 @@
 
 void Figure_Interface::MakeWorldMatrix(Matrix44* _Out)
 {
+	
 	Matrix44 Result;
 	MathLib::InitUnitMatrix44(_Out);
 	Result.mat44[0][0] = Scale.X;
@@ -14,7 +15,7 @@ void Figure_Interface::MakeWorldMatrix(Matrix44* _Out)
 	MathLib::MakeQuaternionRotateMatrix(&QuaternionMat, Rotation);
 	MathLib::CrossProduct(&Result, Result, QuaternionMat);		
 	//쿼터니온 회전연산식
-	/*	
+	/*
 	Matrix44 MatX, MatY, MatZ;
 	MatXspin(&MatX, Rotation.X);
 	MathLib::CrossProduct(&Result, Result, MatX);
@@ -72,5 +73,5 @@ void Figure_Interface::MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMat
 
 void Figure_Interface::MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat)
 {
-	MathLib::CrossProduct(_Out, *_Out, _ProjMat);
+	MathLib::CrossProduct(_Out, *_Out, _ProjMat);	
 }

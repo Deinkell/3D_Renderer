@@ -11,6 +11,7 @@ void FrameWork::Initialize(HWND _hWnd)
 	Unit_threadPool = std::make_shared<ThreadPool>(4);
 
 	Unit_Render->Initialize(Obj_Manager, Unit_threadPool, Unit_Camera);
+	Obj_Manager->CreateObject(FigureType::Sphere_type);	
 	Obj_Manager->CreateObject(FigureType::Sphere_type);
 	Unit_Camera->Initialize();
 

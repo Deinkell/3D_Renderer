@@ -8,12 +8,19 @@ static constexpr float Rotate_Speed = 2;
 
 class Sphere : public Figure_Interface
 {
+private:
+	bool RoateY = true;
+
 public:
 	FORCEINLINE Sphere() : Figure_Interface(FigureType::Sphere_type) {};
 	FORCEINLINE Sphere(const FigureType& _type) : Figure_Interface(_type) {};
 	FORCEINLINE Sphere(const Vector3& _pos) : Figure_Interface(_pos, FigureType::Sphere_type) {};
 	FORCEINLINE Sphere(const Sphere& _ref) 	: Figure_Interface(_ref) {};
+	FORCEINLINE Sphere(const Figure_Interface& _ref) : Figure_Interface(_ref) {};
 	~Sphere() = default;
+
+public:
+	FORCEINLINE void SetRotateY(bool _b) { RoateY = _b; }
 
 public:
 	virtual void Init() override;
@@ -24,6 +31,7 @@ public:
 public:
 	void SubDivide(int _NumOfDivide); //20면체를 쪼개서 구형태로 만들기 위한 작업
 	void SetNormal(Vertex& _p1, Vertex& _p2, Vertex& _P3);
-	void RotateSun(const Vector3& _Center, const float& _elapsed);
+	void RotateSun_Y(const Vector3& _Center, const float& _elapsed);
+	void RotateSun_X(const Vector3& _Center, const float& _elapsed);
 };
 
