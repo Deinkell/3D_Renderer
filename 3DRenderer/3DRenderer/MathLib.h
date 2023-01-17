@@ -48,11 +48,14 @@ namespace MathLib
 	Quaternion	CrossProduct(const Matrix44& _refMat, const Quaternion& _refQ);
 	void		CrossProduct(Vector3* _out, const Vector3& _ref1, const Vector3& _ref2);
 	Vector3		CrossProduct(const Vector3& _ref1, const Vector3& _ref2);
+	void		CrossProduct_Inv(Quaternion* _out, const Matrix44& _refMat, const Quaternion& _refQ);
+	Quaternion	CrossProduct_Inv(const Matrix44& _refMat, const Quaternion& _refQ);
 	//외적 관련 함수들
 	float		DotProduct(const Vector3& _ref1, const Vector3& _ref2);
 	float		DotProduct(const float& _x1, const float& _y1, const float& _x2, const float& _y2);
 	float		GetDotProductCostheata(Vector3& _ref1, Vector3& _ref2);
 	void		MakeQuaternionRotateMatrix(Matrix44* _Out, const Vector3& _Rotate);
+	void		MakeQuaternionRotateMatrix_Inv(Matrix44* _Out, const Vector3& _Rotate);
 	//내적관련 함수들
 	void		Make2DLinFunction(LineFunction2D* _Out, const Vector3& _vec1, const Vector3& _vec2);
 	void		SortByYvalue(Vector3* _out, const std::span<Vector3>& _In);

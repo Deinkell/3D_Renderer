@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROJECTION_FOV 90.f
+#define PROJECTION_FOV 75.f
 
 struct Matrix44;
 
@@ -21,7 +21,7 @@ public:
 		Fovy = (float)(PROJECTION_FOV * 3.14 / 180.0f);
 		Dist = 1.0f / tanf(Fovy / 2.0f);
 
-		MakeProjMatrix();
+		MakeProjMatrix_Inv();
 	};
 	Proj() = delete; //기본생성자 삭제, 필요변수들 기입을 통해서만 생성하도록 함
 	~Proj() = default;
@@ -31,5 +31,6 @@ public:
 
 private:
 	void MakeProjMatrix();
+	void MakeProjMatrix_Inv();
 };
 

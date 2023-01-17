@@ -71,8 +71,11 @@ public:
 	// GetÇÔ¼ö
 public:
 	void MakeWorldMatrix(Matrix44* _Out);
+	void MakeWorldMatrix_Inv(Matrix44* _Out);
 	void MakeViewMatrix(Matrix44* _Out, const Matrix44& _CameraMatrix);
+	void MakeViewMatrix_Inv(Matrix44* _Out, const Matrix44& _CameraMatrix);
 	void MakeProjMatrix(Matrix44* _Out, const Matrix44& _ProjMat);
+	void MakeProjMatrix_Inv(Matrix44* _Out, const Matrix44& _ProjMat);
 	void MatXspin(Matrix44* _Out, const float& _Xspin);
 	void MatYspin(Matrix44* _Out, const float& _Yspin);
 	void MatZspin(Matrix44* _Out, const float& _Zspin);
@@ -81,10 +84,16 @@ public:
 	{
 		MakeWorldMatrix(&WorldMat);		
 		MakeViewMatrix(&FigureMat44,_CameraMatrix);
-		MakeViewMatrix(&MatWrdView,_CameraMatrix);
 		MakeProjMatrix(&FigureMat44, _ProjMat);
+		MakeViewMatrix(&MatWrdView,_CameraMatrix);		
 	}
-
+	FORCEINLINE void MakeMatrix_Inv(const Matrix44& _CameraMatrix, const Matrix44& _ProjMat)
+	{
+		MakeWorldMatrix_Inv(&WorldMat);
+		MakeViewMatrix_Inv(&MatWrdView, _CameraMatrix);
+		MakeViewMatrix_Inv(&FigureMat44, _CameraMatrix);		
+		MakeProjMatrix_Inv(&FigureMat44, _ProjMat);
+	}
 public:
 	virtual void Init() abstract = 0;
 	virtual void Move(float _time) abstract = 0;

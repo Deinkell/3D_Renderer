@@ -20,7 +20,7 @@ public:
 		float* depth = DepthBufferBlock;
 		depth += (_x + ClientHeight * _y);
 		
-		if (*depth <= _Depth || _Depth < -1.f || _Depth > 0.f)
+		if (*depth <= _Depth)
 			return false;
 
 		*depth = _Depth;

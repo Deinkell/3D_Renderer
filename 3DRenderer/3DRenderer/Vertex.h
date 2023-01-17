@@ -45,6 +45,7 @@ public:
 
 public:
 	void MakeRenderdata(const Matrix44& _FMat, const Matrix44& _WrdViewMat);
+	void MakeRenderdata_Inv(const Matrix44& _FMat, const Matrix44& _WrdViewMat);
 };
 
 

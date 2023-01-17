@@ -48,10 +48,14 @@ public:
 	void RenderObj();
 	bool BackFaceCuling(const Vector3& _Normal);
 	Vector3 Geometric_centroid_VertexCalc(const Vector3& _p1, const Vector3& _p2, const Vector3& _p3, const Vector3& _w);
+	void SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
+	//////////////래스터라이즈 함수들/////////////////////
 	void RasterizePolygon_Phong(const Vector3& _ObjPos, const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const PhongData& _PD);
-	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김
 	void RasterizePolygon_wire(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3);
 	void RasterizePolygon_Flat(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const Color32& _Color);
+	void RasterizePolygon_Test(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3);//뷰월드까지 진행한 결과 출력용
+	void RasterizePolygon_Light(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3, const Color32& _Color);
+	//폴리곤 하나를 기준으로 픽셀연산을 멀티스레드에 맡김
 	Color32 MakePhongShader(const Vector3& _ObjPos, const Vector3& _PixelNormal, const PhongData& _PD);	
 	void LineDraw(int _x1, int _y1, int _x2, int _y2, const Color32& _color);
 	void RenderFPS(float _elapsedTime);

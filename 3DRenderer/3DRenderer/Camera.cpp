@@ -3,10 +3,10 @@
 
 void Camera::Initialize()
 {
-	Position.Z = -200;
+	Position.Z = -250;
 	Position.Y = 100;
 	UpdateAxis();
-	MakeViewMatrix();
+	MakeViewMatrix_Inv();
 };
 
 void Camera::MakeViewMatrix()
@@ -32,11 +32,31 @@ void Camera::MakeViewMatrix()
 	CameraMat.mat44[3][3] = 1.f;	
 }
 
+void Camera::MakeViewMatrix_Inv()
+{
+	CameraMat.mat44[0][0] = -Direction[1].X; //Right บคลอ
+	CameraMat.mat44[0][1] = -Direction[1].Y;
+	CameraMat.mat44[0][2] = -Direction[1].Z;
+
+	CameraMat.mat44[1][0] = Direction[0].X; //UP บคลอ
+	CameraMat.mat44[1][1] = Direction[0].Y;
+	CameraMat.mat44[1][2] = Direction[0].Z;
+
+	CameraMat.mat44[2][0] = -Direction[2].X; //Front บคลอ
+	CameraMat.mat44[2][1] = -Direction[2].Y;
+	CameraMat.mat44[2][2] = -Direction[2].Z;
+
+	CameraMat.mat44[0][3] = (Position.X * Direction[1].X + Position.Y * Direction[1].Y + Position.Z * Direction[1].Z);
+	CameraMat.mat44[1][3] = -(Position.X * Direction[0].X + Position.Y * Direction[0].Y + Position.Z * Direction[0].Z);
+	CameraMat.mat44[2][3] = (Position.X * Direction[2].X + Position.Y * Direction[2].Y + Position.Z * Direction[2].Z);
+	CameraMat.mat44[3][3] = 1.f;
+}
+
 void Camera::Update(float _elapsedTime)
 {
 	Move(_elapsedTime);
 	UpdateAxis();
-	MakeViewMatrix();
+	MakeViewMatrix_Inv();
 };
 
 void Camera::Move(float _elapsedTime)

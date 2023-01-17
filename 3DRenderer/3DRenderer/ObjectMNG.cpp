@@ -17,8 +17,8 @@ ObjectMNG::ObjectMNG()
 
 	Lighting_Sun = std::make_shared<LightObj>(0.4f, 0.4f, 0.4f);
 	Lighting_Sun->Init();
-	Lighting_Sun->SetRenderType(RenderType::FlatShading);
-	//ObjectVectors.push_back(Lighting_Sun);
+	Lighting_Sun->SetRenderType(RenderType::LightRender);
+	ObjectVectors.push_back(Lighting_Sun);
 }
 
 void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
@@ -45,15 +45,6 @@ void ObjectMNG::CreateObject(const FigureType& _type, const Vector3 _Pos)
 		default:
 			return;		
 	}
-
-	
-	//테스트를 위한 임시 코드
-	int size = ObjectVectors.size();
-	if (size == 2)
-	{
-		std::shared_ptr<Sphere> tmp = std::static_pointer_cast<Sphere>(ObjectVectors[1]);	
-		tmp->SetRotateY(false);
-	}
 }
 
 void ObjectMNG::Update(float _elapsedTime)
@@ -63,8 +54,8 @@ void ObjectMNG::Update(float _elapsedTime)
 }
 
 void ObjectMNG::PrepareRender_MakeMat(const Matrix44& _CameraMat, const Matrix44& _ProjMat)
-{
+{	
 	for (auto& i : ObjectVectors)
-		i->MakeMatrix(_CameraMat, _ProjMat);	
+		i->MakeMatrix_Inv(_CameraMat, _ProjMat);
 }
 

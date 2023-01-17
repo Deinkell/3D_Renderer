@@ -3,8 +3,8 @@
 #include "Figure_Interface.h"
 
 static constexpr int Sphere_Divide = 3;
-static constexpr float Rotate_Dist = 100.f;
-static constexpr float Rotate_Speed = 2;
+static constexpr float Rotate_Dist = 150.f;
+static constexpr float Rotate_Speed = 1.f;
 
 class Sphere : public Figure_Interface
 {

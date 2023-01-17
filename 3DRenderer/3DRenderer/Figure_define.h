@@ -9,7 +9,9 @@ enum class FigureType : char
 
 enum class RenderType : char
 {
+	basic,
 	WireFrame,
 	FlatShading,
-	PhongShading
+	PhongShading,
+	LightRender
 };

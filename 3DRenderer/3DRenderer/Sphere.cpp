@@ -37,7 +37,7 @@ void Sphere::Init()
 	for (auto& i : *Vertices)
 		i.SetNormalVec();
 
-	Scale.X = 32.f; Scale.Y = 32.f; Scale.Z = 32.f;
+	Scale.X = 36.f; Scale.Y = 36.f; Scale.Z = 36.f;
 }
 
 void Sphere::Move(float _time)
