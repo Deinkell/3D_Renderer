@@ -16,6 +16,7 @@ void FrameWork::Initialize(HWND _hWnd)
 	Obj_Manager->CreateObject(FigureType::Sphere_type);	
 	Unit_Camera->Initialize();
 	Unit_Camera->SetInputComponent(Unit_Input);
+	Unit_Camera->SetObjectMNGComponent(Obj_Manager);
 
 	QueryPerformanceFrequency(&Timer);
 	TimeScale = 1.0 / Timer.QuadPart;

@@ -64,8 +64,10 @@ void Camera::Update(float _elapsedTime)
 
 void Camera::Move(float _elapsedTime)
 {	
-	if (Input_Component == nullptr)
+	if (Input_Component == nullptr || ObjectMng_Component == nullptr)
 		return;	
+
+	SetMoveLookAt(ObjectMng_Component->GetObj_Position(1));
 };
 
 void Camera::UpdateAxis()

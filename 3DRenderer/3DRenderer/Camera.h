@@ -15,6 +15,7 @@ private:
 
 private:
 	std::shared_ptr<Input> Input_Component;
+	std::shared_ptr<ObjectMNG> ObjectMng_Component;
 
 public:
 	Camera() = delete;
@@ -29,6 +30,8 @@ public:
 	FORCEINLINE constexpr Vector3 GetFrontAxis() { return Direction[2]; }
 ////////////////////////GetÇÔ¼ö
 	FORCEINLINE void SetInputComponent(std::shared_ptr<Input>& _Comp) { Input_Component = _Comp; }
+	FORCEINLINE void SetObjectMNGComponent(std::shared_ptr<ObjectMNG>&_Comp) { ObjectMng_Component = _Comp; }
+	FORCEINLINE void SetMoveLookAt(const Vector3& _Lookat) { MoveLookAt = _Lookat; }
 
 public:
 	void Initialize();
