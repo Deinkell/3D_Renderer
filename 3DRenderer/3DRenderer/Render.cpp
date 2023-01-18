@@ -7,6 +7,12 @@ Render::Render(HWND _hWnd)
 	DepthBuf.Initialize(DibSec.GetClientX(), DibSec.GetClientY());	
 	InitializeCriticalSection(&CRSC);
 	Projection = std::make_unique<Proj>(1, 1000, DibSec.GetClientX(), DibSec.GetClientY());
+
+	std::string str;
+	str = "Press Num 1 : WireFrame";
+	StaticText.push_back(str);
+	str = "Press Num 2 : Individual Setup Render";
+	StaticText.push_back(str);
 }
 
 Render::~Render()
@@ -45,12 +51,12 @@ void Render::OnRender(float _elapsedTime)
 
 	PrepareObj_for_Render();
 	RenderObj();
+	RenderStaticText(StaticText);
 	BitBltDib();		
 }
 
 void Render::PrepareObj_for_Render()
 {
-	Camera_Component->MakeViewMatrix_Inv();
 	ObjectMng_Component->PrepareRender_MakeMat(Camera_Component->GetCameraMat(), Projection->GetProjMat());
 }
 
@@ -85,10 +91,7 @@ void Render::RenderObj()
 		PhongData PhoD = ObjectMng_Component->GetPhongData(i);
 		Matrix44 FMat = ObjectMng_Component->GetObj_FinalMatrix(i);
 		Matrix44 WrdMat = ObjectMng_Component->GetObj_WrdMat(i);	
-		Matrix44 WrdviewMat = ObjectMng_Component->GetObj_WrdViewMat(i);
-		Render_Type = ObjectMng_Component->GetRenderType(i);
-		//Render_Type = RenderType::WireFrame;
-		//Render_Type = RenderType::basic;
+		Render_Type = GetRenderType(ObjectMng_Component->GetRenderType(i));
 		Thread_Render = true;		
 
 		for (auto& j : *Indicies)
@@ -294,8 +297,8 @@ void Render::RasterizePolygon_Phong(const Vector3& _ObjPos, const Vertex& _p1, c
 
 void Render::RasterizePolygon_wire(const Vertex& _p1, const Vertex& _p2, const Vertex& _p3)
 {
-	if (!BackFaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
-		return;
+	//if (!BackFaceCuling(_p1.NormalVec + _p2.NormalVec + _p3.NormalVec))
+	//	return;
 	//백페이스 컬링
 
 	std::vector<Vertex> tmpVertices{ _p1, _p2, _p3 };
@@ -353,7 +356,7 @@ void Render::RasterizePolygon_Flat(const Vertex& _p1, const Vertex& _p2, const V
 	for (auto& p : testPlanes)
 		p.ClipTriangles(tmpVertices); //삼각형 클리핑(동차좌표계에서 진행 후 ndc 변환)
 
-	if (tmpVertices.size() == 0)
+	if (tmpVertices.size() != 3)
 		return;
 	//절두체컬링
 	MakePolygonViewPortData(tmpVertices);
@@ -675,5 +678,10 @@ void Render::LineDraw(int _x1, int _y1, int _x2, int _y2, const Color32& _color)
 void Render::RenderFPS(float _elapsedTime)
 {
 	DibSec.SetWindowsTitleFPS(_elapsedTime);
+}
+
+void Render::RenderStaticText(std::vector<std::string>& _TextVec)
+{
+	DibSec.SetStaticText(_TextVec);
 }
 

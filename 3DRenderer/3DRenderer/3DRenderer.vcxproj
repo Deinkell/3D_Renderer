@@ -140,6 +140,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="Index.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="LightObj.h" />
     <ClInclude Include="LinearColor.h" />
     <ClInclude Include="LineFunction2D.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="Index.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="LightObj.cpp" />
     <ClCompile Include="LinearColor.cpp" />
     <ClCompile Include="LineFunction2D.cpp" />

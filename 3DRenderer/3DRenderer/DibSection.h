@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include "Color32.h"
 
 class DibSection
@@ -47,5 +48,6 @@ public:
 	void ClearDib(const Color32& _color = Color32(255,255,255,0));
 	void BitBltDibSection();	
 	void SetWindowsTitleFPS(const float& _elapsedTime);
+	void SetStaticText(std::vector<std::string>& _Text);
 };
 

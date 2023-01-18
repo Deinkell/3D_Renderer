@@ -46,6 +46,9 @@
     <Filter Include="FrameWork\Main">
       <UniqueIdentifier>{b8775fe3-d4cd-410b-82e9-c9774b8cf485}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Global\Input">
+      <UniqueIdentifier>{acc9bcf1-8a04-4cad-8ea0-a3090644e9bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -141,6 +144,9 @@
     <ClInclude Include="RenderData.h">
       <Filter>Global\struct</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Global\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -223,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="RenderData.cpp">
       <Filter>Global\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Global\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

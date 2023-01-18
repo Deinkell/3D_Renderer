@@ -3,6 +3,7 @@
 #include "Render.h"
 #include "ObjectMNG.h"
 #include "ThreadPool.h"
+#include "Input.h"
 
 class FrameWork
 {
@@ -11,6 +12,7 @@ private:
 	std::shared_ptr<ObjectMNG> Obj_Manager = nullptr;
 	std::shared_ptr<ThreadPool> Unit_threadPool = nullptr;
 	std::shared_ptr<Camera > Unit_Camera = nullptr;
+	std::shared_ptr<Input> Unit_Input = nullptr;
 
 	LARGE_INTEGER Start{0}, End{0}, Timer{0};
 	double TimeScale{0.0};

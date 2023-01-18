@@ -1,10 +1,12 @@
 #include "stdafx.h"
+#include "Input.h"
 #include "Camera.h"
 
 void Camera::Initialize()
 {
 	Position.Z = -250;
 	Position.Y = 100;
+	MoveLookAt = LookAt;
 	UpdateAxis();
 	MakeViewMatrix_Inv();
 };
@@ -52,6 +54,7 @@ void Camera::MakeViewMatrix_Inv()
 	CameraMat.mat44[3][3] = 1.f;
 }
 
+
 void Camera::Update(float _elapsedTime)
 {
 	Move(_elapsedTime);
@@ -60,14 +63,16 @@ void Camera::Update(float _elapsedTime)
 };
 
 void Camera::Move(float _elapsedTime)
-{
+{	
+	if (Input_Component == nullptr)
+		return;	
 };
 
 void Camera::UpdateAxis()
 {
-	Vector3 tempUpVector{ 0.f, 1.f, 0.f }; //¿ùµå ¾÷º¤ÅÍ
-	Direction[2] = LookAt - Position; //Front
-	Direction[1] = MathLib::CrossProduct(tempUpVector, Direction[2]); //Right
+	Vector3 UpVector{ 0.f, 1.f, 0.f }, tmpLookAt{ MoveLookAt.X, MoveLookAt.Y, MoveLookAt.Z}; //¿ùµå ¾÷º¤ÅÍ	
+	Direction[2] = tmpLookAt - Position; //Front
+	Direction[1] = MathLib::CrossProduct(UpVector, Direction[2]); //Right
 	Direction[0] = MathLib::CrossProduct(Direction[2], Direction[1]); //Up
 
 	for (int i = 0; i < 3; i++)

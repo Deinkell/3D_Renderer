@@ -7,11 +7,11 @@ enum class FigureType : char
 	Light_OBJECT = 2,
 };
 
-enum class RenderType : char
+enum class RenderType : int
 {
-	basic,
-	WireFrame,
-	FlatShading,
-	PhongShading,
-	LightRender
+	basic = 1,
+	WireFrame = 2,
+	FlatShading = 3,
+	PhongShading = 4,
+	LightRender = 5
 };

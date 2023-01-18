@@ -70,3 +70,23 @@ void DibSection::SetWindowsTitleFPS(const float& _elapsedTime)
 	}	
 }
 
+void DibSection::SetStaticText(std::vector<std::string>& _Text)
+{
+	HFONT hFont, hOldFont;
+	hFont = (HFONT)GetStockObject(ANSI_VAR_FONT);
+	hOldFont = (HFONT)SelectObject(hMemoryDC_, hFont);
+
+	static const int leftPosition = 20;
+	static const int topPosition = 10;
+	static const int rowHeight = 20;
+	int currentPosition = topPosition;
+
+	for (std::vector<std::string>::const_iterator it = _Text.begin(); it != _Text.end(); ++it)
+	{
+		TextOutA(hMemoryDC_, leftPosition, currentPosition, (*it).c_str(), (int)((*it).length()));
+		currentPosition += rowHeight;
+	}
+
+	SelectObject(hMemoryDC_, hOldFont);
+}
+
