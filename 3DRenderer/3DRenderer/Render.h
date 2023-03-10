@@ -39,7 +39,7 @@ public:
 	~Render();
 	
 public:
-	FORCEINLINE constexpr int GetClientX() {	return ClientX; }
+	FORCEINLINE constexpr int GetClientX() { return ClientX; }
 	FORCEINLINE constexpr int GetClientY() { return ClientY; }
 
 public:

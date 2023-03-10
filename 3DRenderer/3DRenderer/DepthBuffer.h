@@ -3,9 +3,9 @@
 class DepthBuffer
 {
 private:
-	float* DepthBufferBlock;
-	int SizeOfDepthBuffer;
-	int ClientWidth, ClientHeight;	
+	float* DepthBufferBlock = nullptr;
+	int SizeOfDepthBuffer = 0;
+	int ClientWidth = 0, ClientHeight = 0;	
 
 public:
 	DepthBuffer() = default;

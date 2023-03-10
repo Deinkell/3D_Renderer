@@ -142,11 +142,12 @@ void Render::SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Ve
 		{
 			if (Thread_Render)
 			{
-				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3)
-					{ RasterizePolygon_wire(tmp1, tmp2, tmp3); }, _p1, _p2, _p3);
+				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3){ RasterizePolygon_wire(tmp1, tmp2, tmp3); }, _p1, _p2, _p3);
 			}//멀티스레드 렌더링
 			else
+			{
 				RasterizePolygon_wire(_p1, _p2, _p3);
+			}
 			//싱글스레드 렌더링
 			break;
 		}
@@ -154,11 +155,12 @@ void Render::SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Ve
 		{
 			if (Thread_Render)
 			{
-				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3)
-					{ RasterizePolygon_Flat(tmp1, tmp2, tmp3, Color32(255, 100, 0)); }, _p1, _p2, _p3);
+				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3){ RasterizePolygon_Flat(tmp1, tmp2, tmp3, Color32(255, 100, 0)); }, _p1, _p2, _p3);
 			}//멀티스레드 렌더링
 			else
+			{
 				RasterizePolygon_Flat(_p1, _p2, _p3, Color32(255, 100, 0));
+			}
 			//싱글스레드 렌더링
 			break;
 		}
@@ -166,11 +168,12 @@ void Render::SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Ve
 		{
 			if (Thread_Render)
 			{
-				ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD)
-					{ RasterizePolygon_Phong(_Position, tmp1, tmp2, tmp3, _PhongD); }, _ObjPos, _p1, _p2, _p3, _PD);
+				ThreadPool_Component->EnqueueJob([this](Vector3 _Position, Vertex tmp1, Vertex tmp2, Vertex tmp3, PhongData _PhongD){ RasterizePolygon_Phong(_Position, tmp1, tmp2, tmp3, _PhongD); }, _ObjPos, _p1, _p2, _p3, _PD);
 			}//멀티스레드 렌더링
 			else
+			{
 				RasterizePolygon_Phong(_ObjPos, _p1, _p2, _p3, _PD);
+			}
 			//싱글스레드 렌더링
 			break;
 		}
@@ -178,11 +181,12 @@ void Render::SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Ve
 		{
 			if (Thread_Render)
 			{
-				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3)
-					{ RasterizePolygon_Light(tmp1, tmp2, tmp3, Color32(255, 100, 0)); }, _p1, _p2, _p3);
+				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3){ RasterizePolygon_Light(tmp1, tmp2, tmp3, Color32(255, 100, 0)); }, _p1, _p2, _p3);
 			}//멀티스레드 렌더링
 			else
+			{
 				RasterizePolygon_Light(_p1, _p2, _p3, Color32(255, 100, 0));
+			}
 			//싱글스레드 렌더링
 			break;
 		}
@@ -190,11 +194,12 @@ void Render::SwithRenderType(const Vector3& _ObjPos, const Vertex& _p1, const Ve
 		{
 			if (Thread_Render)
 			{
-				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3)
-					{ RasterizePolygon_Test(tmp1, tmp2, tmp3); }, _p1, _p2, _p3);
+				ThreadPool_Component->EnqueueJob([this](Vertex tmp1, Vertex tmp2, Vertex tmp3){ RasterizePolygon_Test(tmp1, tmp2, tmp3); }, _p1, _p2, _p3);
 			}//멀티스레드 렌더링
 			else
+			{
 				RasterizePolygon_Test(_p1, _p2, _p3);
+			}
 			//싱글스레드 렌더링
 			break;
 		}
@@ -542,8 +547,7 @@ void Render::RasterizePolygon_Light(const Vertex& _p1, const Vertex& _p2, const 
 			if (!DibSec.CheckIntersectClientRect(j, i))
 				continue;
 
-			Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0], Vertices[1], Vertices[2],
-				Vector3(j, i, 0) - Vertices[2]);
+			Vector3 GeoPos = Geometric_centroid_VertexCalc(Vertices[0], Vertices[1], Vertices[2], Vector3(j, i, 0) - Vertices[2]);
 			//무게중심 좌표계 생성
 			if (GeoPos.X < 0.f || GeoPos.X > 1.f || GeoPos.Y < 0.f || GeoPos.Y > 1.f || GeoPos.Z < 0.f || GeoPos.Z > 1.f)
 				continue;
@@ -552,8 +556,7 @@ void Render::RasterizePolygon_Light(const Vertex& _p1, const Vertex& _p2, const 
 			float invZ1 = 1.f / tmpVertices[1].Pos.W;
 			float invZ2 = 1.f / tmpVertices[2].Pos.W;
 			float Z = invZ0 * GeoPos.Z + invZ1 * GeoPos.X + invZ2 * GeoPos.Y, invZ = 1.f / Z;
-			float PixelZvalue = (Vertices[0].Z * GeoPos.X * invZ1 + Vertices[1].Z * GeoPos.Y * invZ2 +
-				Vertices[2].Z * GeoPos.Z * invZ0) * invZ;
+			float PixelZvalue = (Vertices[0].Z * GeoPos.X * invZ1 + Vertices[1].Z * GeoPos.Y * invZ2 + Vertices[2].Z * GeoPos.Z * invZ0) * invZ;
 			//무게중심 좌표계 보간값
 			EnterCriticalSection(&CRSC);
 			if (!DepthBuf.CheckDepthBuffer(j, i, PixelZvalue))
