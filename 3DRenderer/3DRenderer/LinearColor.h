@@ -5,9 +5,9 @@
 struct LinearColor
 {
 public:
-	FORCEINLINE constexpr LinearColor() = default;
-	FORCEINLINE explicit constexpr LinearColor(float InR, float InG, float InB, float InA = 1.f) : R(InR), G(InG), B(InB), A(InA) {}
-	FORCEINLINE explicit constexpr LinearColor(const Color32& InColor32)
+	constexpr LinearColor() = default;
+	explicit constexpr LinearColor(float InR, float InG, float InB, float InA = 1.f) : R(InR), G(InG), B(InB), A(InA) {}
+	explicit constexpr LinearColor(const Color32& InColor32)
 	{
 		R = float(InColor32.R) * OneOver255;
 		G = float(InColor32.G) * OneOver255;

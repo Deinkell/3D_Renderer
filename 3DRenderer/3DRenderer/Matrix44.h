@@ -8,9 +8,9 @@ public:
 							{0.f, 0.0f, 1.f, 0.f}, {0.f, 0.0f, 0.f, 1.f} };
 	
 public:
-	FORCEINLINE Matrix44() = default;
-	FORCEINLINE Matrix44(const Matrix44& _ref){ memcpy(mat44, _ref.mat44, 64); }
-	FORCEINLINE Matrix44(Matrix44&& _ref) noexcept
+	Matrix44() = default;
+	Matrix44(const Matrix44& _ref){ memcpy(mat44, _ref.mat44, 64); }
+	Matrix44(Matrix44&& _ref) noexcept
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -20,8 +20,8 @@ public:
 	};
 	~Matrix44() = default;
 
-	FORCEINLINE Matrix44& operator=(const Matrix44& _ref);
-	FORCEINLINE constexpr void operator+=(const Matrix44& _ref);
+	Matrix44& operator=(const Matrix44& _ref);
+	constexpr void operator+=(const Matrix44& _ref);
 };
 
 FORCEINLINE Matrix44& Matrix44::operator=(const Matrix44& _ref)

@@ -6,9 +6,9 @@ public:
 
 public:
 	Plane() = default;
-	FORCEINLINE Plane(const float& _a, const float& _b, const float& _c, const float& _d)
+	Plane(const float& _a, const float& _b, const float& _c, const float& _d)
 		: a(_a), b(_b), c(_c), d(_d) {	Normalize(); };
-	FORCEINLINE Plane(float&& _a, float&& _b, float&& _c, float&& _d)
+	Plane(float&& _a, float&& _b, float&& _c, float&& _d)
 	: a(std::move(_a)), b(std::move(_b)), c(std::move(_c)), d(std::move(_d)) {	Normalize(); };
 	~Plane() = default;
 	

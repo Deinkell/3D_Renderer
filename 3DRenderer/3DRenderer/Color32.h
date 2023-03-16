@@ -17,13 +17,13 @@ public:
 	};
 
 public:
-	FORCEINLINE constexpr Color32() : R(0), G(0), B(0), A(255) {};
-	FORCEINLINE constexpr Color32(const BYTE& _R, const BYTE& _G, const BYTE& _B, const BYTE& _A)
+	constexpr Color32() : R(0), G(0), B(0), A(255) {};
+	constexpr Color32(const BYTE& _R, const BYTE& _G, const BYTE& _B, const BYTE& _A)
 	: R(_R), G(_G), B(_B), A(_A) {};
-	FORCEINLINE constexpr Color32(const BYTE& _R, const BYTE& _G, const BYTE& _B)
+	constexpr Color32(const BYTE& _R, const BYTE& _G, const BYTE& _B)
 	: R(_R), G(_G), B(_B), A(255) {};
 	template<typename T> requires std::is_same<Color32, T>::value
-	FORCEINLINE	Color32(T&& _ref)
+	Color32(T&& _ref)
 	: R(std::forward<BYTE>(_ref.R)), G(std::forward<BYTE>(_ref.G)),
 		B(std::forward<BYTE>(_ref.B)), A(std::forward<BYTE>(_ref.A)) {};
 	//완벽전달 복사생성자

@@ -8,8 +8,8 @@ public:
 	bool XSlopeZero = false, YSlopeZero = false;
 	
 public:
-	FORCEINLINE constexpr float GetXValueByPoint(const float& _X, const float& _Y);
-	FORCEINLINE constexpr float GetYValueByPoint(const float& _X, const float& _Y);
+	constexpr float GetXValueByPoint(const float& _X, const float& _Y);
+	constexpr float GetYValueByPoint(const float& _X, const float& _Y);
 };
 
 FORCEINLINE constexpr float LineFunction2D::GetXValueByPoint(const float& _X, const float& _Y)

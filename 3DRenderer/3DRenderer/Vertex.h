@@ -15,11 +15,11 @@ public:
 
 public:
 	Vertex() = default;
-	FORCEINLINE constexpr Vertex(const Quaternion& _Pos, const LinearColor& _Color, const Vector3& _Normal, const float _U, const float _V)
+	constexpr Vertex(const Quaternion& _Pos, const LinearColor& _Color, const Vector3& _Normal, const float _U, const float _V)
 	: Pos(_Pos), Color(_Color), NormalVec(_Normal), U(_U), V(_V){};
-	FORCEINLINE Vertex(Quaternion&& _Pos, LinearColor&& _Color, Vector3& _Normal, float&& _U, float&& _V)
+	Vertex(Quaternion&& _Pos, LinearColor&& _Color, Vector3& _Normal, float&& _U, float&& _V)
 	: Pos(std::move(_Pos)), Color(std::move(_Color)), NormalVec(std::move(_Normal)), U(std::move(_U)), V(std::move(_V)) {};
-	FORCEINLINE constexpr Vertex(const Vertex& _ref) : Pos(_ref.Pos), Color(_ref.Color), NormalVec(_ref.NormalVec), U(_ref.U), V(_ref.V){};
+	constexpr Vertex(const Vertex& _ref) : Pos(_ref.Pos), Color(_ref.Color), NormalVec(_ref.NormalVec), U(_ref.U), V(_ref.V){};
 	~Vertex() = default;
 
 public:
