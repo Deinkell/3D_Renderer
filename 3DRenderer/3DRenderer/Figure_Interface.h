@@ -20,7 +20,7 @@ protected:
 	std::shared_ptr<std::vector<Vertex>> Vertices = std::make_shared<std::vector<Vertex>>();
 	std::shared_ptr<std::vector<Index>> Indices = std::make_shared<std::vector<Index>>();
 	FigureType Figure_type;
-	RenderType Render_type = RenderType::PhongShading;
+	RenderType Render_type = RenderType::PhongShading;	
 
 public:
 	Figure_Interface() = default;
@@ -38,7 +38,8 @@ public:
 	:	Position(std::move(_ref.Position)), Rotation(std::move(_ref.Rotation)), Scale(std::move(_ref.Scale)),
 		FigureMat44(std::move(_ref.FigureMat44)), Vertices(std::move(_ref.Vertices)),
 		Indices(std::move(_ref.Indices)), Figure_type(std::move(_ref.Figure_type)), Render_type(std::move(_ref.Render_type)) {};
-	~Figure_Interface() = default;
+	
+	virtual ~Figure_Interface();
 
 public:	
 	FORCEINLINE constexpr void SetVertices(const auto _Vertices) { Vertices = _Vertices; };

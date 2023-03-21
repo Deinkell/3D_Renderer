@@ -35,6 +35,10 @@ void Figure_Interface::MakeWorldMatrix(Matrix44* _Out)
 	
 	*_Out = Result;
 }
+Figure_Interface::~Figure_Interface()
+{
+
+}
 
 void Figure_Interface::MakeWorldMatrix_Inv(Matrix44* _Out)
 {

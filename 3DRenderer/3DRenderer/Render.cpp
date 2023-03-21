@@ -127,7 +127,7 @@ Vector3 Render::Geometric_centroid_VertexCalc(const Vector3& _p1, const Vector3&
 	float invVal = udotv * udotv - uu * vv;
 
 	if (invVal == 0) 
-		invVal = 0.000000001;
+		invVal = 0.000001;
 
 	float s = (wdotv * udotv - wdotu * vv) / invVal;
 	float t = (wdotu * udotv - wdotv * uu) / invVal;

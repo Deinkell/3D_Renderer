@@ -12,9 +12,9 @@ public:
 	static const int ShiningConst = 10;
 
 public:
-	LightObj() :KAmbient(0.f), KDiffuse(0.f), KSpecular(0.f), Figure_Interface(FigureType::Light_OBJECT) {};
+	LightObj() :KAmbient(0.f), KDiffuse(0.f), KSpecular(0.f), theata(0.f), Figure_Interface(FigureType::Light_OBJECT) {};
 	LightObj(const float& _Amb, const float& _Dif, const float& _Spc)
-	: KAmbient(_Amb), KDiffuse(_Dif), KSpecular(_Spc), Figure_Interface(FigureType::Light_OBJECT) {};
+	: KAmbient(_Amb), KDiffuse(_Dif), KSpecular(_Spc), theata(0.f), Figure_Interface(FigureType::Light_OBJECT) {};
 	~LightObj() = default;
 
 public:

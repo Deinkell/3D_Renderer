@@ -23,7 +23,7 @@ public:
 	~FrameWork() = default;
 
 public:
-	FORCEINLINE float GetElapsedTime() { return DeltaTime; }
+	FORCEINLINE float GetElapsedTime() { return (float)DeltaTime; }
 
 public:
 	void Initialize(HWND _hWnd);
